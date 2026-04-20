@@ -20,7 +20,8 @@ data class ServerDto(
     @Json(name = "map") val map: String?,
     @Json(name = "lastSeen") val lastSeen: String,
     @Json(name = "host") val host: String = "",
-    @Json(name = "port") val port: Int = 0
+    @Json(name = "port") val port: Int = 0,
+    @Json(name = "pingMs") val pingMs: Long? = null
 ) {
     val address: String get() = if (host.isNotEmpty() && port > 0) "$host:$port" else ""
 }

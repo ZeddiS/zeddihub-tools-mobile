@@ -319,7 +319,11 @@ private fun CompactServerCard(server: ServerDto, onClick: () -> Unit) {
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = "${server.playersOnline}/${server.playersMax} · ${server.map ?: "—"}",
+                    text = buildString {
+                        append("${server.playersOnline}/${server.playersMax}")
+                        server.pingMs?.let { append(" · ${it} ms") }
+                        if (!server.map.isNullOrBlank()) append(" · ${server.map}")
+                    },
                     style = MaterialTheme.typography.labelMedium,
                     color = colors.onSurfaceVariant
                 )

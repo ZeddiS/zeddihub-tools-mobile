@@ -42,6 +42,9 @@
     <string name="nav_section_tools">Tools</string>
     <string name="nav_section_community">Community</string>
     <string name="nav_section_system">System</string>
+    <string name="nav_speedtest">Speed test</string>
+    <string name="nav_cache_cleaner">Cache &amp; Temp</string>
+    <string name="nav_app_finder">App finder</string>
 
     <string name="home_title">ZeddiHub</string>
     <string name="home_welcome">Hi %1$s!</string>
@@ -118,6 +121,46 @@
     <string name="notifications_category_server_down">Server down</string>
     <string name="notifications_category_events">Events</string>
     <string name="notifications_category_announcements">Community announcements</string>
+    <string name="notifications_summary">%1$d alerts · %2$d unread</string>
+    <string name="notifications_mark_read">Mark</string>
+    <string name="notifications_seed_demo">Add demo alert</string>
+
+    <string name="speedtest_title">Connection speed</string>
+    <string name="speedtest_subtitle">Measured via Cloudflare endpoint (10 MB)</string>
+    <string name="speedtest_start">Start test</string>
+    <string name="speedtest_running">Measuring…</string>
+    <string name="speedtest_mbps">%1$.1f Mb/s</string>
+    <string name="speedtest_ping">Ping</string>
+    <string name="speedtest_downloaded">Downloaded</string>
+    <string name="speedtest_elapsed">Elapsed</string>
+    <string name="speedtest_hint">— Mb/s</string>
+    <string name="speedtest_error">Error: %1$s</string>
+    <string name="speedtest_powered_by">Endpoint: speed.cloudflare.com</string>
+
+    <string name="cache_title">Cache &amp; Temp files</string>
+    <string name="cache_subtitle">Free up space by clearing app cache and temporary files.</string>
+    <string name="cache_app_cache">App cache</string>
+    <string name="cache_temp_files">Temp files</string>
+    <string name="cache_clear_app_title">Clear app cache</string>
+    <string name="cache_clear_app_body">Wipes internal cache, external cache and the temp folder.</string>
+    <string name="cache_clear_now">Clear</string>
+    <string name="cache_cleared_toast">Cache cleared.</string>
+    <string name="cache_dns_title">Flush DNS / connection pool</string>
+    <string name="cache_dns_body">Evicts OkHttp\'s active connections and cached DNS. System DNS can\'t be flushed without root.</string>
+    <string name="cache_flush_dns">Flush</string>
+    <string name="cache_system_title">Open system settings</string>
+    <string name="cache_system_body">Manage storage and app permissions in Android system settings.</string>
+    <string name="cache_open_system">Open</string>
+
+    <string name="appfinder_title">App finder</string>
+    <string name="appfinder_total">Total %1$s · %2$d apps</string>
+    <string name="appfinder_search_hint">Search by name or package</string>
+    <string name="appfinder_sort_size_desc">Size ↓</string>
+    <string name="appfinder_sort_size_asc">Size ↑</string>
+    <string name="appfinder_sort_name">Name</string>
+    <string name="appfinder_include_system">Show system apps</string>
+    <string name="appfinder_open">Launch</string>
+    <string name="appfinder_manage">Settings</string>
 
     <string name="community_title">Community</string>
     <string name="community_discord">Discord</string>

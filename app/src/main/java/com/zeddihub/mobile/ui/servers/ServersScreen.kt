@@ -23,11 +23,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.ContentCopy
-import androidx.compose.material.icons.filled.Memory
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.filled.Speed
+import androidx.compose.material.icons.filled.Router
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -238,23 +237,13 @@ private fun ServerCard(server: ServerDto, onCopyIp: () -> Unit) {
                     Stat(Icons.Default.People, "${server.playersOnline}/${server.playersMax}")
                     Spacer(Modifier.width(14.dp))
                     Stat(
-                        Icons.Default.Speed,
-                        server.fps?.let { "FPS ${"%.0f".format(it)}" }
-                            ?: server.tickRate?.let { "Tick ${"%.0f".format(it)}" }
-                            ?: "—"
+                        Icons.Default.Router,
+                        server.pingMs?.let { "${it} ms" } ?: "—"
                     )
-                    Spacer(Modifier.width(14.dp))
-                    Stat(Icons.Default.Bolt, "CPU ${"%.0f".format(server.cpuUsage)}%")
-                    Spacer(Modifier.width(14.dp))
-                    Stat(Icons.Default.Memory, "${server.ramUsageMb}MB")
-                }
-
-                if (!server.map.isNullOrBlank()) {
-                    Text(
-                        text = "Map: ${server.map}",
-                        color = colors.onSurfaceVariant,
-                        style = MaterialTheme.typography.labelLarge
-                    )
+                    if (!server.map.isNullOrBlank()) {
+                        Spacer(Modifier.width(14.dp))
+                        Stat(Icons.Default.Map, server.map!!)
+                    }
                 }
             }
         }

@@ -43,6 +43,9 @@
     <string name="nav_section_tools">Nástroje</string>
     <string name="nav_section_community">Komunita</string>
     <string name="nav_section_system">Systém</string>
+    <string name="nav_speedtest">Rychlost připojení</string>
+    <string name="nav_cache_cleaner">Cache &amp; Temp</string>
+    <string name="nav_app_finder">Najít aplikaci</string>
 
     <!-- Home -->
     <string name="home_title">ZeddiHub</string>
@@ -126,6 +129,49 @@
     <string name="notifications_category_server_down">Server spadl</string>
     <string name="notifications_category_events">Eventy</string>
     <string name="notifications_category_announcements">Oznámení komunity</string>
+    <string name="notifications_summary">%1$d oznámení · %2$d nepřečtených</string>
+    <string name="notifications_mark_read">Označit</string>
+    <string name="notifications_seed_demo">Přidat demo oznámení</string>
+
+    <!-- SpeedTest -->
+    <string name="speedtest_title">Rychlost připojení</string>
+    <string name="speedtest_subtitle">Měření pomocí Cloudflare endpointu (10 MB)</string>
+    <string name="speedtest_start">Spustit měření</string>
+    <string name="speedtest_running">Měřím…</string>
+    <string name="speedtest_mbps">%1$.1f Mb/s</string>
+    <string name="speedtest_ping">Ping</string>
+    <string name="speedtest_downloaded">Staženo</string>
+    <string name="speedtest_elapsed">Čas</string>
+    <string name="speedtest_hint">— Mb/s</string>
+    <string name="speedtest_error">Chyba: %1$s</string>
+    <string name="speedtest_powered_by">Endpoint: speed.cloudflare.com</string>
+
+    <!-- Cache cleaner -->
+    <string name="cache_title">Cache &amp; Temp soubory</string>
+    <string name="cache_subtitle">Uvolni místo smazáním cache a dočasných souborů aplikace.</string>
+    <string name="cache_app_cache">Cache aplikace</string>
+    <string name="cache_temp_files">Dočasné soubory</string>
+    <string name="cache_clear_app_title">Vyčistit cache aplikace</string>
+    <string name="cache_clear_app_body">Smaže interní cache, externí cache a složku temp.</string>
+    <string name="cache_clear_now">Vyčistit</string>
+    <string name="cache_cleared_toast">Cache byla vyčištěna.</string>
+    <string name="cache_dns_title">Flush DNS / connection pool</string>
+    <string name="cache_dns_body">Vyhodí aktivní HTTP spojení a DNS záznamy držené OkHttp. Systémovou DNS bez rootu nelze vyčistit.</string>
+    <string name="cache_flush_dns">Flush</string>
+    <string name="cache_system_title">Otevřít systémová nastavení</string>
+    <string name="cache_system_body">Správa úložiště a oprávnění aplikace v systému Android.</string>
+    <string name="cache_open_system">Otevřít</string>
+
+    <!-- App finder -->
+    <string name="appfinder_title">Najít aplikaci</string>
+    <string name="appfinder_total">Celkem %1$s · %2$d aplikací</string>
+    <string name="appfinder_search_hint">Hledat podle názvu nebo balíčku</string>
+    <string name="appfinder_sort_size_desc">Velikost ↓</string>
+    <string name="appfinder_sort_size_asc">Velikost ↑</string>
+    <string name="appfinder_sort_name">Název</string>
+    <string name="appfinder_include_system">Zobrazit systémové aplikace</string>
+    <string name="appfinder_open">Spustit</string>
+    <string name="appfinder_manage">Nastavení</string>
 
     <!-- Community -->
     <string name="community_title">Komunita</string>

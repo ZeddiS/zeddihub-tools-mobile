@@ -8,12 +8,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.zeddihub.mobile.R
 import com.zeddihub.mobile.data.local.CredentialStore
 import com.zeddihub.mobile.data.local.LanguageCode
 import com.zeddihub.mobile.data.local.ThemeMode
-import com.zeddihub.mobile.data.repository.AuthRepository
 import com.zeddihub.mobile.ui.admin.AdminScreen
 import com.zeddihub.mobile.ui.common.AppShell
 import com.zeddihub.mobile.ui.community.CommunityScreen
@@ -24,9 +22,11 @@ import com.zeddihub.mobile.ui.notifications.NotificationsScreen
 import com.zeddihub.mobile.ui.profile.ProfileScreen
 import com.zeddihub.mobile.ui.servers.ServersScreen
 import com.zeddihub.mobile.ui.settings.SettingsScreen
+import com.zeddihub.mobile.ui.tools.AppFinderScreen
+import com.zeddihub.mobile.ui.tools.CacheCleanerScreen
 import com.zeddihub.mobile.ui.tools.DeviceInfoScreen
 import com.zeddihub.mobile.ui.tools.IpLookupScreen
-import com.zeddihub.mobile.ui.tools.PingScreen
+import com.zeddihub.mobile.ui.tools.SpeedTestScreen
 
 @Composable
 fun AppNavGraph(
@@ -74,9 +74,9 @@ fun AppNavGraph(
             }
         }
 
-        composable(Destinations.Ping.route) {
-            Shell(navController, session, Destinations.Ping.route, stringResource(R.string.nav_ping)) { padding ->
-                PingScreen(padding = padding)
+        composable(Destinations.SpeedTest.route) {
+            Shell(navController, session, Destinations.SpeedTest.route, stringResource(R.string.nav_speedtest)) { padding ->
+                SpeedTestScreen(padding = padding)
             }
         }
 
@@ -89,6 +89,18 @@ fun AppNavGraph(
         composable(Destinations.DeviceInfo.route) {
             Shell(navController, session, Destinations.DeviceInfo.route, stringResource(R.string.nav_device_info)) { padding ->
                 DeviceInfoScreen(padding = padding)
+            }
+        }
+
+        composable(Destinations.CacheCleaner.route) {
+            Shell(navController, session, Destinations.CacheCleaner.route, stringResource(R.string.nav_cache_cleaner)) { padding ->
+                CacheCleanerScreen(padding = padding)
+            }
+        }
+
+        composable(Destinations.AppFinder.route) {
+            Shell(navController, session, Destinations.AppFinder.route, stringResource(R.string.nav_app_finder)) { padding ->
+                AppFinderScreen(padding = padding)
             }
         }
 
@@ -120,7 +132,13 @@ fun AppNavGraph(
         }
 
         composable(Destinations.Admin.route) {
-            Shell(navController, session, Destinations.Admin.route, stringResource(R.string.nav_admin)) { padding ->
+            Shell(
+                navController = navController,
+                session = session,
+                currentRoute = Destinations.Admin.route,
+                title = stringResource(R.string.nav_admin),
+                gesturesEnabled = false
+            ) { padding ->
                 AdminScreen(
                     padding = padding,
                     credentials = gateVm.credentials()
@@ -151,6 +169,7 @@ private fun Shell(
     session: CredentialStore.Session?,
     currentRoute: String,
     title: String,
+    gesturesEnabled: Boolean = true,
     content: @Composable (androidx.compose.foundation.layout.PaddingValues) -> Unit
 ) {
     val gateVm: LoginViewModel = hiltViewModel()
@@ -160,6 +179,7 @@ private fun Shell(
         isAdmin = session?.role?.equals("admin", ignoreCase = true) == true,
         displayName = session?.displayName ?: session?.username,
         role = session?.role,
+        gesturesEnabled = gesturesEnabled,
         onNavigate = { route -> navTo(navController, route) },
         onLogout = {
             gateVm.logout()
