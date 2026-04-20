@@ -41,6 +41,14 @@ class AppPreferences @Inject constructor(context: Context) {
     private val _pushEnabled = MutableStateFlow(prefs.getBoolean(KEY_PUSH, true))
     val pushEnabled: StateFlow<Boolean> = _pushEnabled.asStateFlow()
 
+    private val _appLockEnabled = MutableStateFlow(prefs.getBoolean(KEY_APP_LOCK, true))
+    val appLockEnabled: StateFlow<Boolean> = _appLockEnabled.asStateFlow()
+
+    fun setAppLockEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_APP_LOCK, enabled).apply()
+        _appLockEnabled.value = enabled
+    }
+
     fun setAutoUpdate(enabled: Boolean) {
         prefs.edit().putBoolean(KEY_AUTO_UPDATE, enabled).apply()
         _autoUpdate.value = enabled
@@ -58,6 +66,7 @@ class AppPreferences @Inject constructor(context: Context) {
         _biometricEnabled.value = false
         _autoUpdate.value = true
         _pushEnabled.value = true
+        _appLockEnabled.value = true
     }
 
     fun setTheme(mode: ThemeMode) {
@@ -91,5 +100,6 @@ class AppPreferences @Inject constructor(context: Context) {
         private const val KEY_BIOMETRIC = "biometric_enabled"
         private const val KEY_AUTO_UPDATE = "auto_update"
         private const val KEY_PUSH = "push_enabled"
+        private const val KEY_APP_LOCK = "app_lock_enabled"
     }
 }

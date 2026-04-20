@@ -318,6 +318,18 @@
     <string name="decibel_calibration">Kalibrace</string>
     <string name="decibel_calibration_hint">Offset %1$.1f dB (uprav podle referenčního měření)</string>
 
+    <!-- App lock -->
+    <string name="app_lock_title">Aplikace je uzamčená</string>
+    <string name="app_lock_subtitle">Potvrď identitu biometrikou pro pokračování.</string>
+    <string name="app_lock_prompt_title">Odemknout ZeddiHub</string>
+    <string name="app_lock_prompt_subtitle">Použij otisk prstu nebo obličej</string>
+    <string name="app_lock_unlock">Odemknout</string>
+    <string name="app_lock_no_biometric">Na zařízení není nastavena biometrika. Přidej ji v systémovém nastavení nebo vypni zámek v Nastavení aplikace.</string>
+    <string name="app_lock_open_security">Otevřít zabezpečení</string>
+    <string name="settings_security">Zabezpečení</string>
+    <string name="settings_app_lock">Zámek aplikace</string>
+    <string name="settings_app_lock_desc">Při spuštění aplikace vyžadovat biometriku</string>
+
     <!-- Flashlight -->
     <string name="flashlight_title">Baterka</string>
     <string name="flashlight_unsupported">Zařízení nemá baterku.</string>

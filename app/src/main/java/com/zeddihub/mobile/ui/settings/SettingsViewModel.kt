@@ -23,6 +23,7 @@ data class SettingsUiState(
     val language: LanguageCode = LanguageCode.CS,
     val autoUpdate: Boolean = true,
     val pushEnabled: Boolean = true,
+    val appLockEnabled: Boolean = true,
     val updateCheckState: UpdateCheckState = UpdateCheckState.Idle
 )
 
@@ -49,7 +50,8 @@ class SettingsViewModel @Inject constructor(
             theme = prefs.theme.value,
             language = prefs.language.value,
             autoUpdate = prefs.autoUpdate.value,
-            pushEnabled = prefs.pushEnabled.value
+            pushEnabled = prefs.pushEnabled.value,
+            appLockEnabled = prefs.appLockEnabled.value
         )
     )
     val state: StateFlow<SettingsUiState> = _state.asStateFlow()
@@ -72,6 +74,11 @@ class SettingsViewModel @Inject constructor(
     fun setPush(enabled: Boolean) {
         prefs.setPushEnabled(enabled)
         _state.value = _state.value.copy(pushEnabled = enabled)
+    }
+
+    fun setAppLock(enabled: Boolean) {
+        prefs.setAppLockEnabled(enabled)
+        _state.value = _state.value.copy(appLockEnabled = enabled)
     }
 
     fun clearCache() {

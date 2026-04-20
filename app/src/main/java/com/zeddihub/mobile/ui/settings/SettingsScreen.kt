@@ -155,6 +155,17 @@ fun SettingsScreen(
         }
 
         Spacer(Modifier.height(12.dp))
+        SectionHeader(stringResource(R.string.settings_security))
+        SettingsCard {
+            SwitchRow(
+                label = stringResource(R.string.settings_app_lock),
+                sub = stringResource(R.string.settings_app_lock_desc),
+                checked = state.appLockEnabled,
+                onCheckedChange = viewModel::setAppLock
+            )
+        }
+
+        Spacer(Modifier.height(12.dp))
         SectionHeader(stringResource(R.string.settings_notifications))
         SettingsCard {
             SwitchRow(
