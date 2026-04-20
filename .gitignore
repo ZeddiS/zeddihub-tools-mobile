@@ -16,3 +16,5 @@ local.properties
 google-services.json
 # Lokalni toolchain (JDK + Android SDK + Gradle cache + instalacni zipy)
 /tools/
+__pycache__/
+*.pyc
