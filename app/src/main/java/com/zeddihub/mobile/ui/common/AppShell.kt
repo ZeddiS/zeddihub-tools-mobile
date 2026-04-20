@@ -28,16 +28,22 @@ import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.CleaningServices
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Devices
+import androidx.compose.material.icons.filled.FlashlightOn
 import androidx.compose.material.icons.filled.Forum
+import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.NetworkCheck
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Storage
+import androidx.compose.material.icons.filled.Wifi
+import androidx.compose.material.icons.filled.WifiPassword
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -74,21 +80,27 @@ data class SidebarItem(
     val section: Int = 0
 )
 
+// Sections: 0 core, 1 Network, 2 System, 3 Media, 4 Community, 5 System admin
 private val baseSidebarItems = listOf(
     SidebarItem(Destinations.Home.route, R.string.nav_home, Icons.Default.Home, 0),
     SidebarItem(Destinations.Servers.route, R.string.nav_servers, Icons.Default.Storage, 0),
     SidebarItem(Destinations.SpeedTest.route, R.string.nav_speedtest, Icons.Default.NetworkCheck, 1),
     SidebarItem(Destinations.IpLookup.route, R.string.nav_ip_lookup, Icons.Default.Public, 1),
-    SidebarItem(Destinations.DeviceInfo.route, R.string.nav_device_info, Icons.Default.Devices, 1),
-    SidebarItem(Destinations.CacheCleaner.route, R.string.nav_cache_cleaner, Icons.Default.CleaningServices, 1),
-    SidebarItem(Destinations.AppFinder.route, R.string.nav_app_finder, Icons.Default.Apps, 1),
-    SidebarItem(Destinations.Profile.route, R.string.nav_profile, Icons.Default.Person, 2),
-    SidebarItem(Destinations.Notifications.route, R.string.nav_notifications, Icons.Default.Notifications, 2),
-    SidebarItem(Destinations.Community.route, R.string.nav_community, Icons.Default.Forum, 2)
+    SidebarItem(Destinations.WifiScanner.route, R.string.nav_wifi_scanner, Icons.Default.Wifi, 1),
+    SidebarItem(Destinations.WifiPasswords.route, R.string.nav_wifi_passwords, Icons.Default.WifiPassword, 1),
+    SidebarItem(Destinations.DeviceInfo.route, R.string.nav_device_info, Icons.Default.Devices, 2),
+    SidebarItem(Destinations.CacheCleaner.route, R.string.nav_cache_cleaner, Icons.Default.CleaningServices, 2),
+    SidebarItem(Destinations.AppFinder.route, R.string.nav_app_finder, Icons.Default.Apps, 2),
+    SidebarItem(Destinations.PdfScanner.route, R.string.nav_pdf_scanner, Icons.Default.PictureAsPdf, 3),
+    SidebarItem(Destinations.DecibelMeter.route, R.string.nav_decibel_meter, Icons.Default.GraphicEq, 3),
+    SidebarItem(Destinations.Flashlight.route, R.string.nav_flashlight, Icons.Default.FlashlightOn, 3),
+    SidebarItem(Destinations.Profile.route, R.string.nav_profile, Icons.Default.Person, 4),
+    SidebarItem(Destinations.Notifications.route, R.string.nav_notifications, Icons.Default.Notifications, 4),
+    SidebarItem(Destinations.Community.route, R.string.nav_community, Icons.Default.Forum, 4)
 )
 
-private val adminItem = SidebarItem(Destinations.Admin.route, R.string.nav_admin, Icons.Default.AdminPanelSettings, 3)
-private val settingsItem = SidebarItem(Destinations.Settings.route, R.string.nav_settings, Icons.Default.Settings, 3)
+private val adminItem = SidebarItem(Destinations.Admin.route, R.string.nav_admin, Icons.Default.AdminPanelSettings, 5)
+private val settingsItem = SidebarItem(Destinations.Settings.route, R.string.nav_settings, Icons.Default.Settings, 5)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -126,7 +138,8 @@ fun AppShell(
                 onLogout = {
                     scope.launch { drawerState.close() }
                     onLogout()
-                }
+                },
+                onClose = { scope.launch { drawerState.close() } }
             )
         }
     ) {
@@ -168,7 +181,8 @@ private fun SidebarContent(
     displayName: String?,
     role: String?,
     onItemClick: (String) -> Unit,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    onClose: () -> Unit
 ) {
     val colors = MaterialTheme.colorScheme
 
@@ -227,6 +241,16 @@ private fun SidebarContent(
                         )
                         .padding(horizontal = 20.dp, vertical = 24.dp)
                 ) {
+                    IconButton(
+                        onClick = onClose,
+                        modifier = Modifier.align(Alignment.TopEnd).size(36.dp)
+                    ) {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = stringResource(R.string.common_close),
+                            tint = colors.onSurfaceVariant
+                        )
+                    }
                     Column {
                         Box(
                             modifier = Modifier
@@ -270,9 +294,11 @@ private fun SidebarContent(
                 val grouped = all.groupBy { it.section }
                 val sectionLabels = mapOf(
                     0 to null,
-                    1 to R.string.nav_section_tools,
-                    2 to R.string.nav_section_community,
-                    3 to R.string.nav_section_system
+                    1 to R.string.nav_section_network,
+                    2 to R.string.nav_section_system_tools,
+                    3 to R.string.nav_section_media,
+                    4 to R.string.nav_section_community,
+                    5 to R.string.nav_section_system
                 )
 
                 grouped.keys.sorted().forEach { sectionKey ->

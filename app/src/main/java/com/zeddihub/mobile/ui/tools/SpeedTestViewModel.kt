@@ -28,18 +28,31 @@ class SpeedTestViewModel @Inject constructor(
         val downloadedBytes: Long = 0,
         val elapsedSeconds: Double = 0.0,
         val pingMs: Long? = null,
-        val error: String? = null
-    )
+        val error: String? = null,
+        val history: List<Entry> = emptyList(),
+        val minMbps: Double? = null,
+        val maxMbps: Double? = null,
+        val avgMbps: Double? = null
+    ) {
+        data class Entry(val mbps: Double, val pingMs: Long?, val timestamp: Long)
+    }
 
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()
 
     fun start() {
         if (_state.value.running) return
-        _state.value = UiState(running = true)
-        viewModelScope.launch {
-            runTest()
-        }
+        _state.value = _state.value.copy(
+            running = true,
+            progress = 0f,
+            downloadMbps = null,
+            downloadMBs = null,
+            downloadedBytes = 0,
+            elapsedSeconds = 0.0,
+            pingMs = null,
+            error = null
+        )
+        viewModelScope.launch { runTest() }
     }
 
     private suspend fun runTest() {
@@ -92,13 +105,20 @@ class SpeedTestViewModel @Inject constructor(
                     val elapsed = (System.nanoTime() - start) / 1e9
                     val mbps = (downloaded * 8.0) / (elapsed * 1_000_000.0)
                     val mBs = downloaded / (elapsed * 1_000_000.0)
+                    val entry = UiState.Entry(mbps, _state.value.pingMs, System.currentTimeMillis())
+                    val newHistory = (listOf(entry) + _state.value.history).take(5)
+                    val speeds = newHistory.map { it.mbps }
                     _state.value = _state.value.copy(
                         running = false,
                         progress = 1f,
                         downloadedBytes = downloaded,
                         downloadMbps = mbps,
                         downloadMBs = mBs,
-                        elapsedSeconds = elapsed
+                        elapsedSeconds = elapsed,
+                        history = newHistory,
+                        minMbps = speeds.minOrNull(),
+                        maxMbps = speeds.maxOrNull(),
+                        avgMbps = speeds.average()
                     )
                     conn.disconnect()
                 }
@@ -108,6 +128,13 @@ class SpeedTestViewModel @Inject constructor(
             _state.value = _state.value.copy(running = false, error = e.message ?: "error")
         }
         telemetry.toolRun("speedtest", result.isSuccess)
+    }
+
+    fun clearHistory() {
+        _state.value = _state.value.copy(
+            history = emptyList(),
+            minMbps = null, maxMbps = null, avgMbps = null
+        )
     }
 
     companion object {

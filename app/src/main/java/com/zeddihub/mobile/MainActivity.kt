@@ -17,13 +17,11 @@ import com.zeddihub.mobile.data.local.LanguageCode
 import com.zeddihub.mobile.data.local.ThemeMode
 import com.zeddihub.mobile.data.telemetry.TelemetryRecorder
 import com.zeddihub.mobile.data.update.UpdateChecker
+import com.zeddihub.mobile.ui.common.StartupUpdateDialog
 import com.zeddihub.mobile.ui.navigation.AppNavGraph
 import com.zeddihub.mobile.ui.theme.ZeddiHubTheme
 import com.zeddihub.mobile.util.LocaleManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -47,12 +45,6 @@ class MainActivity : AppCompatActivity() {
 
         sessionStartNs = System.nanoTime()
         telemetry.sessionStart()
-
-        if (appPreferences.autoUpdate.value) {
-            CoroutineScope(Dispatchers.IO).launch {
-                runCatching { updateChecker.fetchLatest() }
-            }
-        }
 
         setContent {
             val themeMode by appPreferences.theme.collectAsState()
@@ -79,6 +71,9 @@ class MainActivity : AppCompatActivity() {
                             appPreferences.setTheme(mode)
                         }
                     )
+                    if (appPreferences.autoUpdate.value) {
+                        StartupUpdateDialog(updateChecker = updateChecker)
+                    }
                 }
             }
         }

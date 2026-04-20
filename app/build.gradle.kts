@@ -17,8 +17,8 @@ android {
         applicationId = "com.zeddihub.mobile"
         minSdk = 26
         targetSdk = 34
-        versionCode = 4
-        versionName = "0.4.0"
+        versionCode = 5
+        versionName = "0.5.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
@@ -138,6 +138,12 @@ dependencies {
 
     // Image loading
     implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // ML Kit Document Scanner (PDF scanner)
+    implementation("com.google.android.gms:play-services-mlkit-document-scanner:16.0.0-beta1")
+
+    // ZXing for WiFi QR code generation
+    implementation("com.google.zxing:core:3.5.3")
 
     // Testing
     testImplementation("junit:junit:4.13.2")

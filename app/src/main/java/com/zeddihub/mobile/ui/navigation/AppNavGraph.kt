@@ -24,9 +24,14 @@ import com.zeddihub.mobile.ui.servers.ServersScreen
 import com.zeddihub.mobile.ui.settings.SettingsScreen
 import com.zeddihub.mobile.ui.tools.AppFinderScreen
 import com.zeddihub.mobile.ui.tools.CacheCleanerScreen
+import com.zeddihub.mobile.ui.tools.DecibelMeterScreen
 import com.zeddihub.mobile.ui.tools.DeviceInfoScreen
+import com.zeddihub.mobile.ui.tools.FlashlightScreen
 import com.zeddihub.mobile.ui.tools.IpLookupScreen
+import com.zeddihub.mobile.ui.tools.PdfScannerScreen
 import com.zeddihub.mobile.ui.tools.SpeedTestScreen
+import com.zeddihub.mobile.ui.tools.WifiPasswordsScreen
+import com.zeddihub.mobile.ui.tools.WifiScannerScreen
 
 @Composable
 fun AppNavGraph(
@@ -101,6 +106,36 @@ fun AppNavGraph(
         composable(Destinations.AppFinder.route) {
             Shell(navController, session, Destinations.AppFinder.route, stringResource(R.string.nav_app_finder)) { padding ->
                 AppFinderScreen(padding = padding)
+            }
+        }
+
+        composable(Destinations.WifiScanner.route) {
+            Shell(navController, session, Destinations.WifiScanner.route, stringResource(R.string.nav_wifi_scanner)) { padding ->
+                WifiScannerScreen(padding = padding)
+            }
+        }
+
+        composable(Destinations.WifiPasswords.route) {
+            Shell(navController, session, Destinations.WifiPasswords.route, stringResource(R.string.nav_wifi_passwords)) { padding ->
+                WifiPasswordsScreen(padding = padding)
+            }
+        }
+
+        composable(Destinations.PdfScanner.route) {
+            Shell(navController, session, Destinations.PdfScanner.route, stringResource(R.string.nav_pdf_scanner)) { padding ->
+                PdfScannerScreen(padding = padding)
+            }
+        }
+
+        composable(Destinations.DecibelMeter.route) {
+            Shell(navController, session, Destinations.DecibelMeter.route, stringResource(R.string.nav_decibel_meter)) { padding ->
+                DecibelMeterScreen(padding = padding)
+            }
+        }
+
+        composable(Destinations.Flashlight.route) {
+            Shell(navController, session, Destinations.Flashlight.route, stringResource(R.string.nav_flashlight)) { padding ->
+                FlashlightScreen(padding = padding)
             }
         }
 

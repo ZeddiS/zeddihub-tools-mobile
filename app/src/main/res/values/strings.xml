@@ -43,9 +43,17 @@
     <string name="nav_section_tools">Nástroje</string>
     <string name="nav_section_community">Komunita</string>
     <string name="nav_section_system">Systém</string>
+    <string name="nav_section_network">Síť</string>
+    <string name="nav_section_system_tools">Systémové nástroje</string>
+    <string name="nav_section_media">Média</string>
     <string name="nav_speedtest">Rychlost připojení</string>
     <string name="nav_cache_cleaner">Cache &amp; Temp</string>
     <string name="nav_app_finder">Najít aplikaci</string>
+    <string name="nav_wifi_scanner">WiFi Scanner</string>
+    <string name="nav_wifi_passwords">WiFi hesla</string>
+    <string name="nav_pdf_scanner">PDF Scanner</string>
+    <string name="nav_decibel_meter">Decibelmetr</string>
+    <string name="nav_flashlight">Baterka</string>
 
     <!-- Home -->
     <string name="home_title">ZeddiHub</string>
@@ -222,12 +230,105 @@
     <string name="update_checking">Zjišťuji aktualizace…</string>
     <string name="update_up_to_date">Používáš nejnovější verzi.</string>
     <string name="update_available">Dostupná aktualizace: %1$s</string>
+    <string name="update_available_title">Dostupná nová verze</string>
+    <string name="update_available_version">Verze %1$s</string>
     <string name="update_download">Stáhnout</string>
     <string name="update_later">Později</string>
-    <string name="update_downloading">Stahuji…</string>
-    <string name="update_install">Instalovat</string>
+    <string name="update_downloading">Stahuji aktualizaci…</string>
+    <string name="update_download_failed">Nepodařilo se stáhnout aktualizaci.</string>
+    <string name="update_install">Nainstalovat</string>
     <string name="update_error">Nepodařilo se stáhnout aktualizaci.</string>
     <string name="update_changelog">Co je nového</string>
+
+    <!-- SpeedTest extended -->
+    <string name="speedtest_history">Historie (posledních 5)</string>
+    <string name="speedtest_clear_history">Smazat historii</string>
+    <string name="speedtest_min">Min</string>
+    <string name="speedtest_avg">Průměr</string>
+    <string name="speedtest_max">Max</string>
+
+    <!-- Device info extended -->
+    <string name="device_info_build">Build ID</string>
+    <string name="device_info_bootloader">Bootloader</string>
+    <string name="device_info_fingerprint">Fingerprint</string>
+    <string name="device_info_cpu">Procesor</string>
+    <string name="device_info_cpu_soc">SoC</string>
+    <string name="device_info_cpu_cores">Jádra</string>
+    <string name="device_info_cpu_abi">ABI</string>
+    <string name="device_info_cpu_freq">Frekvence</string>
+    <string name="device_info_cpu_governor">Governor</string>
+    <string name="device_info_storage">Úložiště</string>
+    <string name="device_info_display">Displej</string>
+    <string name="device_info_resolution">Rozlišení</string>
+    <string name="device_info_dpi">DPI</string>
+    <string name="device_info_refresh">Obnovovací frekvence</string>
+    <string name="device_info_hdr">HDR</string>
+    <string name="device_info_battery_health">Stav</string>
+    <string name="device_info_battery_temp">Teplota</string>
+    <string name="device_info_battery_tech">Technologie</string>
+    <string name="device_info_low_memory">Nízká paměť</string>
+    <string name="device_info_sensors">Senzory</string>
+
+    <!-- Permissions -->
+    <string name="permission_required_title">Oprávnění nutné</string>
+    <string name="permission_grant">Povolit</string>
+    <string name="permission_open_settings">Otevřít nastavení</string>
+
+    <!-- WiFi Passwords -->
+    <string name="wifi_passwords_title">WiFi hesla &amp; QR</string>
+    <string name="wifi_passwords_subtitle">Sdílej WiFi přes QR kód a spravuj uložené sítě.</string>
+    <string name="wifi_passwords_system_title">Systémová WiFi nastavení</string>
+    <string name="wifi_passwords_system_body">Android skrývá uložená hesla. Otevři systémové nastavení pro sdílení pomocí vestavěného QR kódu.</string>
+    <string name="wifi_passwords_open_settings">Otevřít WiFi nastavení</string>
+    <string name="wifi_passwords_generate_title">Vytvořit QR kód</string>
+    <string name="wifi_passwords_ssid">Název sítě (SSID)</string>
+    <string name="wifi_passwords_password">Heslo</string>
+    <string name="wifi_passwords_generate">Vygenerovat QR</string>
+    <string name="wifi_passwords_saved_title">Uložené sítě</string>
+    <string name="wifi_passwords_saved_body">Na Androidu 10+ systém tento seznam skrývá. Dostupné pouze na starších verzích.</string>
+    <string name="wifi_passwords_saved_empty">Žádné viditelné uložené sítě.</string>
+    <string name="wifi_passwords_scan_hint">Naskenujte kód jiným zařízením pro připojení.</string>
+
+    <!-- WiFi Scanner -->
+    <string name="wifi_scanner_title">WiFi Scanner</string>
+    <string name="wifi_scan_rationale">Pro skenování okolních sítí je vyžadováno oprávnění k poloze.</string>
+    <string name="wifi_scanner_count">Nalezeno %1$d sítí</string>
+    <string name="wifi_scanner_channels_24">Kanály 2.4 GHz</string>
+    <string name="wifi_scanner_channels_5">Kanály 5 GHz</string>
+    <string name="wifi_scanner_networks">Sítě</string>
+    <string name="wifi_scanner_empty">Zatím žádné sítě. Čekám na výsledek skenu…</string>
+
+    <!-- PDF Scanner -->
+    <string name="pdf_scanner_title">PDF Scanner</string>
+    <string name="pdf_scanner_subtitle">Naskenuj dokument a ulož jej jako PDF pomocí Google ML Kit.</string>
+    <string name="pdf_scanner_start">Spustit skener</string>
+    <string name="pdf_scanner_saved">Uloženo</string>
+    <string name="pdf_scanner_open">Otevřít PDF</string>
+
+    <!-- Decibel Meter -->
+    <string name="decibel_title">Decibelmetr</string>
+    <string name="decibel_subtitle">Měření hluku v okolí pomocí mikrofonu. Slouží pouze orientačně.</string>
+    <string name="decibel_rationale">Pro měření hluku je vyžadován přístup k mikrofonu.</string>
+    <string name="decibel_start">Spustit</string>
+    <string name="decibel_stop">Zastavit</string>
+    <string name="decibel_min">Min</string>
+    <string name="decibel_avg">Průměr</string>
+    <string name="decibel_max">Max</string>
+    <string name="decibel_history">Historie signálu</string>
+    <string name="decibel_calibration">Kalibrace</string>
+    <string name="decibel_calibration_hint">Offset %1$.1f dB (uprav podle referenčního měření)</string>
+
+    <!-- Flashlight -->
+    <string name="flashlight_title">Baterka</string>
+    <string name="flashlight_unsupported">Zařízení nemá baterku.</string>
+    <string name="flashlight_on">Rozsvítit</string>
+    <string name="flashlight_off">Zhasnout</string>
+    <string name="flashlight_modes">Režimy</string>
+    <string name="flashlight_mode_strobe">Strobo</string>
+    <string name="flashlight_mode_sos">SOS</string>
+    <string name="flashlight_strobe_hz">Frekvence %1$.1f Hz</string>
+    <string name="flashlight_intensity">Intenzita %1$d / %2$d</string>
+    <string name="flashlight_color_screen">Barevná obrazovka</string>
 
     <!-- Common -->
     <string name="common_welcome">Vítej, %1$s</string>

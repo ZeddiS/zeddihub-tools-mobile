@@ -2,4 +2,5 @@
 <paths>
     <external-files-path name="updates" path="." />
     <cache-path name="cache" path="." />
+    <files-path name="scans" path="scans/" />
 </paths>
