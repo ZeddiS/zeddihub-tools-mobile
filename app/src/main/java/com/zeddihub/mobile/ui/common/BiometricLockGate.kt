@@ -4,6 +4,7 @@ import android.content.Intent
 import android.provider.Settings
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,8 +18,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Fingerprint
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,20 +34,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
+import com.zeddihub.mobile.BuildConfig
 import com.zeddihub.mobile.R
 import java.util.concurrent.Executor
 
 /**
- * Wraps `content` with a blocking biometric lock screen. When `locked` is
- * true, the content is hidden and the user must authenticate to continue.
- *
- * The caller owns the unlock state — this composable only requests auth and
- * reports success via [onUnlocked]. Designed to be shown on every cold start
- * of the activity (or on return from background after a timeout).
+ * Wraps [content] with a blocking biometric lock screen. When [locked] is
+ * true the real app content is **not** composed — only a login-style lock
+ * page is shown so nothing from the app leaks behind the system biometric
+ * dialog (or into the recent-apps preview).
  */
 @Composable
 fun BiometricLockGate(
@@ -54,8 +55,10 @@ fun BiometricLockGate(
     onUnlocked: () -> Unit,
     content: @Composable () -> Unit
 ) {
-    content()
-    if (!locked) return
+    if (!locked) {
+        content()
+        return
+    }
 
     val context = LocalContext.current
     val colors = MaterialTheme.colorScheme
@@ -76,9 +79,6 @@ fun BiometricLockGate(
     fun prompt() {
         val activity = context as? FragmentActivity ?: return
         if (!biometricAvailable) {
-            // No biometric enrolled on the device: we don't fall back to
-            // password by design (the device has its own keyguard for that).
-            // Leave the user on the lock screen with a settings shortcut.
             error = errorNoBiometric
             return
         }
@@ -99,8 +99,6 @@ fun BiometricLockGate(
                     errorCode: Int,
                     errString: CharSequence
                 ) {
-                    // User cancelled or system error — keep the lock up and
-                    // show the reason so they can retry.
                     if (errorCode != BiometricPrompt.ERROR_USER_CANCELED &&
                         errorCode != BiometricPrompt.ERROR_NEGATIVE_BUTTON
                     ) {
@@ -131,12 +129,12 @@ fun BiometricLockGate(
                 Brush.verticalGradient(
                     listOf(
                         colors.background,
-                        colors.primary.copy(alpha = 0.12f),
+                        colors.primary.copy(alpha = 0.10f),
                         colors.background
                     )
                 )
             )
-            .padding(28.dp),
+            .padding(horizontal = 28.dp),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -144,13 +142,16 @@ fun BiometricLockGate(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Icon(
-                Icons.Default.Lock,
+            Image(
+                painter = painterResource(R.drawable.logo_banner),
                 contentDescription = null,
-                tint = colors.primary,
-                modifier = Modifier.size(72.dp)
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+                    .height(140.dp)
             )
-            Spacer(Modifier.height(14.dp))
+
+            Spacer(Modifier.height(24.dp))
+
             Text(
                 stringResource(R.string.app_lock_title),
                 style = MaterialTheme.typography.headlineSmall,
@@ -163,17 +164,35 @@ fun BiometricLockGate(
                 style = MaterialTheme.typography.bodyMedium,
                 color = colors.onSurfaceVariant
             )
-            Spacer(Modifier.height(22.dp))
+
+            Spacer(Modifier.height(28.dp))
+
             Button(
                 onClick = { prompt() },
-                shape = RoundedCornerShape(14.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+                shape = RoundedCornerShape(14.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colors.primary,
+                    contentColor = colors.onPrimary
+                )
             ) {
-                Icon(Icons.Default.Fingerprint, null, modifier = Modifier.size(18.dp))
-                Spacer(Modifier.size(8.dp))
-                Text(stringResource(R.string.app_lock_unlock))
+                Icon(
+                    Icons.Default.Fingerprint,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(Modifier.size(10.dp))
+                Text(
+                    stringResource(R.string.app_lock_unlock),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
+
             error?.let {
-                Spacer(Modifier.height(14.dp))
+                Spacer(Modifier.height(16.dp))
                 Text(
                     it,
                     style = MaterialTheme.typography.bodySmall,
@@ -193,5 +212,14 @@ fun BiometricLockGate(
                 }
             }
         }
+
+        Text(
+            text = stringResource(R.string.app_version_label, BuildConfig.VERSION_NAME),
+            style = MaterialTheme.typography.labelSmall,
+            color = colors.onSurfaceVariant,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 16.dp)
+        )
     }
 }
