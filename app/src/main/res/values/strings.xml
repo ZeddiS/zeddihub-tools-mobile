@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ZeddiHub</string>
+    <string name="login_title">ZeddiHub</string>
+    <string name="login_username">Uživatelské jméno</string>
+    <string name="login_password">Heslo</string>
+    <string name="login_submit">Přihlásit se</string>
+    <string name="login_register">Registrovat se</string>
+    <string name="login_register_info">Registrace není momentálně dostupná. Pro přístup napište na Discord: zeddis.xyz</string>
+    <string name="login_register_close">Zavřít</string>
+    <string name="login_hint">Používáme stejný účet jako desktop ZeddiHub.</string>
+    <string name="login_error_empty">Zadej uživatelské jméno a heslo.</string>
+    <string name="login_error_generic">Přihlášení se nezdařilo. Zkus to prosím znovu.</string>
+    <string name="login_error_credentials">Neplatné přihlašovací údaje.</string>
+    <string name="login_error_offline">Nelze se připojit k serveru.</string>
+    <string name="login_remember">Zapamatovat si mě (biometrika)</string>
+    <string name="login_biometric_title">Přihlásit biometrikou</string>
+    <string name="login_biometric_subtitle">Potvrď identitu otiskem nebo obličejem</string>
+    <string name="login_biometric_cancel">Zrušit</string>
+    <string name="login_web_button">Web</string>
+    <string name="login_discord_button">Discord</string>
+    <string name="lang_cs">Čeština</string>
+    <string name="lang_en">English</string>
+    <string name="lang_toggle">Jazyk</string>
+    <string name="theme_toggle">Motiv</string>
+    <string name="theme_dark">Tmavý</string>
+    <string name="theme_light">Světlý</string>
+    <string name="app_version_label">v%1$s</string>
+
+    <!-- Sidebar -->
+    <string name="nav_home">Hlavní stránka</string>
+    <string name="nav_servers">Servery</string>
+    <string name="nav_ping">Ping tester</string>
+    <string name="nav_ip_lookup">IP Lookup</string>
+    <string name="nav_device_info">Info o zařízení</string>
+    <string name="nav_profile">Profil</string>
+    <string name="nav_notifications">Oznámení</string>
+    <string name="nav_community">Komunita</string>
+    <string name="nav_admin">Admin Panel</string>
+    <string name="nav_settings">Nastavení</string>
+    <string name="nav_logout">Odhlásit se</string>
+    <string name="nav_open_drawer">Menu</string>
+    <string name="nav_section_tools">Nástroje</string>
+    <string name="nav_section_community">Komunita</string>
+    <string name="nav_section_system">Systém</string>
+
+    <!-- Home -->
+    <string name="home_title">ZeddiHub</string>
+    <string name="home_welcome">Ahoj %1$s!</string>
+    <string name="home_subtitle">Herní servery na dlani</string>
+    <string name="home_quick_actions">Rychlé akce</string>
+    <string name="home_action_servers">Servery</string>
+    <string name="home_action_discord">Discord</string>
+    <string name="home_action_web">Web</string>
+    <string name="home_action_admin">Admin</string>
+    <string name="home_section_status">Status serverů</string>
+    <string name="home_section_announcements">Oznámení</string>
+    <string name="home_announcements_empty">Zatím žádná nová oznámení.</string>
+    <string name="home_view_all_servers">Zobrazit všechny servery</string>
+
+    <!-- Dashboard / Servers -->
+    <string name="dashboard_title">Servery</string>
+    <string name="dashboard_refresh">Obnovit</string>
+    <string name="dashboard_logout">Odhlásit</string>
+    <string name="dashboard_servers">Servery</string>
+    <string name="dashboard_online">Online</string>
+    <string name="dashboard_offline">Offline</string>
+    <string name="dashboard_players">Hráči</string>
+    <string name="dashboard_error_load">Nepodařilo se načíst servery.</string>
+    <string name="dashboard_empty">Žádné servery k zobrazení.</string>
+    <string name="server_copy_ip">Kopírovat IP</string>
+    <string name="server_ip_copied">IP adresa zkopírována do schránky.</string>
+    <string name="server_address">Adresa</string>
+
+    <!-- Ping -->
+    <string name="ping_title">Ping tester</string>
+    <string name="ping_subtitle">Otestuj odezvu ZeddiHub serverů</string>
+    <string name="ping_run">Spustit test</string>
+    <string name="ping_running">Měřím…</string>
+    <string name="ping_ms">%1$d ms</string>
+    <string name="ping_failed">Timeout</string>
+
+    <!-- IP lookup -->
+    <string name="ip_lookup_title">IP Lookup</string>
+    <string name="ip_lookup_subtitle">Zjisti geografické informace o IP adrese nebo doméně</string>
+    <string name="ip_lookup_hint">IP adresa nebo doména</string>
+    <string name="ip_lookup_run">Vyhledat</string>
+    <string name="ip_lookup_country">Země</string>
+    <string name="ip_lookup_region">Region</string>
+    <string name="ip_lookup_city">Město</string>
+    <string name="ip_lookup_isp">ISP</string>
+    <string name="ip_lookup_org">Organizace</string>
+    <string name="ip_lookup_timezone">Časové pásmo</string>
+    <string name="ip_lookup_error">Vyhledávání selhalo.</string>
+
+    <!-- Device info -->
+    <string name="device_info_title">Informace o zařízení</string>
+    <string name="device_info_device">Zařízení</string>
+    <string name="device_info_model">Model</string>
+    <string name="device_info_manufacturer">Výrobce</string>
+    <string name="device_info_android">Android</string>
+    <string name="device_info_sdk">API úroveň</string>
+    <string name="device_info_memory">Paměť</string>
+    <string name="device_info_ram_available">Dostupná RAM</string>
+    <string name="device_info_ram_total">Celková RAM</string>
+    <string name="device_info_battery">Baterie</string>
+    <string name="device_info_battery_level">Úroveň</string>
+    <string name="device_info_battery_charging">Nabíjení</string>
+    <string name="device_info_network">Síť</string>
+    <string name="device_info_connection">Připojení</string>
+    <string name="device_info_ip">Lokální IP</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Profil</string>
+    <string name="profile_username">Uživatelské jméno</string>
+    <string name="profile_display_name">Zobrazované jméno</string>
+    <string name="profile_role">Role</string>
+    <string name="profile_session">Session</string>
+    <string name="profile_last_login">Poslední přihlášení</string>
+    <string name="profile_logout">Odhlásit se</string>
+
+    <!-- Notifications -->
+    <string name="notifications_title">Oznámení</string>
+    <string name="notifications_empty">Zatím žádná oznámení.</string>
+    <string name="notifications_enable">Povolit push oznámení</string>
+    <string name="notifications_category_server_down">Server spadl</string>
+    <string name="notifications_category_events">Eventy</string>
+    <string name="notifications_category_announcements">Oznámení komunity</string>
+
+    <!-- Community -->
+    <string name="community_title">Komunita</string>
+    <string name="community_discord">Discord</string>
+    <string name="community_discord_desc">Diskuze, podpora a komunitní eventy</string>
+    <string name="community_web">Web ZeddiHub</string>
+    <string name="community_web_desc">Oficiální stránky projektu</string>
+    <string name="community_github">GitHub</string>
+    <string name="community_github_desc">Open-source nástroje ZeddiHub</string>
+    <string name="community_donate">Podpořit</string>
+    <string name="community_donate_desc">Pomoz nám udržovat servery online</string>
+
+    <!-- Admin -->
+    <string name="admin_title">Admin Panel</string>
+    <string name="admin_loading">Načítám admin panel…</string>
+    <string name="admin_error">Nepodařilo se načíst admin panel.</string>
+    <string name="admin_reload">Obnovit</string>
+    <string name="admin_open_external">Otevřít v prohlížeči</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Nastavení</string>
+    <string name="settings_appearance">Vzhled</string>
+    <string name="settings_language">Jazyk</string>
+    <string name="settings_theme">Motiv</string>
+    <string name="settings_notifications">Oznámení</string>
+    <string name="settings_enable_push">Povolit push oznámení</string>
+    <string name="settings_updates">Aktualizace</string>
+    <string name="settings_auto_update">Automatické aktualizace</string>
+    <string name="settings_auto_update_desc">Kontrolovat nové verze při startu</string>
+    <string name="settings_check_updates">Zkontrolovat aktualizace</string>
+    <string name="settings_advanced">Rozšířené</string>
+    <string name="settings_clear_cache">Vyčistit cache aplikace</string>
+    <string name="settings_clear_cache_desc">Smaže dočasné obrázky a data</string>
+    <string name="settings_factory_reset">Tovární nastavení</string>
+    <string name="settings_factory_reset_desc">Smaže všechna data a přihlášení</string>
+    <string name="settings_factory_reset_confirm">Opravdu obnovit tovární nastavení?</string>
+    <string name="settings_factory_reset_confirm_desc">Tato akce smaže všechna lokální data, uložené přihlášení a preference. Nelze ji vrátit.</string>
+    <string name="settings_confirm">Obnovit</string>
+    <string name="settings_cancel">Zrušit</string>
+    <string name="settings_about">O aplikaci</string>
+    <string name="settings_version">Verze</string>
+    <string name="settings_build">Build</string>
+    <string name="settings_license">Licence</string>
+    <string name="settings_source">Zdrojový kód</string>
+    <string name="settings_cache_cleared">Cache byla vyčištěna.</string>
+
+    <!-- Update -->
+    <string name="update_checking">Zjišťuji aktualizace…</string>
+    <string name="update_up_to_date">Používáš nejnovější verzi.</string>
+    <string name="update_available">Dostupná aktualizace: %1$s</string>
+    <string name="update_download">Stáhnout</string>
+    <string name="update_later">Později</string>
+    <string name="update_downloading">Stahuji…</string>
+    <string name="update_install">Instalovat</string>
+    <string name="update_error">Nepodařilo se stáhnout aktualizaci.</string>
+    <string name="update_changelog">Co je nového</string>
+
+    <!-- Common -->
+    <string name="common_welcome">Vítej, %1$s</string>
+    <string name="common_copy">Kopírovat</string>
+    <string name="common_copied">Zkopírováno</string>
+    <string name="common_loading">Načítám…</string>
+    <string name="common_error">Nastala chyba.</string>
+    <string name="common_retry">Zkusit znovu</string>
+    <string name="common_open">Otevřít</string>
+    <string name="common_close">Zavřít</string>
+</resources>
