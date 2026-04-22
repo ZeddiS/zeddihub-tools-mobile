@@ -4,6 +4,8 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,8 +23,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CleaningServices
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.automirrored.filled.Launch
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material3.Button
@@ -36,6 +41,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -56,6 +64,22 @@ fun CacheCleanerScreen(
     val state by vm.state.collectAsState()
     val colors = MaterialTheme.colorScheme
     val ctx = LocalContext.current
+    var pendingDeleteUri by remember { mutableStateOf<Uri?>(null) }
+
+    val safScanLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocumentTree()
+    ) { uri ->
+        uri ?: return@rememberLauncherForActivityResult
+        // Persist read permission so the user doesn't have to re-grant it.
+        runCatching {
+            ctx.contentResolver.takePersistableUriPermission(
+                uri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            )
+        }
+        vm.safScanAndClean(uri, confirmDelete = false)
+        pendingDeleteUri = uri
+    }
 
     Column(
         modifier = Modifier
@@ -137,6 +161,75 @@ fun CacheCleanerScreen(
             body = stringResource(R.string.cache_dns_body),
             buttonLabel = stringResource(R.string.cache_flush_dns),
             onClick = { vm.flushDns() }
+        )
+
+        Spacer(Modifier.height(12.dp))
+
+        // ─── SAF scan/clean ─────────────────────────────────────────────────
+        ActionCard(
+            icon = Icons.Default.Search,
+            title = stringResource(R.string.cache_saf_scan_title),
+            body = stringResource(R.string.cache_saf_scan_body),
+            buttonLabel = stringResource(R.string.cache_saf_pick_folder),
+            outlined = true,
+            onClick = {
+                runCatching { safScanLauncher.launch(null) }
+            }
+        )
+
+        if (state.safMatchCount > 0 && pendingDeleteUri != null) {
+            Spacer(Modifier.height(10.dp))
+            Card(
+                shape = RoundedCornerShape(14.dp),
+                colors = CardDefaults.cardColors(containerColor = colors.primaryContainer),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(14.dp)) {
+                    Text(
+                        stringResource(
+                            R.string.cache_saf_results,
+                            state.safMatchCount,
+                            formatBytes(state.safScannedBytes)
+                        ),
+                        color = colors.onPrimaryContainer,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    Button(
+                        onClick = {
+                            pendingDeleteUri?.let { vm.safScanAndClean(it, confirmDelete = true) }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = colors.error),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Icon(Icons.Default.Delete, null, modifier = Modifier.size(16.dp))
+                        Spacer(Modifier.size(6.dp))
+                        Text(stringResource(R.string.cache_saf_delete_now))
+                    }
+                }
+            }
+        }
+
+        Spacer(Modifier.height(12.dp))
+
+        // ─── System storage settings deeplink ──────────────────────────────
+        ActionCard(
+            icon = Icons.Default.FolderOpen,
+            title = stringResource(R.string.cache_system_storage_title),
+            body = stringResource(R.string.cache_system_storage_body),
+            buttonLabel = stringResource(R.string.cache_open_system_storage),
+            outlined = true,
+            onClick = {
+                val opened = runCatching {
+                    ctx.startActivity(Intent(Settings.ACTION_INTERNAL_STORAGE_SETTINGS))
+                    true
+                }.getOrDefault(false)
+                if (!opened) {
+                    runCatching {
+                        ctx.startActivity(Intent(Settings.ACTION_MEMORY_CARD_SETTINGS))
+                    }
+                }
+            }
         )
 
         Spacer(Modifier.height(12.dp))

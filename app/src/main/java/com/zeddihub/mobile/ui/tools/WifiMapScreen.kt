@@ -69,6 +69,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Polygon
 
 @Composable
 fun WifiMapScreen(
@@ -79,6 +80,7 @@ fun WifiMapScreen(
     val colors = MaterialTheme.colorScheme
     val state by vm.state.collectAsState()
     var showSubmit by remember { mutableStateOf(false) }
+    var selectedEntry by remember { mutableStateOf<WifiMapEntryDto?>(null) }
     var hasLocationPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
@@ -163,6 +165,7 @@ fun WifiMapScreen(
                     entries = state.entries,
                     userLat = state.userLat,
                     userLon = state.userLon,
+                    onMarkerClick = { entry -> selectedEntry = entry },
                     modifier = Modifier.fillMaxSize()
                 )
 
@@ -189,6 +192,11 @@ fun WifiMapScreen(
                             ).show()
                             if (hasLocationPermission) requestLocation(ctx) { lat, lon -> vm.setLocation(lat, lon) }
                         } else {
+                            // Force fresh GPS fix before open submit — so the pin is pinned to
+                            // the *current* location (500m geofence on the server too).
+                            if (hasLocationPermission) {
+                                requestLocation(ctx) { lat, lon -> vm.setLocation(lat, lon) }
+                            }
                             showSubmit = true
                         }
                     },
@@ -242,6 +250,101 @@ fun WifiMapScreen(
             Toast.makeText(ctx, ctx.getString(msg), Toast.LENGTH_SHORT).show()
         }
     }
+
+    selectedEntry?.let { entry ->
+        EntryDetailDialog(
+            entry = entry,
+            distanceMeters = vm.distanceToUserMeters(entry.lat, entry.lon),
+            onDismiss = { selectedEntry = null }
+        )
+    }
+}
+
+@Composable
+private fun EntryDetailDialog(
+    entry: WifiMapEntryDto,
+    distanceMeters: Double?,
+    onDismiss: () -> Unit
+) {
+    val ctx = LocalContext.current
+    val clipboard = androidx.compose.ui.platform.LocalClipboardManager.current
+    var showPassword by remember { mutableStateOf(false) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        icon = { Icon(Icons.Default.Wifi, null) },
+        title = {
+            Text(entry.ssid, fontWeight = FontWeight.Bold)
+        },
+        text = {
+            Column {
+                if (entry.isOpen) {
+                    Text(
+                        stringResource(R.string.wifi_map_entry_open),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                } else if (!entry.password.isNullOrBlank()) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            if (showPassword) entry.password else "••••••••",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Spacer(Modifier.size(8.dp))
+                        OutlinedButton(
+                            onClick = { showPassword = !showPassword },
+                            shape = RoundedCornerShape(10.dp)
+                        ) {
+                            Text(if (showPassword) "Skrýt" else "Zobrazit")
+                        }
+                    }
+                    Spacer(Modifier.height(6.dp))
+                    OutlinedButton(
+                        onClick = {
+                            clipboard.setText(androidx.compose.ui.text.AnnotatedString(entry.password))
+                            Toast.makeText(ctx, "Zkopírováno", Toast.LENGTH_SHORT).show()
+                        },
+                        shape = RoundedCornerShape(10.dp)
+                    ) { Text("Kopírovat heslo") }
+                } else {
+                    Text(
+                        stringResource(R.string.wifi_map_entry_password_hidden),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+
+                if (!entry.venue.isNullOrBlank()) {
+                    Spacer(Modifier.height(8.dp))
+                    Text("Místo: ${entry.venue}", style = MaterialTheme.typography.bodySmall)
+                }
+                if (!entry.note.isNullOrBlank()) {
+                    Spacer(Modifier.height(4.dp))
+                    Text("Poznámka: ${entry.note}", style = MaterialTheme.typography.bodySmall)
+                }
+                distanceMeters?.let { d ->
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        "Vzdálenost: " + if (d < 1000) "${d.toInt()} m" else "%.1f km".format(d / 1000),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                if (entry.verified) {
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        "✓ Ověřeno",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            Button(onClick = onDismiss) { Text("OK") }
+        }
+    )
 }
 
 @Composable
@@ -284,6 +387,7 @@ private fun OsmMap(
     entries: List<WifiMapEntryDto>,
     userLat: Double?,
     userLon: Double?,
+    onMarkerClick: (WifiMapEntryDto) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val ctx = LocalContext.current
@@ -319,6 +423,18 @@ private fun OsmMap(
 
     LaunchedEffect(entries, userLat, userLon) {
         mapView.overlays.clear()
+
+        // Draw 500m geofence circle around user so they can see the add-range
+        if (userLat != null && userLon != null) {
+            val circle = Polygon().apply {
+                points = Polygon.pointsAsCircle(GeoPoint(userLat, userLon), 500.0)
+                fillPaint.color = android.graphics.Color.argb(40, 63, 81, 181)
+                outlinePaint.color = android.graphics.Color.argb(180, 63, 81, 181)
+                outlinePaint.strokeWidth = 3f
+            }
+            mapView.overlays.add(circle)
+        }
+
         entries.forEach { e ->
             val marker = Marker(mapView).apply {
                 position = GeoPoint(e.lat, e.lon)
@@ -329,6 +445,10 @@ private fun OsmMap(
                     if (!e.venue.isNullOrBlank()) append(" · ").append(e.venue)
                 }
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                setOnMarkerClickListener { _, _ ->
+                    onMarkerClick(e)
+                    true
+                }
             }
             mapView.overlays.add(marker)
         }

@@ -1,5 +1,11 @@
 package com.zeddihub.mobile.ui.tools
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,9 +41,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size as GSize
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import kotlin.math.cos
+import kotlin.math.sin
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -123,6 +133,15 @@ private fun WifiScannerContent(padding: PaddingValues) {
 
         Spacer(Modifier.height(14.dp))
 
+        if (state.networks.isNotEmpty()) {
+            RadarCard(
+                networks = state.networks,
+                selectedBssid = state.selectedBssid,
+                onSelect = { vm.select(it) }
+            )
+            Spacer(Modifier.height(14.dp))
+        }
+
         val twoFour = state.networks.filter { it.band == WifiScannerViewModel.Band.GHZ_2_4 }
         if (twoFour.isNotEmpty()) {
             Text(
@@ -174,6 +193,125 @@ private fun WifiScannerContent(padding: PaddingValues) {
                 )
                 Spacer(Modifier.height(6.dp))
             }
+        }
+    }
+}
+
+@Composable
+private fun RadarCard(
+    networks: List<WifiScannerViewModel.Network>,
+    selectedBssid: String?,
+    onSelect: (String?) -> Unit
+) {
+    val colors = MaterialTheme.colorScheme
+    // Stable angle per BSSID so dots don't jump frame to frame.
+    val angled = networks.mapIndexed { idx, net ->
+        val hash = net.bssid.hashCode()
+        val angle = ((hash and 0xFFFF) / 65535f) * (2f * Math.PI.toFloat())
+        Triple(net, angle, idx)
+    }
+
+    // Animated sweep line.
+    val transition = rememberInfiniteTransition(label = "radar")
+    val sweep by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = (2f * Math.PI).toFloat(),
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 3000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "sweep"
+    )
+
+    Card(
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = colors.surface),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                stringResource(R.string.wifi_scanner_radar_title),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = colors.onSurface
+            )
+            Spacer(Modifier.height(10.dp))
+            Canvas(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(280.dp)
+            ) {
+                val cx = size.width / 2f
+                val cy = size.height / 2f
+                val r = minOf(cx, cy) * 0.92f
+                val ringColor = colors.primary.copy(alpha = 0.22f)
+                val axisColor = colors.primary.copy(alpha = 0.12f)
+
+                // Concentric rings (1, 5, 15, 30m-ish guides)
+                for (i in 1..4) {
+                    drawCircle(
+                        color = ringColor,
+                        radius = r * i / 4f,
+                        center = Offset(cx, cy),
+                        style = Stroke(width = 1.5f)
+                    )
+                }
+                // Crosshair
+                drawLine(axisColor, Offset(cx - r, cy), Offset(cx + r, cy), strokeWidth = 1f)
+                drawLine(axisColor, Offset(cx, cy - r), Offset(cx, cy + r), strokeWidth = 1f)
+
+                // Sweeping fan
+                val sweepPath = Path().apply {
+                    moveTo(cx, cy)
+                    val a0 = sweep - 0.5f
+                    val a1 = sweep
+                    lineTo(cx + r * cos(a0), cy + r * sin(a0))
+                    val steps = 16
+                    for (s in 1..steps) {
+                        val a = a0 + (a1 - a0) * s / steps
+                        lineTo(cx + r * cos(a), cy + r * sin(a))
+                    }
+                    close()
+                }
+                drawPath(
+                    path = sweepPath,
+                    color = colors.primary.copy(alpha = 0.18f)
+                )
+
+                // Center "you"
+                drawCircle(colors.primary, 6f, Offset(cx, cy))
+
+                // Networks as dots — distance = stronger signal closer to center.
+                angled.forEach { (net, angle, idx) ->
+                    val dist = net.distanceMeters.toFloat().coerceIn(0.3f, 40f)
+                    // log scale: 0.3m → near center, 40m → outer ring
+                    val t = (kotlin.math.ln((dist + 0.2f).toDouble()) /
+                        kotlin.math.ln(41.0)).toFloat().coerceIn(0f, 1f)
+                    val pr = r * t
+                    val px = cx + pr * cos(angle)
+                    val py = cy + pr * sin(angle)
+                    val hue = (idx * 53) % 360
+                    val dotColor = Color.hsv(hue.toFloat(), 0.55f, 0.95f)
+                    val selected = net.bssid == selectedBssid
+                    val radius = if (selected) 14f else 9f
+                    drawCircle(dotColor.copy(alpha = 0.25f), radius * 2.2f, Offset(px, py))
+                    drawCircle(dotColor, radius, Offset(px, py))
+                    if (selected) {
+                        drawCircle(
+                            color = colors.onSurface,
+                            radius = radius + 3f,
+                            center = Offset(px, py),
+                            style = Stroke(width = 2f)
+                        )
+                    }
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(
+                stringResource(R.string.wifi_scanner_radar_hint),
+                style = MaterialTheme.typography.labelSmall,
+                color = colors.onSurfaceVariant
+            )
         }
     }
 }

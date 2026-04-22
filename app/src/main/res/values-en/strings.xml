@@ -96,6 +96,7 @@
     <string name="nav_section_system_tools">System tools</string>
     <string name="nav_section_media">Media</string>
     <string name="nav_section_wifi">WiFi</string>
+    <string name="nav_my_network">My network</string>
     <string name="nav_speedtest">SpeedTest</string>
     <string name="nav_cache_cleaner">Cache &amp; Temp</string>
     <string name="nav_app_finder">App finder</string>
@@ -106,6 +107,69 @@
     <string name="nav_pdf_scanner">PDF Scanner</string>
     <string name="nav_decibel_meter">Decibel meter</string>
     <string name="nav_flashlight">Flashlight</string>
+    <string name="nav_storage">Storage manager</string>
+
+    <!-- Storage manager -->
+    <string name="storage_title">Storage manager</string>
+    <string name="storage_device_usage">Used %1$s / %2$s</string>
+    <string name="storage_media_total">Media &amp; documents in MediaStore: %1$s</string>
+    <string name="storage_by_category">By category</string>
+    <string name="storage_largest_title">Largest files</string>
+    <string name="storage_duplicates_title">Possible duplicates</string>
+    <string name="storage_duplicates_none">No obvious duplicates.</string>
+    <string name="storage_show">Show (%1$d)</string>
+    <string name="storage_hide">Hide</string>
+    <string name="storage_selected_count">Selected: %1$d</string>
+    <string name="storage_clear">Clear</string>
+    <string name="storage_delete">Delete</string>
+    <string name="storage_deleted_toast">Deleted.</string>
+    <string name="storage_delete_cancelled">Delete cancelled.</string>
+    <string name="storage_deleted_count">Deleted %1$d files.</string>
+    <string name="storage_cat_image">Images</string>
+    <string name="storage_cat_video">Videos</string>
+    <string name="storage_cat_audio">Audio</string>
+    <string name="storage_cat_document">Documents</string>
+    <string name="storage_cat_archive">Archives</string>
+    <string name="storage_cat_other">Other</string>
+
+    <!-- My network -->
+    <string name="mynet_title">My network</string>
+    <string name="mynet_transport_wifi">Wi-Fi</string>
+    <string name="mynet_transport_cellular">Mobile data</string>
+    <string name="mynet_transport_ethernet">Ethernet</string>
+    <string name="mynet_transport_vpn">VPN</string>
+    <string name="mynet_transport_none">Not connected</string>
+    <string name="mynet_refresh">Refresh</string>
+    <string name="mynet_updated_at">Updated %1$s</string>
+    <string name="mynet_downstream">Downlink</string>
+    <string name="mynet_upstream">Uplink</string>
+    <string name="mynet_wifi_title">Wi-Fi</string>
+    <string name="mynet_wifi_ssid">SSID</string>
+    <string name="mynet_wifi_bssid">BSSID</string>
+    <string name="mynet_wifi_signal">Signal</string>
+    <string name="mynet_wifi_link_speed">Link speed</string>
+    <string name="mynet_wifi_channel">Channel</string>
+    <string name="mynet_wifi_frequency">Frequency</string>
+    <string name="mynet_wifi_band">Band</string>
+    <string name="mynet_wifi_hidden">Hidden SSID</string>
+    <string name="mynet_cell_title">Mobile data</string>
+    <string name="mynet_cell_carrier">Carrier</string>
+    <string name="mynet_cell_sim">SIM operator</string>
+    <string name="mynet_cell_network">Network type</string>
+    <string name="mynet_cell_mcc_mnc">MCC / MNC</string>
+    <string name="mynet_cell_roaming">Roaming</string>
+    <string name="mynet_ip_title">IP &amp; routing</string>
+    <string name="mynet_ip_v4">IPv4</string>
+    <string name="mynet_ip_v6">IPv6</string>
+    <string name="mynet_ip_gateway">Gateway</string>
+    <string name="mynet_ip_dns">DNS</string>
+    <string name="mynet_ip_domains">Domains</string>
+    <string name="mynet_ip_metered">Metered connection</string>
+    <string name="mynet_run_speedtest">Run SpeedTest</string>
+    <string name="mynet_needs_location">Location permission is required to show Wi-Fi details (SSID, BSSID).</string>
+    <string name="mynet_not_connected">No active connection.</string>
+    <string name="common_yes">Yes</string>
+    <string name="common_no">No</string>
 
     <string name="home_title">ZeddiHub</string>
     <string name="home_welcome">Hi %1$s!</string>
@@ -247,6 +311,14 @@
     <string name="cache_system_title">Open system settings</string>
     <string name="cache_system_body">Manage storage and app permissions in Android system settings.</string>
     <string name="cache_open_system">Open</string>
+    <string name="cache_saf_scan_title">Scan folder (device-wide)</string>
+    <string name="cache_saf_scan_body">Pick a folder (e.g. the storage root). The app will find .tmp, .log, .bak files, empty stale files and thumbnail caches and offer to delete them.</string>
+    <string name="cache_saf_pick_folder">Pick folder</string>
+    <string name="cache_saf_results">Found %1$d candidates (~%2$s)</string>
+    <string name="cache_saf_delete_now">Delete found</string>
+    <string name="cache_system_storage_title">System storage</string>
+    <string name="cache_system_storage_body">Opens Android\'s built-in storage manager — per-app usage breakdown plus system-level cache clean options.</string>
+    <string name="cache_open_system_storage">Open system storage</string>
 
     <string name="appfinder_title">App finder</string>
     <string name="appfinder_total">Total %1$s · %2$d apps</string>
@@ -368,6 +440,8 @@
     <string name="wifi_scanner_count">Found %1$d networks</string>
     <string name="wifi_scanner_channels_24">2.4 GHz channels</string>
     <string name="wifi_scanner_channels_5">5 GHz channels</string>
+    <string name="wifi_scanner_radar_title">Radar</string>
+    <string name="wifi_scanner_radar_hint">Dots near the center have stronger signal. Tap a network below to highlight it.</string>
     <string name="wifi_scanner_networks">Networks</string>
     <string name="wifi_scanner_empty">No networks yet. Waiting for scan result…</string>
 
@@ -434,6 +508,12 @@
     <string name="wifi_tools_save">Save</string>
     <string name="wifi_tools_saved_toast">WiFi saved to "My WiFi".</string>
     <string name="wifi_tools_scan_hint">Scan with your camera to connect.</string>
+    <string name="wifi_tools_scan_title">Scan WiFi QR</string>
+    <string name="wifi_tools_scan_body">Point your camera at a WiFi QR code and the app will extract SSID and password.</string>
+    <string name="wifi_tools_scan_button">Launch scanner</string>
+    <string name="wifi_tools_scan_invalid">The QR code is not in WIFI format (missing SSID).</string>
+    <string name="wifi_tools_scan_failed">Scanning failed.</string>
+    <string name="wifi_tools_security">Security</string>
     <string name="wifi_tools_pwdgen_title">Strong password generator</string>
     <string name="wifi_tools_pwdgen_length">Length: %1$d</string>
     <string name="wifi_tools_pwdgen_regen">Generate</string>

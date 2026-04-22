@@ -94,4 +94,30 @@ class WifiMapViewModel @Inject constructor(
     fun clearSubmitFlags() {
         _state.value = _state.value.copy(submitError = null, submitSuccess = false)
     }
+
+    /**
+     * Haversine distance in meters between user location and a target coordinate.
+     * Returns null if we don't know where the user is.
+     */
+    fun distanceToUserMeters(targetLat: Double, targetLon: Double): Double? {
+        val lat = _state.value.userLat ?: return null
+        val lon = _state.value.userLon ?: return null
+        return haversineMeters(lat, lon, targetLat, targetLon)
+    }
+
+    companion object {
+        const val GEOFENCE_METERS = 500.0
+
+        fun haversineMeters(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+            val r = 6371000.0
+            val dLat = Math.toRadians(lat2 - lat1)
+            val dLon = Math.toRadians(lon2 - lon1)
+            val a = kotlin.math.sin(dLat / 2).let { it * it } +
+                kotlin.math.cos(Math.toRadians(lat1)) *
+                kotlin.math.cos(Math.toRadians(lat2)) *
+                kotlin.math.sin(dLon / 2).let { it * it }
+            val c = 2 * kotlin.math.atan2(kotlin.math.sqrt(a), kotlin.math.sqrt(1 - a))
+            return r * c
+        }
+    }
 }

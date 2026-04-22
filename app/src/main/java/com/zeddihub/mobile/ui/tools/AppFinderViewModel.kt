@@ -84,18 +84,32 @@ class AppFinderViewModel @Inject constructor(
     }
 
     private fun loadApps(): List<AppEntry> {
-        // Launcher-only: QUERY_ALL_PACKAGES not required.
         val pm = context.packageManager
-        val launcher = Intent(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_LAUNCHER) }
-        val resolved = pm.queryIntentActivities(launcher, 0)
+
+        // Primary path: enumerate EVERY installed application — works on Android
+        // 11+ because we declared QUERY_ALL_PACKAGES. This is what the user wants
+        // when browsing "all apps"; launcher-only scanning used to return 0 here.
+        val allApps: List<ApplicationInfo> = runCatching {
+            pm.getInstalledApplications(PackageManager.GET_META_DATA)
+        }.getOrElse { emptyList() }
+
+        // Fallback: if getInstalledApplications was empty (OEMs restrict even with
+        // QUERY_ALL_PACKAGES), fall back to launcher activities.
+        val candidates: Collection<ApplicationInfo> = if (allApps.isNotEmpty()) {
+            allApps
+        } else {
+            val launcher = Intent(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_LAUNCHER) }
+            val resolved = pm.queryIntentActivities(launcher, 0)
+            resolved.mapNotNull { runCatching { pm.getApplicationInfo(it.activityInfo.packageName, 0) }.getOrNull() }
+        }
+
         val seen = HashSet<String>()
-        return resolved.mapNotNull { ri ->
-            val pkg = ri.activityInfo.packageName
+        return candidates.mapNotNull { info ->
+            val pkg = info.packageName
             if (!seen.add(pkg)) return@mapNotNull null
             runCatching {
-                val info = pm.getApplicationInfo(pkg, 0)
                 val pkgInfo = pm.getPackageInfo(pkg, 0)
-                val apkSize = File(info.sourceDir).length()
+                val apkSize = runCatching { File(info.sourceDir).length() }.getOrDefault(0L)
                 val dataSize = dirSize(info.dataDir?.let(::File))
                 AppEntry(
                     packageName = pkg,

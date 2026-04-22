@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.automirrored.filled.Launch
 import androidx.compose.material.icons.filled.QrCode2
+import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material.icons.filled.WifiPassword
@@ -59,6 +60,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.google.mlkit.vision.barcode.common.Barcode
+import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 import com.zeddihub.mobile.R
@@ -125,6 +129,21 @@ fun WifiToolsScreen(padding: PaddingValues) {
             onGenerate = { ssid, pass, sec -> qrDialog = QrPayload(ssid, pass, sec) },
             onSave = { ssid, pass, sec ->
                 val updated = store.upsert(MyWifi(ssid, pass, sec))
+                entries = updated
+                Toast.makeText(ctx, ctx.getString(R.string.wifi_tools_saved_toast), Toast.LENGTH_SHORT).show()
+            }
+        )
+
+        Spacer(Modifier.height(14.dp))
+
+        // QR scanner — read an existing WiFi QR, extract SSID + password.
+        SectionHeader(stringResource(R.string.wifi_tools_scan_title))
+        ScanQrCard(
+            onScanned = { scanned ->
+                qrDialog = QrPayload(scanned.ssid, scanned.password, scanned.security)
+            },
+            onScannedSave = { scanned ->
+                val updated = store.upsert(MyWifi(scanned.ssid, scanned.password, scanned.security))
                 entries = updated
                 Toast.makeText(ctx, ctx.getString(R.string.wifi_tools_saved_toast), Toast.LENGTH_SHORT).show()
             }
@@ -469,6 +488,164 @@ private fun MyWifiCard(
 
 private fun maskPassword(p: String): String =
     if (p.length <= 2) "••" else p.take(1) + "•".repeat(p.length - 2) + p.takeLast(1)
+
+@Composable
+private fun ScanQrCard(
+    onScanned: (ScannedWifi) -> Unit,
+    onScannedSave: (ScannedWifi) -> Unit
+) {
+    val colors = MaterialTheme.colorScheme
+    val ctx = LocalContext.current
+    var lastScan by remember { mutableStateOf<ScannedWifi?>(null) }
+
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = colors.surface),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                stringResource(R.string.wifi_tools_scan_body),
+                style = MaterialTheme.typography.bodySmall,
+                color = colors.onSurfaceVariant
+            )
+            Spacer(Modifier.height(10.dp))
+            Button(
+                onClick = {
+                    val options = GmsBarcodeScannerOptions.Builder()
+                        .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
+                        .enableAutoZoom()
+                        .build()
+                    val scanner = GmsBarcodeScanning.getClient(ctx, options)
+                    scanner.startScan()
+                        .addOnSuccessListener { barcode ->
+                            val raw = barcode.rawValue.orEmpty()
+                            val parsed = parseWifiQr(raw)
+                            if (parsed != null) {
+                                lastScan = parsed
+                                onScanned(parsed)
+                            } else {
+                                Toast.makeText(
+                                    ctx,
+                                    ctx.getString(R.string.wifi_tools_scan_invalid),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(
+                                ctx,
+                                ctx.getString(R.string.wifi_tools_scan_failed),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                },
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(Icons.Default.QrCodeScanner, null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.size(6.dp))
+                Text(stringResource(R.string.wifi_tools_scan_button))
+            }
+
+            lastScan?.let { s ->
+                Spacer(Modifier.height(12.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(colors.background, RoundedCornerShape(10.dp))
+                        .padding(12.dp)
+                ) {
+                    Column {
+                        Text("SSID: ${s.ssid}", fontWeight = FontWeight.SemiBold)
+                        if (s.password.isNotBlank()) {
+                            Text(
+                                "${stringResource(R.string.wifi_tools_password)}: ${s.password}",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                        Text(
+                            "${stringResource(R.string.wifi_tools_security)}: ${s.security}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = colors.onSurfaceVariant
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            OutlinedButton(
+                                onClick = {
+                                    val cm = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                    cm.setPrimaryClip(ClipData.newPlainText("password", s.password))
+                                    Toast.makeText(
+                                        ctx,
+                                        ctx.getString(R.string.wifi_tools_pwdgen_copied),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                },
+                                enabled = s.password.isNotBlank(),
+                                shape = RoundedCornerShape(10.dp),
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Icon(Icons.Default.ContentCopy, null, modifier = Modifier.size(16.dp))
+                                Spacer(Modifier.size(4.dp))
+                                Text(stringResource(R.string.wifi_tools_pwdgen_copy))
+                            }
+                            Button(
+                                onClick = { onScannedSave(s) },
+                                shape = RoundedCornerShape(10.dp),
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Icon(Icons.Default.Save, null, modifier = Modifier.size(16.dp))
+                                Spacer(Modifier.size(4.dp))
+                                Text(stringResource(R.string.wifi_tools_save))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+data class ScannedWifi(val ssid: String, val password: String, val security: String)
+
+/**
+ * Parses standard WIFI QR payload: WIFI:T:<sec>;S:<ssid>;P:<pass>;H:<hidden>;;
+ * Handles backslash-escaped `;` `,` `:` `\` inside fields as per the spec.
+ */
+internal fun parseWifiQr(raw: String): ScannedWifi? {
+    val body = raw.trim()
+    if (!body.startsWith("WIFI:", ignoreCase = true)) return null
+    val payload = body.substring(5).trimEnd(';')
+
+    val fields = mutableMapOf<String, String>()
+    val sb = StringBuilder()
+    var key: String? = null
+    var i = 0
+    while (i < payload.length) {
+        val c = payload[i]
+        when {
+            c == '\\' && i + 1 < payload.length -> { sb.append(payload[i + 1]); i += 2 }
+            c == ':' && key == null -> { key = sb.toString(); sb.clear(); i++ }
+            c == ';' -> {
+                if (key != null) fields[key.uppercase()] = sb.toString()
+                key = null; sb.clear(); i++
+            }
+            else -> { sb.append(c); i++ }
+        }
+    }
+    if (key != null) fields[key.uppercase()] = sb.toString()
+
+    val ssid = fields["S"].orEmpty()
+    if (ssid.isBlank()) return null
+    val password = fields["P"].orEmpty()
+    val security = when (fields["T"]?.uppercase().orEmpty()) {
+        "WPA", "WPA2", "WPA3", "WPA2-EAP" -> "WPA"
+        "WEP" -> "WEP"
+        "NOPASS", "" -> if (password.isBlank()) "nopass" else "WPA"
+        else -> fields["T"] ?: "WPA"
+    }
+    return ScannedWifi(ssid = ssid, password = password, security = security)
+}
 
 // ───────── Data / utilities ─────────
 

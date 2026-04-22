@@ -29,8 +29,10 @@ import com.zeddihub.mobile.ui.tools.DecibelMeterScreen
 import com.zeddihub.mobile.ui.tools.DeviceInfoScreen
 import com.zeddihub.mobile.ui.tools.FlashlightScreen
 import com.zeddihub.mobile.ui.tools.IpLookupScreen
+import com.zeddihub.mobile.ui.tools.MyNetworkScreen
 import com.zeddihub.mobile.ui.tools.PdfScannerScreen
 import com.zeddihub.mobile.ui.tools.SpeedTestScreen
+import com.zeddihub.mobile.ui.tools.StorageManagerScreen
 import com.zeddihub.mobile.ui.tools.WifiMapScreen
 import com.zeddihub.mobile.ui.tools.WifiScannerScreen
 import com.zeddihub.mobile.ui.tools.WifiToolsScreen
@@ -101,6 +103,12 @@ fun AppNavGraph(
             }
         }
 
+        composable(Destinations.MyNetwork.route) {
+            Shell(navController, session, Destinations.MyNetwork.route, stringResource(R.string.nav_my_network)) { padding ->
+                MyNetworkScreen(padding = padding, navController = navController)
+            }
+        }
+
         composable(Destinations.SpeedTest.route) {
             Shell(navController, session, Destinations.SpeedTest.route, stringResource(R.string.nav_speedtest)) { padding ->
                 SpeedTestScreen(padding = padding)
@@ -138,7 +146,13 @@ fun AppNavGraph(
         }
 
         composable(Destinations.WifiMap.route) {
-            Shell(navController, session, Destinations.WifiMap.route, stringResource(R.string.nav_wifi_map)) { padding ->
+            Shell(
+                navController = navController,
+                session = session,
+                currentRoute = Destinations.WifiMap.route,
+                title = stringResource(R.string.nav_wifi_map),
+                gesturesEnabled = false
+            ) { padding ->
                 WifiMapScreen(padding = padding)
             }
         }
@@ -164,6 +178,12 @@ fun AppNavGraph(
         composable(Destinations.Flashlight.route) {
             Shell(navController, session, Destinations.Flashlight.route, stringResource(R.string.nav_flashlight)) { padding ->
                 FlashlightScreen(padding = padding)
+            }
+        }
+
+        composable(Destinations.Storage.route) {
+            Shell(navController, session, Destinations.Storage.route, stringResource(R.string.nav_storage)) { padding ->
+                StorageManagerScreen(padding = padding)
             }
         }
 

@@ -1,6 +1,8 @@
 package com.zeddihub.mobile.ui.tools
 
 import android.content.Context
+import android.net.Uri
+import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zeddihub.mobile.data.telemetry.TelemetryRecorder
@@ -26,7 +28,11 @@ class CacheCleanerViewModel @Inject constructor(
     data class UiState(
         val appCacheBytes: Long = 0,
         val tempBytes: Long = 0,
-        val lastAction: String? = null
+        val lastAction: String? = null,
+        val safScanning: Boolean = false,
+        val safScannedBytes: Long = 0,
+        val safMatchCount: Int = 0,
+        val safRootUri: String? = null
     )
 
     private val _state = MutableStateFlow(UiState())
@@ -59,6 +65,69 @@ class CacheCleanerViewModel @Inject constructor(
         }
         _state.value = _state.value.copy(lastAction = "DNS/connection pool flushed")
         telemetry.toolRun("cache_flush_dns", true)
+    }
+
+    /**
+     * SAF-based device-wide scan.  The user picks a folder (typically their
+     * external storage root or a specific app data dir) with OpenDocumentTree
+     * and we walk it recursively, flagging temp-like files: .tmp/.log/.bak
+     * extensions, `thumbnails` directories, 0-byte files older than 7 days.
+     */
+    fun safScanAndClean(treeUri: Uri, confirmDelete: Boolean) = viewModelScope.launch {
+        _state.value = _state.value.copy(
+            safScanning = true,
+            safScannedBytes = 0,
+            safMatchCount = 0,
+            safRootUri = treeUri.toString()
+        )
+        val (bytes, count, deleted) = withContext(Dispatchers.IO) {
+            val root = DocumentFile.fromTreeUri(context, treeUri)
+                ?: return@withContext Triple(0L, 0, 0)
+            var totalBytes = 0L
+            var matches = 0
+            var deletedCount = 0
+            val sevenDaysAgo = System.currentTimeMillis() - 7L * 24 * 3600 * 1000
+            fun walk(node: DocumentFile) {
+                val children = node.listFiles()
+                for (f in children) {
+                    if (f.isDirectory) {
+                        if (f.name?.lowercase()?.endsWith("thumbnails") == true) {
+                            // Cull thumbnail caches wholesale.
+                            f.listFiles().forEach { child ->
+                                totalBytes += child.length()
+                                matches++
+                                if (confirmDelete && child.delete()) deletedCount++
+                            }
+                        } else {
+                            walk(f)
+                        }
+                    } else {
+                        val n = f.name?.lowercase().orEmpty()
+                        val isTemp = n.endsWith(".tmp") || n.endsWith(".log") ||
+                            n.endsWith(".bak") || n.endsWith(".crdownload") ||
+                            n.endsWith(".part") || n.endsWith(".cache")
+                        val isStaleZero = f.length() == 0L && f.lastModified() in 1..sevenDaysAgo
+                        if (isTemp || isStaleZero) {
+                            totalBytes += f.length()
+                            matches++
+                            if (confirmDelete && f.delete()) deletedCount++
+                        }
+                    }
+                }
+            }
+            walk(root)
+            Triple(totalBytes, matches, deletedCount)
+        }
+        _state.value = _state.value.copy(
+            safScanning = false,
+            safScannedBytes = bytes,
+            safMatchCount = count,
+            lastAction = if (confirmDelete)
+                "SAF clean: smazáno $deleted položek (~${bytes / 1024} KB)"
+            else
+                "SAF scan: $count kandidátů (~${bytes / 1024} KB)"
+        )
+        telemetry.toolRun(if (confirmDelete) "cache_saf_clean" else "cache_saf_scan", true)
     }
 
     private fun dirSize(dir: File?): Long {

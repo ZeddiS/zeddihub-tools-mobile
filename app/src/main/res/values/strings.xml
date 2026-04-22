@@ -97,6 +97,7 @@
     <string name="nav_section_system_tools">Systémové nástroje</string>
     <string name="nav_section_media">Média</string>
     <string name="nav_section_wifi">WiFi</string>
+    <string name="nav_my_network">Moje síť</string>
     <string name="nav_speedtest">SpeedTest</string>
     <string name="nav_cache_cleaner">Cache &amp; Temp</string>
     <string name="nav_app_finder">Najít aplikaci</string>
@@ -107,6 +108,69 @@
     <string name="nav_pdf_scanner">PDF Scanner</string>
     <string name="nav_decibel_meter">Decibelmetr</string>
     <string name="nav_flashlight">Baterka</string>
+    <string name="nav_storage">Správce úložiště</string>
+
+    <!-- Správce úložiště -->
+    <string name="storage_title">Správce úložiště</string>
+    <string name="storage_device_usage">Využito %1$s / %2$s zařízení</string>
+    <string name="storage_media_total">Media a dokumenty v MediaStore: %1$s</string>
+    <string name="storage_by_category">Podle kategorie</string>
+    <string name="storage_largest_title">Největší soubory</string>
+    <string name="storage_duplicates_title">Možné duplikáty</string>
+    <string name="storage_duplicates_none">Žádné zjevné duplikáty.</string>
+    <string name="storage_show">Zobrazit (%1$d)</string>
+    <string name="storage_hide">Skrýt</string>
+    <string name="storage_selected_count">Vybráno: %1$d</string>
+    <string name="storage_clear">Zrušit</string>
+    <string name="storage_delete">Smazat</string>
+    <string name="storage_deleted_toast">Smazáno.</string>
+    <string name="storage_delete_cancelled">Mazání zrušeno.</string>
+    <string name="storage_deleted_count">Smazáno %1$d souborů.</string>
+    <string name="storage_cat_image">Obrázky</string>
+    <string name="storage_cat_video">Videa</string>
+    <string name="storage_cat_audio">Hudba</string>
+    <string name="storage_cat_document">Dokumenty</string>
+    <string name="storage_cat_archive">Archivy</string>
+    <string name="storage_cat_other">Ostatní</string>
+
+    <!-- Moje síť -->
+    <string name="mynet_title">Moje síť</string>
+    <string name="mynet_transport_wifi">Wi-Fi</string>
+    <string name="mynet_transport_cellular">Mobilní data</string>
+    <string name="mynet_transport_ethernet">Ethernet</string>
+    <string name="mynet_transport_vpn">VPN</string>
+    <string name="mynet_transport_none">Nepřipojeno</string>
+    <string name="mynet_refresh">Obnovit</string>
+    <string name="mynet_updated_at">Aktualizováno %1$s</string>
+    <string name="mynet_downstream">Downlink</string>
+    <string name="mynet_upstream">Uplink</string>
+    <string name="mynet_wifi_title">Wi-Fi</string>
+    <string name="mynet_wifi_ssid">SSID</string>
+    <string name="mynet_wifi_bssid">BSSID</string>
+    <string name="mynet_wifi_signal">Signál</string>
+    <string name="mynet_wifi_link_speed">Rychlost linky</string>
+    <string name="mynet_wifi_channel">Kanál</string>
+    <string name="mynet_wifi_frequency">Frekvence</string>
+    <string name="mynet_wifi_band">Pásmo</string>
+    <string name="mynet_wifi_hidden">Skryté SSID</string>
+    <string name="mynet_cell_title">Mobilní data</string>
+    <string name="mynet_cell_carrier">Operátor</string>
+    <string name="mynet_cell_sim">SIM operátor</string>
+    <string name="mynet_cell_network">Typ sítě</string>
+    <string name="mynet_cell_mcc_mnc">MCC / MNC</string>
+    <string name="mynet_cell_roaming">Roaming</string>
+    <string name="mynet_ip_title">IP &amp; směrování</string>
+    <string name="mynet_ip_v4">IPv4</string>
+    <string name="mynet_ip_v6">IPv6</string>
+    <string name="mynet_ip_gateway">Gateway</string>
+    <string name="mynet_ip_dns">DNS</string>
+    <string name="mynet_ip_domains">Domény</string>
+    <string name="mynet_ip_metered">Měřené připojení</string>
+    <string name="mynet_run_speedtest">Spustit SpeedTest</string>
+    <string name="mynet_needs_location">Pro zobrazení detailů Wi-Fi (SSID, BSSID) je potřeba povolit polohu aplikaci.</string>
+    <string name="mynet_not_connected">Žádné aktivní připojení.</string>
+    <string name="common_yes">Ano</string>
+    <string name="common_no">Ne</string>
 
     <!-- Home -->
     <string name="home_title">ZeddiHub</string>
@@ -257,6 +321,14 @@
     <string name="cache_system_title">Otevřít systémová nastavení</string>
     <string name="cache_system_body">Správa úložiště a oprávnění aplikace v systému Android.</string>
     <string name="cache_open_system">Otevřít</string>
+    <string name="cache_saf_scan_title">Skenovat složku (device-wide)</string>
+    <string name="cache_saf_scan_body">Vyber složku (např. kořen úložiště). Aplikace najde .tmp, .log, .bak, prázdné soubory a složky „thumbnails“ a nabídne jejich smazání.</string>
+    <string name="cache_saf_pick_folder">Vybrat složku</string>
+    <string name="cache_saf_results">Nalezeno %1$d kandidátů (~%2$s)</string>
+    <string name="cache_saf_delete_now">Smazat nalezené</string>
+    <string name="cache_system_storage_title">Systémové úložiště</string>
+    <string name="cache_system_storage_body">Otevře systémový správce úložiště Androidu — zobrazí využití po aplikacích a nabídne systémové čištění cache.</string>
+    <string name="cache_open_system_storage">Otevřít systémové úložiště</string>
 
     <!-- App finder -->
     <string name="appfinder_title">Najít aplikaci</string>
@@ -383,6 +455,8 @@
     <string name="wifi_scanner_count">Nalezeno %1$d sítí</string>
     <string name="wifi_scanner_channels_24">Kanály 2.4 GHz</string>
     <string name="wifi_scanner_channels_5">Kanály 5 GHz</string>
+    <string name="wifi_scanner_radar_title">Radar</string>
+    <string name="wifi_scanner_radar_hint">Dotky blízko středu mají silný signál. Klepnutí na síť v seznamu ji zvýrazní.</string>
     <string name="wifi_scanner_networks">Sítě</string>
     <string name="wifi_scanner_empty">Zatím žádné sítě. Čekám na výsledek skenu…</string>
 
@@ -450,6 +524,12 @@
     <string name="wifi_tools_save">Uložit</string>
     <string name="wifi_tools_saved_toast">WiFi uložena do „Moje WiFi“.</string>
     <string name="wifi_tools_scan_hint">Naskenuj kód fotoaparátem pro připojení.</string>
+    <string name="wifi_tools_scan_title">Naskenovat WiFi QR</string>
+    <string name="wifi_tools_scan_body">Namíří fotoaparát na WiFi QR kód a aplikace z něj vyčte SSID a heslo.</string>
+    <string name="wifi_tools_scan_button">Spustit skener</string>
+    <string name="wifi_tools_scan_invalid">QR kód není ve formátu WIFI (chybí SSID).</string>
+    <string name="wifi_tools_scan_failed">Skenování selhalo.</string>
+    <string name="wifi_tools_security">Zabezpečení</string>
     <string name="wifi_tools_pwdgen_title">Generátor silného hesla</string>
     <string name="wifi_tools_pwdgen_length">Délka: %1$d</string>
     <string name="wifi_tools_pwdgen_regen">Generovat</string>

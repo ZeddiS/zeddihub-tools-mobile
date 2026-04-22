@@ -85,6 +85,7 @@ data class SidebarItem(
 private val baseSidebarItems = listOf(
     SidebarItem(Destinations.Home.route, R.string.nav_home, Icons.Default.Home, 0),
     SidebarItem(Destinations.Servers.route, R.string.nav_servers, Icons.Default.Storage, 0),
+    SidebarItem(Destinations.MyNetwork.route, R.string.nav_my_network, Icons.Default.Wifi, 1),
     SidebarItem(Destinations.SpeedTest.route, R.string.nav_speedtest, Icons.Default.NetworkCheck, 1),
     SidebarItem(Destinations.IpLookup.route, R.string.nav_ip_tracker, Icons.Default.Public, 1),
     SidebarItem(Destinations.WifiScanner.route, R.string.nav_wifi_scanner, Icons.Default.Wifi, 2),
@@ -92,6 +93,7 @@ private val baseSidebarItems = listOf(
     SidebarItem(Destinations.WifiTools.route, R.string.nav_wifi_tools, Icons.Default.WifiPassword, 2),
     SidebarItem(Destinations.DeviceInfo.route, R.string.nav_device_info, Icons.Default.Devices, 3),
     SidebarItem(Destinations.CacheCleaner.route, R.string.nav_cache_cleaner, Icons.Default.CleaningServices, 3),
+    SidebarItem(Destinations.Storage.route, R.string.nav_storage, Icons.Default.Storage, 3),
     SidebarItem(Destinations.AppFinder.route, R.string.nav_app_finder, Icons.Default.Apps, 3),
     SidebarItem(Destinations.PdfScanner.route, R.string.nav_pdf_scanner, Icons.Default.PictureAsPdf, 4),
     SidebarItem(Destinations.DecibelMeter.route, R.string.nav_decibel_meter, Icons.Default.GraphicEq, 4),

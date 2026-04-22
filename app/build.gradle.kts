@@ -17,8 +17,8 @@ android {
         applicationId = "com.zeddihub.mobile"
         minSdk = 26
         targetSdk = 34
-        versionCode = 9
-        versionName = "0.5.4"
+        versionCode = 10
+        versionName = "0.5.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
@@ -126,6 +126,7 @@ dependencies {
     ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.2")
 
     // Storage / security
+    implementation("androidx.documentfile:documentfile:1.0.1")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
     implementation("androidx.biometric:biometric-ktx:1.2.0-alpha05")
@@ -153,6 +154,10 @@ dependencies {
 
     // ZXing for WiFi QR code generation
     implementation("com.google.zxing:core:3.5.3")
+
+    // Google Code Scanner — unbundled, no camera permission required.
+    // Used by WiFi Tools to scan WIFI: QR codes and extract SSID + password.
+    implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
 
     // osmdroid for WiFi Map (OpenStreetMap)
     implementation("org.osmdroid:osmdroid-android:6.1.18")
