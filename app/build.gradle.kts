@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -7,6 +9,15 @@ plugins {
     // Firebase pluginy odkomentuj, jakmile přidáš google-services.json
     // id("com.google.gms.google-services")
     // id("com.google.firebase.crashlytics")
+}
+
+// Load signing config from keystore.properties (git-ignored). This file lives
+// in the repo root and contains storeFile/storePassword/keyAlias/keyPassword.
+// Without it, release APKs would be unsigned and Android would refuse to
+// install them ("App not installed" / "package corrupt").
+val keystoreProps = Properties().apply {
+    val f = rootProject.file("keystore.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
 }
 
 android {
@@ -40,6 +51,23 @@ android {
         resourceConfigurations += listOf("cs", "en")
     }
 
+    signingConfigs {
+        create("release") {
+            val storeFilePath = keystoreProps.getProperty("storeFile")
+            if (storeFilePath != null) {
+                storeFile = rootProject.file(storeFilePath)
+                storePassword = keystoreProps.getProperty("storePassword")
+                keyAlias = keystoreProps.getProperty("keyAlias")
+                keyPassword = keystoreProps.getProperty("keyPassword")
+            }
+            // Use the legacy JAR signing scheme AND modern APK signature schemes
+            // so installs work across Android 7+ (v1 + v2 + v3).
+            enableV1Signing = true
+            enableV2Signing = true
+            enableV3Signing = true
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -48,6 +76,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
         debug {
             applicationIdSuffix = ".debug"
