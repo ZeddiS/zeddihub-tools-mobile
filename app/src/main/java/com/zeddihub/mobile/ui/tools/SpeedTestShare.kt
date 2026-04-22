@@ -10,6 +10,7 @@ import android.graphics.Path
 import android.graphics.RectF
 import android.graphics.Shader
 import android.graphics.Typeface
+import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import androidx.core.content.FileProvider
 import java.io.File
@@ -28,7 +29,16 @@ import kotlin.math.sin
  */
 object SpeedTestShare {
 
+    /** Legacy alias — new code should call [shareResultAsImage] directly. */
     fun shareResult(context: Context, state: SpeedTestViewModel.UiState, shareTitle: String) {
+        shareResultAsImage(context, state, shareTitle)
+    }
+
+    fun shareResultAsImage(
+        context: Context,
+        state: SpeedTestViewModel.UiState,
+        shareTitle: String
+    ) {
         val bitmap = renderBitmap(state)
         val dir = File(context.cacheDir, "speedtest").apply { mkdirs() }
         val file = File(dir, "speedtest-${System.currentTimeMillis()}.png")
@@ -55,6 +65,77 @@ object SpeedTestShare {
         )
     }
 
+    fun shareResultAsText(
+        context: Context,
+        state: SpeedTestViewModel.UiState,
+        shareTitle: String
+    ) {
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_SUBJECT, "ZeddiHub SpeedTest")
+            putExtra(Intent.EXTRA_TEXT, buildDetailedText(state))
+        }
+        context.startActivity(
+            Intent.createChooser(intent, shareTitle).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+        )
+    }
+
+    fun shareResultAsPdf(
+        context: Context,
+        state: SpeedTestViewModel.UiState,
+        shareTitle: String
+    ) {
+        val bitmap = renderBitmap(state)
+        val dir = File(context.cacheDir, "speedtest").apply { mkdirs() }
+        val file = File(dir, "speedtest-${System.currentTimeMillis()}.pdf")
+
+        // A4 @ 72dpi ≈ 595x842pt. Our bitmap is 1080x1350; we center it on the page.
+        val pageWidth = 595
+        val pageHeight = 842
+        val doc = PdfDocument()
+        val pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create()
+        val page = doc.startPage(pageInfo)
+        val canvas = page.canvas
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+        // White PDF background
+        paint.color = 0xFFFFFFFF.toInt()
+        canvas.drawRect(0f, 0f, pageWidth.toFloat(), pageHeight.toFloat(), paint)
+
+        // Scale bitmap to fit width with 40pt margin
+        val margin = 40f
+        val targetW = pageWidth - 2 * margin
+        val scale = targetW / bitmap.width
+        val targetH = bitmap.height * scale
+        val scaled = Bitmap.createScaledBitmap(bitmap, targetW.toInt(), targetH.toInt(), true)
+        val top = (pageHeight - targetH) / 2f
+        canvas.drawBitmap(scaled, margin, top, paint)
+
+        doc.finishPage(page)
+        FileOutputStream(file).use { out -> doc.writeTo(out) }
+        doc.close()
+
+        val uri: Uri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            file
+        )
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "application/pdf"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            putExtra(Intent.EXTRA_SUBJECT, "ZeddiHub SpeedTest")
+            putExtra(Intent.EXTRA_TEXT, buildSummaryText(state))
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        context.startActivity(
+            Intent.createChooser(intent, shareTitle).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+        )
+    }
+
     private fun buildSummaryText(s: SpeedTestViewModel.UiState): String {
         val parts = mutableListOf<String>()
         parts += "ZeddiHub SpeedTest"
@@ -64,6 +145,39 @@ object SpeedTestShare {
         s.uploadMbps?.let { parts += "↑ %.1f Mbps".format(Locale.US, it) }
         s.isp?.let { parts += it }
         return parts.joinToString("  ·  ")
+    }
+
+    private fun buildDetailedText(s: SpeedTestViewModel.UiState): String = buildString {
+        appendLine("ZeddiHub SpeedTest")
+        appendLine("─".repeat(28))
+        s.finishedAt?.let {
+            appendLine("Čas: " + SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(Date(it)))
+        }
+        s.connectionType?.let {
+            val conn = buildString {
+                append(it)
+                if (!s.ssid.isNullOrBlank()) append(" · ${s.ssid}")
+                s.rssi?.let { r -> append(" · $r dBm") }
+            }
+            appendLine("Síť: $conn")
+        }
+        appendLine()
+        s.pingMs?.let { appendLine("Ping:     %.0f ms".format(Locale.US, it)) }
+        s.pingMin?.let { appendLine("  Min:    %.1f ms".format(Locale.US, it)) }
+        s.pingAvg?.let { appendLine("  Prům.:  %.1f ms".format(Locale.US, it)) }
+        s.pingMax?.let { appendLine("  Max:    %.1f ms".format(Locale.US, it)) }
+        s.jitterMs?.let { appendLine("Jitter:   %.1f ms".format(Locale.US, it)) }
+        s.lossPct?.let { appendLine("Ztráta:   %.1f %%".format(Locale.US, it)) }
+        appendLine()
+        s.downloadMbps?.let { appendLine("Download: %.1f Mbps".format(Locale.US, it)) }
+        s.uploadMbps?.let { appendLine("Upload:   %.1f Mbps".format(Locale.US, it)) }
+        appendLine()
+        s.isp?.let { appendLine("ISP:      $it") }
+        s.ip?.let { appendLine("IP:       $it") }
+        s.server?.let { appendLine("Server:   $it") }
+        s.city?.let { appendLine("Lokalita: $it") }
+        appendLine()
+        appendLine("https://zeddihub.eu/tools")
     }
 
     // ─────────────── Bitmap ───────────────
@@ -105,7 +219,8 @@ object SpeedTestShare {
         p.color = TEXT_DIM
         p.typeface = Typeface.DEFAULT
         p.textSize = 34f
-        val stamp = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(Date())
+        val stamp = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
+            .format(Date(s.finishedAt ?: System.currentTimeMillis()))
         val metaLine = buildList {
             add(stamp)
             s.server?.let { add(it) }
@@ -132,15 +247,43 @@ object SpeedTestShare {
             drawMetricCell(c, p, x, rowY, cellW, 190f, m.first, m.second, unit, m.third)
         }
 
-        // Packet loss / attempts
+        // Ping breakdown (min/avg/max)
         if (s.pingAttempts > 0) {
             p.color = TEXT_DIM
             p.typeface = Typeface.DEFAULT
-            p.textSize = 32f
+            p.textSize = 30f
+            val pingText = buildString {
+                append("Ping ")
+                s.pingMin?.let { append("min %.1f".format(Locale.US, it)) }
+                s.pingAvg?.let {
+                    if (length > 5) append("  ·  ")
+                    append("prům. %.1f".format(Locale.US, it))
+                }
+                s.pingMax?.let {
+                    if (length > 5) append("  ·  ")
+                    append("max %.1f".format(Locale.US, it))
+                }
+                append(" ms")
+            }
+            c.drawText(pingText, 80f, rowY + 245f, p)
+
             val lossText = "Odezva: %d/%d odpovědí · ztráta %.1f%%".format(
                 Locale.US, s.pingSuccess, s.pingAttempts, s.lossPct ?: 0.0
             )
-            c.drawText(lossText, 80f, rowY + 260f, p)
+            c.drawText(lossText, 80f, rowY + 285f, p)
+        }
+
+        // Connection conditions
+        s.connectionType?.let {
+            p.color = TEXT
+            p.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+            p.textSize = 32f
+            val connText = buildString {
+                append(it)
+                if (!s.ssid.isNullOrBlank()) append("  ·  ${s.ssid}")
+                s.rssi?.let { r -> append("  ·  $r dBm") }
+            }
+            c.drawText(connText, 80f, rowY + 335f, p)
         }
 
         // ISP
@@ -148,13 +291,13 @@ object SpeedTestShare {
             p.color = TEXT
             p.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
             p.textSize = 36f
-            c.drawText(it, 80f, rowY + 320f, p)
+            c.drawText(it, 80f, rowY + 385f, p)
         }
         s.ip?.let {
             p.color = TEXT_DIM
             p.typeface = Typeface.DEFAULT
             p.textSize = 30f
-            c.drawText("IP: $it", 80f, rowY + 365f, p)
+            c.drawText("IP: $it", 80f, rowY + 425f, p)
         }
 
         // Footer

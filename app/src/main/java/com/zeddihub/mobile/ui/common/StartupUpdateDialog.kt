@@ -78,11 +78,7 @@ fun StartupUpdateDialog(updateChecker: UpdateChecker) {
                 )
                 Spacer(Modifier.height(8.dp))
                 if (info.body.isNotBlank()) {
-                    Text(
-                        info.body,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    MarkdownText(info.body)
                     Spacer(Modifier.height(10.dp))
                 }
                 if (downloading) {

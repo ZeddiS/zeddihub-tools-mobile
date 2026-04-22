@@ -183,29 +183,13 @@ fun SpeedTestScreen(
                     style = MaterialTheme.typography.labelSmall,
                     color = colors.onSurfaceVariant
                 )
-                Spacer(Modifier.height(6.dp))
+                Spacer(Modifier.height(10.dp))
 
-                // Phase label (animated)
-                AnimatedContent(
-                    targetState = state.phase,
-                    transitionSpec = {
-                        (fadeIn(tween(250)) togetherWith fadeOut(tween(180)))
-                    },
-                    label = "phaseLabel"
-                ) { phase ->
-                    Text(
-                        phaseLabel(phase),
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = animatedPhaseColor
-                    )
-                }
-                Spacer(Modifier.height(2.dp))
-
+                // ── Gauge (pure, no overlay) ──
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(1.15f)
+                        .aspectRatio(1.25f)
                 ) {
                     SpeedGauge(
                         value = animatedValue,
@@ -214,37 +198,57 @@ fun SpeedTestScreen(
                         rippleProgress = rippleProgress.value,
                         modifier = Modifier.fillMaxSize()
                     )
+                }
 
-                    // Slide-up value + unit, perfectly centered
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                Spacer(Modifier.height(12.dp))
+
+                // ── Big value below gauge, fades only on phase change ──
+                // The inner Text reads state.liveValue directly so the number
+                // updates smoothly during a phase without re-running the fade.
+                AnimatedContent(
+                    targetState = state.phase,
+                    transitionSpec = {
+                        fadeIn(tween(320)) togetherWith fadeOut(tween(220))
+                    },
+                    label = "valuePhase"
+                ) { _ ->
+                    Row(
+                        verticalAlignment = Alignment.Bottom,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        AnimatedContent(
-                            targetState = state.liveValue to state.liveUnit,
-                            transitionSpec = { slideUpTransition() },
-                            label = "valueSlide"
-                        ) { (v, unit) ->
-                            Text(
-                                formatValue(v, unit),
-                                style = MaterialTheme.typography.displayMedium.copy(fontSize = 44.sp),
-                                fontWeight = FontWeight.Bold,
-                                color = colors.onSurface
-                            )
-                        }
-                        AnimatedContent(
-                            targetState = state.liveUnit,
-                            transitionSpec = { slideUpTransition() },
-                            label = "unitSlide"
-                        ) { unit ->
-                            Text(
-                                unit.suffix,
-                                style = MaterialTheme.typography.labelMedium,
-                                color = colors.onSurfaceVariant
-                            )
-                        }
+                        Text(
+                            formatValue(state.liveValue, state.liveUnit),
+                            style = MaterialTheme.typography.displayMedium.copy(fontSize = 56.sp),
+                            fontWeight = FontWeight.Bold,
+                            color = colors.onSurface
+                        )
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            state.liveUnit.suffix,
+                            style = MaterialTheme.typography.titleMedium,
+                            color = colors.onSurfaceVariant,
+                            modifier = Modifier.padding(bottom = 10.dp)
+                        )
                     }
+                }
+
+                Spacer(Modifier.height(4.dp))
+
+                // ── Phase label at the bottom ──
+                AnimatedContent(
+                    targetState = state.phase,
+                    transitionSpec = {
+                        fadeIn(tween(260)) togetherWith fadeOut(tween(180))
+                    },
+                    label = "phaseLabel"
+                ) { phase ->
+                    Text(
+                        phaseLabel(phase),
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        color = animatedPhaseColor
+                    )
                 }
             }
         }
@@ -338,9 +342,19 @@ fun SpeedTestScreen(
         ) {
             Column {
                 Spacer(Modifier.height(18.dp))
-                ExtendedResults(state, colors.primary) {
-                    SpeedTestShare.shareResult(context, state, shareTitle)
-                }
+                ExtendedResults(
+                    state = state,
+                    primary = colors.primary,
+                    onShareImage = {
+                        SpeedTestShare.shareResultAsImage(context, state, shareTitle)
+                    },
+                    onShareText = {
+                        SpeedTestShare.shareResultAsText(context, state, shareTitle)
+                    },
+                    onSharePdf = {
+                        SpeedTestShare.shareResultAsPdf(context, state, shareTitle)
+                    }
+                )
             }
         }
 
@@ -388,34 +402,71 @@ fun SpeedTestScreen(
 private fun ExtendedResults(
     state: SpeedTestViewModel.UiState,
     primary: Color,
-    onShare: () -> Unit
+    onShareImage: () -> Unit,
+    onShareText: () -> Unit,
+    onSharePdf: () -> Unit
 ) {
     val colors = MaterialTheme.colorScheme
+    var expanded by remember { mutableStateOf(false) }
+
     Card(
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(containerColor = colors.surfaceVariant.copy(alpha = 0.55f)),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                stringResource(R.string.speedtest_extended_title),
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
-                color = colors.onSurface
-            )
-            Spacer(Modifier.height(10.dp))
-
-            // Meta — IP / ISP / server / city
-            if (listOfNotNull(state.ip, state.isp, state.server, state.city).isNotEmpty()) {
-                MetaRow(Icons.Default.Public, stringResource(R.string.speedtest_meta_ip), state.ip ?: "—")
-                MetaRow(Icons.Default.NetworkCheck, stringResource(R.string.speedtest_meta_isp), state.isp ?: "—")
-                MetaRow(Icons.Default.CloudQueue, stringResource(R.string.speedtest_meta_server), state.server ?: "—")
-                state.city?.let { MetaRow(Icons.Default.Public, stringResource(R.string.speedtest_meta_city), it) }
-                Spacer(Modifier.height(12.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    stringResource(R.string.speedtest_extended_title),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.onSurface,
+                    modifier = Modifier.weight(1f)
+                )
+                TextButton(onClick = { expanded = !expanded }) {
+                    Text(
+                        stringResource(
+                            if (expanded) R.string.speedtest_collapse
+                            else R.string.speedtest_expand
+                        )
+                    )
+                }
             }
+            Spacer(Modifier.height(8.dp))
 
-            // Packet loss
+            // ── Ping breakdown (always shown in DONE state) ──
             if (state.pingAttempts > 0) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    PingStatCell(
+                        label = stringResource(R.string.speedtest_ping_min),
+                        value = state.pingMin,
+                        color = Color(0xFF22C55E),
+                        modifier = Modifier.weight(1f)
+                    )
+                    PingStatCell(
+                        label = stringResource(R.string.speedtest_ping_avg),
+                        value = state.pingAvg ?: state.pingMs,
+                        color = primary,
+                        modifier = Modifier.weight(1f)
+                    )
+                    PingStatCell(
+                        label = stringResource(R.string.speedtest_ping_max),
+                        value = state.pingMax,
+                        color = Color(0xFFEF4444),
+                        modifier = Modifier.weight(1f)
+                    )
+                    PingStatCell(
+                        label = stringResource(R.string.speedtest_jitter),
+                        value = state.jitterMs,
+                        color = Color(0xFF3B82F6),
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                Spacer(Modifier.height(10.dp))
+
                 Text(
                     stringResource(
                         R.string.speedtest_loss_summary,
@@ -427,7 +478,7 @@ private fun ExtendedResults(
                 Spacer(Modifier.height(12.dp))
             }
 
-            // Download sparkline
+            // ── Sparklines ──
             if (state.downloadSamples.isNotEmpty()) {
                 SparklineRow(
                     label = stringResource(R.string.speedtest_download_samples),
@@ -445,16 +496,100 @@ private fun ExtendedResults(
                 Spacer(Modifier.height(12.dp))
             }
 
-            // Share
-            OutlinedButton(
-                onClick = onShare,
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(14.dp)
+            // ── Collapsible meta block ──
+            AnimatedVisibility(
+                visible = expanded,
+                enter = fadeIn(tween(220)) + expandVertically(tween(260)),
+                exit = fadeOut(tween(160)) + shrinkVertically(tween(200))
             ) {
-                Icon(Icons.Default.Share, null, modifier = Modifier.size(18.dp))
-                Spacer(Modifier.size(8.dp))
-                Text(stringResource(R.string.speedtest_share))
+                Column {
+                    if (listOfNotNull(state.ip, state.isp, state.server, state.city).isNotEmpty()) {
+                        MetaRow(Icons.Default.Public, stringResource(R.string.speedtest_meta_ip), state.ip ?: "—")
+                        MetaRow(Icons.Default.NetworkCheck, stringResource(R.string.speedtest_meta_isp), state.isp ?: "—")
+                        MetaRow(Icons.Default.CloudQueue, stringResource(R.string.speedtest_meta_server), state.server ?: "—")
+                        state.city?.let { MetaRow(Icons.Default.Public, stringResource(R.string.speedtest_meta_city), it) }
+                    }
+                    state.connectionType?.let {
+                        val detail = buildString {
+                            append(it)
+                            if (!state.ssid.isNullOrBlank()) append("  ·  ${state.ssid}")
+                            state.rssi?.let { r -> append("  ·  $r dBm") }
+                        }
+                        MetaRow(Icons.Default.Wifi, stringResource(R.string.speedtest_meta_connection), detail)
+                    }
+                    state.finishedAt?.let {
+                        MetaRow(
+                            Icons.Default.Speed,
+                            stringResource(R.string.speedtest_meta_time),
+                            DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+                                .format(Date(it))
+                        )
+                    }
+                    Spacer(Modifier.height(12.dp))
+                }
             }
+
+            // ── Share actions ──
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(
+                    onClick = onShareImage,
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(14.dp)
+                ) {
+                    Icon(Icons.Default.Share, null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.size(6.dp))
+                    Text(stringResource(R.string.speedtest_share_image))
+                }
+                OutlinedButton(
+                    onClick = onSharePdf,
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(14.dp)
+                ) {
+                    Text(stringResource(R.string.speedtest_share_pdf))
+                }
+            }
+            Spacer(Modifier.height(6.dp))
+            TextButton(onClick = onShareText, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.speedtest_share_text))
+            }
+        }
+    }
+}
+
+@Composable
+private fun PingStatCell(
+    label: String,
+    value: Double?,
+    color: Color,
+    modifier: Modifier = Modifier
+) {
+    val colors = MaterialTheme.colorScheme
+    Card(
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = colors.surface),
+        modifier = modifier
+    ) {
+        Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)) {
+            Text(
+                label,
+                style = MaterialTheme.typography.labelSmall,
+                color = colors.onSurfaceVariant
+            )
+            Spacer(Modifier.height(2.dp))
+            Text(
+                value?.let { "%.1f".format(Locale.US, it) } ?: "—",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = color
+            )
+            Text(
+                "ms",
+                style = MaterialTheme.typography.labelSmall,
+                color = colors.onSurfaceVariant
+            )
         }
     }
 }

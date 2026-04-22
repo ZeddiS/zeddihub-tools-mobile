@@ -1,9 +1,15 @@
 package com.zeddihub.mobile.ui.tools
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.wifi.WifiManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zeddihub.mobile.data.telemetry.TelemetryRecorder
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,6 +33,7 @@ import kotlin.math.sqrt
 
 @HiltViewModel
 class SpeedTestViewModel @Inject constructor(
+    @ApplicationContext private val appContext: Context,
     private val telemetry: TelemetryRecorder
 ) : ViewModel() {
 
@@ -53,6 +60,9 @@ class SpeedTestViewModel @Inject constructor(
 
         // Final metrics
         val pingMs: Double? = null,
+        val pingMin: Double? = null,
+        val pingMax: Double? = null,
+        val pingAvg: Double? = null,
         val jitterMs: Double? = null,
         val lossPct: Double? = null,
         val pingAttempts: Int = 0,
@@ -66,9 +76,17 @@ class SpeedTestViewModel @Inject constructor(
         val server: String? = null,
         val city: String? = null,
 
+        // Network conditions at the time of the test
+        val connectionType: String? = null,  // "Wi-Fi" / "Mobilní data" / "Ethernet"
+        val ssid: String? = null,
+        val rssi: Int? = null,                // dBm
+
         // Per-phase sample streams (for sparklines)
         val downloadSamples: List<Float> = emptyList(),
         val uploadSamples: List<Float> = emptyList(),
+
+        // Wall-clock timestamp of the most recent finished test (for share image)
+        val finishedAt: Long? = null,
 
         val history: List<HistoryEntry> = emptyList(),
         val error: String? = null
@@ -98,26 +116,33 @@ class SpeedTestViewModel @Inject constructor(
     private suspend fun runTest() {
         try {
             withContext(Dispatchers.IO) {
+                // 0) Capture connection state for the share card
+                captureConnectionInfo()
+
                 // 1) Meta
                 setPhase(Phase.META, Unit.MBPS, GAUGE_DEFAULT_MAX)
                 fetchMeta()
                 ensureActive()
+                delay(PHASE_GAP_MS)
 
                 // 2) Ping
                 setPhase(Phase.PING, Unit.MS, 80.0)
                 runPing()
                 ensureActive()
+                delay(PHASE_GAP_MS)
 
                 // 3) Download
                 setPhase(Phase.DOWNLOAD, Unit.MBPS, GAUGE_DEFAULT_MAX)
                 val dl = measureDownload()
                 _state.value = _state.value.copy(downloadMbps = dl)
                 ensureActive()
+                delay(PHASE_GAP_MS)
 
                 // 4) Upload — cap gauge at ~90% of DL so upload looks honest
                 setPhase(Phase.UPLOAD, Unit.MBPS, maxOf(100.0, dl * 0.9))
                 val ul = measureUpload()
                 _state.value = _state.value.copy(uploadMbps = ul)
+                delay(PHASE_GAP_MS)
 
                 // 5) Done — settle gauge on download value
                 val entry = HistoryEntry(
@@ -136,6 +161,7 @@ class SpeedTestViewModel @Inject constructor(
                     liveValue = dl,
                     liveUnit = Unit.MBPS,
                     gaugeMax = maxOf(100.0, dl * 1.15),
+                    finishedAt = System.currentTimeMillis(),
                     history = (listOf(entry) + _state.value.history).take(HISTORY_SIZE)
                 )
             }
@@ -161,6 +187,42 @@ class SpeedTestViewModel @Inject constructor(
             gaugeMax = gaugeMax,
             error = null
         )
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun captureConnectionInfo() {
+        runCatching {
+            val cm = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+                ?: return@runCatching
+            val active = cm.activeNetwork
+            val caps = cm.getNetworkCapabilities(active)
+            var type: String? = null
+            var ssid: String? = null
+            var rssi: Int? = null
+            when {
+                caps == null -> {}
+                caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                    type = "Wi-Fi"
+                    runCatching {
+                        val wifi = appContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager
+                        val info = wifi?.connectionInfo
+                        if (info != null) {
+                            val raw = info.ssid?.trim('"')
+                            if (!raw.isNullOrBlank() && raw != "<unknown ssid>") ssid = raw
+                            rssi = info.rssi
+                        }
+                    }
+                }
+                caps.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> type = "Mobilní data"
+                caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> type = "Ethernet"
+                caps.hasTransport(NetworkCapabilities.TRANSPORT_VPN) -> type = "VPN"
+            }
+            _state.value = _state.value.copy(
+                connectionType = type,
+                ssid = ssid,
+                rssi = rssi
+            )
+        }
     }
 
     private fun fetchMeta() {
@@ -199,6 +261,9 @@ class SpeedTestViewModel @Inject constructor(
         }
         _state.value = _state.value.copy(
             pingMs = if (rtts.isNotEmpty()) median(rtts) else null,
+            pingMin = rtts.minOrNull(),
+            pingMax = rtts.maxOrNull(),
+            pingAvg = if (rtts.isNotEmpty()) rtts.average() else null,
             jitterMs = if (rtts.size >= 2) pstdev(rtts) else 0.0,
             lossPct = 100.0 * (PING_ATTEMPTS - successes) / PING_ATTEMPTS,
             pingAttempts = PING_ATTEMPTS,
@@ -353,5 +418,7 @@ class SpeedTestViewModel @Inject constructor(
 
         private const val HISTORY_SIZE = 10
         private const val GAUGE_DEFAULT_MAX = 500.0
+        // Small visual pause between phases so the UI animations land.
+        private const val PHASE_GAP_MS = 550L
     }
 }

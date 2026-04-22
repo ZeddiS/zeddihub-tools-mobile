@@ -231,6 +231,16 @@
     <string name="speedtest_upload_samples">Průběh odesílání</string>
     <string name="speedtest_share">Sdílet výsledek</string>
     <string name="speedtest_share_chooser_title">Sdílet výsledek</string>
+    <string name="speedtest_share_image">Sdílet obrázek</string>
+    <string name="speedtest_share_pdf">PDF</string>
+    <string name="speedtest_share_text">Sdílet jako text</string>
+    <string name="speedtest_expand">Zobrazit více</string>
+    <string name="speedtest_collapse">Skrýt</string>
+    <string name="speedtest_ping_min">Min</string>
+    <string name="speedtest_ping_avg">Prům.</string>
+    <string name="speedtest_ping_max">Max</string>
+    <string name="speedtest_meta_connection">Síť</string>
+    <string name="speedtest_meta_time">Čas</string>
 
     <!-- Cache cleaner -->
     <string name="cache_title">Cache &amp; Temp soubory</string>

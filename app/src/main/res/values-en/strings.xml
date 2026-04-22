@@ -222,6 +222,16 @@
     <string name="speedtest_upload_samples">Upload samples</string>
     <string name="speedtest_share">Share result</string>
     <string name="speedtest_share_chooser_title">Share result</string>
+    <string name="speedtest_share_image">Share image</string>
+    <string name="speedtest_share_pdf">PDF</string>
+    <string name="speedtest_share_text">Share as text</string>
+    <string name="speedtest_expand">Show more</string>
+    <string name="speedtest_collapse">Hide</string>
+    <string name="speedtest_ping_min">Min</string>
+    <string name="speedtest_ping_avg">Avg</string>
+    <string name="speedtest_ping_max">Max</string>
+    <string name="speedtest_meta_connection">Network</string>
+    <string name="speedtest_meta_time">Time</string>
 
     <string name="cache_title">Cache &amp; Temp files</string>
     <string name="cache_subtitle">Free up space by clearing app cache and temporary files.</string>
