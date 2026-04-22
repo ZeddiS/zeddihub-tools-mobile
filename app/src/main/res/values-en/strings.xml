@@ -551,4 +551,10 @@
     <string name="wifi_map_entry_open">Open network</string>
     <string name="wifi_map_entry_password_hidden">Password hidden — tap to reveal</string>
     <string name="wifi_map_entry_verified">Verified</string>
+
+    <!-- Duplicate install gate -->
+    <string name="duplicate_install_title">Duplicate install detected</string>
+    <string name="duplicate_install_body">An older or duplicate copy of ZeddiHub is installed on this device. Uninstall it to avoid conflicts and out-of-sync data. ZeddiHub must only be installed once.</string>
+    <string name="duplicate_install_uninstall">Uninstall %1$s</string>
+    <string name="duplicate_install_recheck">Re-check</string>
 </resources>

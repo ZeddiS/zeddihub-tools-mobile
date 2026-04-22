@@ -78,9 +78,21 @@
         android:theme="@style/Theme.ZeddiHub"
         android:usesCleartextTraffic="false">
 
+        <!--
+          launchMode="singleTask" + singleInstancePerTask=false guarantee that
+          only one MainActivity ever exists. A second launch (from launcher,
+          shortcut, deeplink, or update-install) is routed to onNewIntent on
+          the existing instance instead of spawning a duplicate window.
+
+          documentLaunchMode="never" prevents OEM "parallel window" features
+          (Samsung DeX, tablets) from cloning the activity into a new document.
+        -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:launchMode="singleTask"
+            android:documentLaunchMode="never"
+            android:excludeFromRecents="false"
             android:theme="@style/Theme.ZeddiHub"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>

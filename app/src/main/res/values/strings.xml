@@ -567,4 +567,10 @@
     <string name="wifi_map_entry_open">Otevřená síť</string>
     <string name="wifi_map_entry_password_hidden">Heslo ukryto — klikni pro zobrazení</string>
     <string name="wifi_map_entry_verified">Ověřeno</string>
+
+    <!-- Duplicate install gate -->
+    <string name="duplicate_install_title">Nalezena duplicitní instalace</string>
+    <string name="duplicate_install_body">Na zařízení je nainstalována starší nebo duplicitní verze aplikace ZeddiHub. Odinstaluj ji, aby nedocházelo ke kolizím a nesynchronizovaným datům. ZeddiHub smí být nainstalován pouze jednou.</string>
+    <string name="duplicate_install_uninstall">Odinstalovat %1$s</string>
+    <string name="duplicate_install_recheck">Zkontrolovat znovu</string>
 </resources>

@@ -21,6 +21,7 @@ import com.zeddihub.mobile.data.update.UpdateChecker
 import com.zeddihub.mobile.ui.common.AppLockState
 import kotlinx.coroutines.launch
 import com.zeddihub.mobile.ui.common.BiometricLockGate
+import com.zeddihub.mobile.ui.common.DuplicateInstallGate
 import com.zeddihub.mobile.ui.common.StartupUpdateDialog
 import com.zeddihub.mobile.ui.navigation.AppNavGraph
 import com.zeddihub.mobile.ui.theme.ZeddiHubTheme
@@ -80,6 +81,7 @@ class MainActivity : AppCompatActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val locked = appLockEnabled && !unlocked
+                    DuplicateInstallGate {
                     BiometricLockGate(
                         locked = locked,
                         onUnlocked = { appLockState.markUnlocked() }
@@ -103,6 +105,7 @@ class MainActivity : AppCompatActivity() {
                         if (appPreferences.autoUpdate.value) {
                             StartupUpdateDialog(updateChecker = updateChecker)
                         }
+                    }
                     }
                 }
             }
