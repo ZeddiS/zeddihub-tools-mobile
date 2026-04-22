@@ -23,7 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material.icons.filled.Launch
+import androidx.compose.material.icons.automirrored.filled.Launch
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -142,7 +142,7 @@ fun CacheCleanerScreen(
         Spacer(Modifier.height(12.dp))
 
         ActionCard(
-            icon = Icons.Default.Launch,
+            icon = Icons.AutoMirrored.Filled.Launch,
             title = stringResource(R.string.cache_system_title),
             body = stringResource(R.string.cache_system_body),
             buttonLabel = stringResource(R.string.cache_open_system),

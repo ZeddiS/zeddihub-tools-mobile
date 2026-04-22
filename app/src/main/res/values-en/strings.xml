@@ -13,6 +13,55 @@
     <string name="login_error_generic">Sign-in failed. Please try again.</string>
     <string name="login_error_credentials">Invalid credentials.</string>
     <string name="login_error_offline">Unable to reach the server.</string>
+    <string name="login_identifier_hint">Username or e-mail</string>
+    <string name="login_error_disabled">This account is disabled. Contact an admin.</string>
+    <string name="login_error_rate_limited">Too many attempts. Try again shortly.</string>
+    <string name="register_title">Create an account</string>
+    <string name="register_username_hint">Username (3–24 chars)</string>
+    <string name="register_email_hint">E-mail</string>
+    <string name="register_password_hint">Password (min. 8 chars)</string>
+    <string name="register_password_confirm_hint">Repeat password</string>
+    <string name="register_submit">Create account</string>
+    <string name="register_have_account">Already have an account? Sign in</string>
+    <string name="register_error_empty">Please fill in every field.</string>
+    <string name="register_error_password_mismatch">Passwords do not match.</string>
+    <string name="register_error_invalid_username">Invalid username (3–24 chars, A–Z, 0–9, _.-).</string>
+    <string name="register_error_invalid_email">Please enter a valid e-mail.</string>
+    <string name="register_error_invalid_password">Password must be 8–128 characters.</string>
+    <string name="register_error_taken">That username or e-mail is already taken.</string>
+    <string name="register_error_rate_limited">Too many attempts from this network. Try later.</string>
+    <string name="register_error_network">Unable to reach the server.</string>
+    <string name="register_error_generic">Registration failed. Please try again.</string>
+
+    <!-- Canonical error-key translations (mirror desktop _ERROR_CS) -->
+    <string name="err_invalid_username">Invalid username.</string>
+    <string name="err_invalid_email">Invalid e-mail.</string>
+    <string name="err_invalid_password">Invalid password (min. 8 chars).</string>
+    <string name="err_captcha_required">Missing captcha token (internal client error).</string>
+    <string name="err_captcha_failed">Captcha verification failed.</string>
+    <string name="err_captcha_network">Could not reach captcha server.</string>
+    <string name="err_taken">That username or e-mail is already taken.</string>
+    <string name="err_bad_credentials">Incorrect credentials.</string>
+    <string name="err_disabled">This account is disabled. Contact an admin.</string>
+    <string name="err_too_fast">Too fast. Try again in a moment.</string>
+    <string name="err_too_many_fails">Too many failed attempts. Try later.</string>
+    <string name="err_daily_limit">Daily registration limit reached.</string>
+    <string name="err_auth_required">Sign-in expired. Please sign in again.</string>
+    <string name="err_auth_invalid">Session expired. Please sign in again.</string>
+    <string name="err_forbidden">You do not have permission.</string>
+    <string name="err_not_found">User not found.</string>
+    <string name="err_server_error">Server error. Try later.</string>
+    <string name="err_missing_identifier">Enter username or e-mail.</string>
+    <string name="err_missing_password">Enter password.</string>
+    <string name="err_network">Unable to reach the server.</string>
+    <string name="err_unknown_fallback">Error: %1$s</string>
+
+    <!-- Update checker -->
+    <string name="update_prompt_title">New version %1$s</string>
+    <string name="update_prompt_message">%1$s</string>
+    <string name="update_prompt_mandatory">%1$s\n\nThis update is mandatory.</string>
+    <string name="update_action_install">Download</string>
+    <string name="update_action_dismiss">Later</string>
     <string name="login_remember">Remember me (biometric)</string>
     <string name="login_biometric_title">Sign in with biometrics</string>
     <string name="login_biometric_subtitle">Confirm your identity with fingerprint or face</string>
@@ -30,7 +79,8 @@
     <string name="nav_home">Home</string>
     <string name="nav_servers">Servers</string>
     <string name="nav_ping">Ping tester</string>
-    <string name="nav_ip_lookup">IP Lookup</string>
+    <string name="nav_ip_lookup">IP Tracker</string>
+    <string name="nav_ip_tracker">IP Tracker</string>
     <string name="nav_device_info">Device info</string>
     <string name="nav_profile">Profile</string>
     <string name="nav_notifications">Notifications</string>
@@ -45,11 +95,14 @@
     <string name="nav_section_network">Network</string>
     <string name="nav_section_system_tools">System tools</string>
     <string name="nav_section_media">Media</string>
-    <string name="nav_speedtest">Speed test</string>
+    <string name="nav_section_wifi">WiFi</string>
+    <string name="nav_speedtest">SpeedTest</string>
     <string name="nav_cache_cleaner">Cache &amp; Temp</string>
     <string name="nav_app_finder">App finder</string>
     <string name="nav_wifi_scanner">WiFi Scanner</string>
     <string name="nav_wifi_passwords">WiFi passwords</string>
+    <string name="nav_wifi_map">WiFi map</string>
+    <string name="nav_wifi_tools">WiFi tools</string>
     <string name="nav_pdf_scanner">PDF Scanner</string>
     <string name="nav_decibel_meter">Decibel meter</string>
     <string name="nav_flashlight">Flashlight</string>
@@ -134,16 +187,41 @@
     <string name="notifications_seed_demo">Add demo alert</string>
 
     <string name="speedtest_title">Connection speed</string>
-    <string name="speedtest_subtitle">Measured via Cloudflare endpoint (10 MB)</string>
+    <string name="speedtest_subtitle">Cloudflare · 25 MB ↓ + 10 MB ↑ · 10 s cap</string>
     <string name="speedtest_start">Start test</string>
+    <string name="speedtest_run_again">New test</string>
+    <string name="speedtest_cancel">Cancel</string>
     <string name="speedtest_running">Measuring…</string>
     <string name="speedtest_mbps">%1$.1f Mb/s</string>
     <string name="speedtest_ping">Ping</string>
+    <string name="speedtest_jitter">Jitter</string>
+    <string name="speedtest_download">Download</string>
+    <string name="speedtest_upload">Upload</string>
     <string name="speedtest_downloaded">Downloaded</string>
     <string name="speedtest_elapsed">Elapsed</string>
     <string name="speedtest_hint">— Mb/s</string>
     <string name="speedtest_error">Error: %1$s</string>
     <string name="speedtest_powered_by">Endpoint: speed.cloudflare.com</string>
+
+    <!-- SpeedTest — phases -->
+    <string name="speedtest_phase_idle">Ready</string>
+    <string name="speedtest_phase_meta">Detecting network…</string>
+    <string name="speedtest_phase_ping">Latency</string>
+    <string name="speedtest_phase_download">Download</string>
+    <string name="speedtest_phase_upload">Upload</string>
+    <string name="speedtest_phase_done">Done</string>
+
+    <!-- SpeedTest — extended results -->
+    <string name="speedtest_extended_title">Extended results</string>
+    <string name="speedtest_meta_ip">IP</string>
+    <string name="speedtest_meta_isp">ISP</string>
+    <string name="speedtest_meta_server">Server</string>
+    <string name="speedtest_meta_city">Location</string>
+    <string name="speedtest_loss_summary">Ping: %1$d / %2$d replies · loss %3$.1f %%</string>
+    <string name="speedtest_download_samples">Download samples</string>
+    <string name="speedtest_upload_samples">Upload samples</string>
+    <string name="speedtest_share">Share result</string>
+    <string name="speedtest_share_chooser_title">Share result</string>
 
     <string name="cache_title">Cache &amp; Temp files</string>
     <string name="cache_subtitle">Free up space by clearing app cache and temporary files.</string>
@@ -226,7 +304,7 @@
     <string name="update_changelog">What\'s new</string>
 
     <!-- SpeedTest extended -->
-    <string name="speedtest_history">History (last 5)</string>
+    <string name="speedtest_history">History (last 10)</string>
     <string name="speedtest_clear_history">Clear history</string>
     <string name="speedtest_min">Min</string>
     <string name="speedtest_avg">Avg</string>
@@ -335,4 +413,52 @@
     <string name="common_retry">Retry</string>
     <string name="common_open">Open</string>
     <string name="common_close">Close</string>
+
+    <!-- WiFi Tools -->
+    <string name="wifi_tools_title">WiFi tools</string>
+    <string name="wifi_tools_subtitle">QR codes, strong password generator and your saved WiFi.</string>
+    <string name="wifi_tools_generate_title">Generate WiFi QR code</string>
+    <string name="wifi_tools_ssid">Network name (SSID)</string>
+    <string name="wifi_tools_password">Password</string>
+    <string name="wifi_tools_generate">QR code</string>
+    <string name="wifi_tools_save">Save</string>
+    <string name="wifi_tools_saved_toast">WiFi saved to "My WiFi".</string>
+    <string name="wifi_tools_scan_hint">Scan with your camera to connect.</string>
+    <string name="wifi_tools_pwdgen_title">Strong password generator</string>
+    <string name="wifi_tools_pwdgen_length">Length: %1$d</string>
+    <string name="wifi_tools_pwdgen_regen">Generate</string>
+    <string name="wifi_tools_pwdgen_copy">Copy</string>
+    <string name="wifi_tools_pwdgen_copied">Password copied.</string>
+    <string name="wifi_tools_mywifi_title">My WiFi</string>
+    <string name="wifi_tools_mywifi_empty">Nothing saved yet — fill the form above and press "Save".</string>
+    <string name="wifi_tools_system_title">Saved in system</string>
+    <string name="wifi_tools_system_body">Android 10+ no longer exposes stored passwords. They can only be viewed from system settings.</string>
+    <string name="wifi_tools_open_settings">Open WiFi settings</string>
+
+    <!-- WiFi Map -->
+    <string name="wifi_map_title">WiFi map</string>
+    <string name="wifi_map_subtitle">Public WiFi around you. Share yours to help others.</string>
+    <string name="wifi_map_loading">Loading…</string>
+    <string name="wifi_map_empty">No spots nearby. Be the first!</string>
+    <string name="wifi_map_error">Could not load data.</string>
+    <string name="wifi_map_refresh">Refresh</string>
+    <string name="wifi_map_add">Add WiFi</string>
+    <string name="wifi_map_submit_title">New WiFi</string>
+    <string name="wifi_map_submit_subtitle">Save SSID, password and venue. GPS coordinates fill in automatically.</string>
+    <string name="wifi_map_submit_ssid">SSID</string>
+    <string name="wifi_map_submit_password">Password (optional)</string>
+    <string name="wifi_map_submit_open">Open network (no password)</string>
+    <string name="wifi_map_submit_venue">Venue name (e.g. café Luka)</string>
+    <string name="wifi_map_submit_note">Note (optional)</string>
+    <string name="wifi_map_submit_send">Send</string>
+    <string name="wifi_map_submit_cancel">Cancel</string>
+    <string name="wifi_map_submit_gps_missing">Waiting for GPS…</string>
+    <string name="wifi_map_submit_ok">Thanks! Your WiFi was added.</string>
+    <string name="wifi_map_submit_error">Could not submit.</string>
+    <string name="wifi_map_permission_title">Location needed</string>
+    <string name="wifi_map_permission_body">WiFi Map needs precise location to show nearby networks and let you submit your own.</string>
+    <string name="wifi_map_permission_grant">Allow location</string>
+    <string name="wifi_map_entry_open">Open network</string>
+    <string name="wifi_map_entry_password_hidden">Password hidden — tap to reveal</string>
+    <string name="wifi_map_entry_verified">Verified</string>
 </resources>

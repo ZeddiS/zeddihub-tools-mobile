@@ -13,6 +13,55 @@
     <string name="login_error_generic">Přihlášení se nezdařilo. Zkus to prosím znovu.</string>
     <string name="login_error_credentials">Neplatné přihlašovací údaje.</string>
     <string name="login_error_offline">Nelze se připojit k serveru.</string>
+    <string name="login_identifier_hint">Uživatelské jméno nebo e-mail</string>
+    <string name="login_error_disabled">Účet je zablokovaný. Kontaktuj admina.</string>
+    <string name="login_error_rate_limited">Moc pokusů. Zkus to za chvíli znovu.</string>
+    <string name="register_title">Vytvoření účtu</string>
+    <string name="register_username_hint">Uživatelské jméno (3–24 znaků)</string>
+    <string name="register_email_hint">E-mail</string>
+    <string name="register_password_hint">Heslo (min. 8 znaků)</string>
+    <string name="register_password_confirm_hint">Heslo znovu</string>
+    <string name="register_submit">Vytvořit účet</string>
+    <string name="register_have_account">Už máš účet? Přihlásit se</string>
+    <string name="register_error_empty">Vyplň všechna pole.</string>
+    <string name="register_error_password_mismatch">Hesla se neshodují.</string>
+    <string name="register_error_invalid_username">Neplatné uživatelské jméno (3–24 znaků, A–Z, 0–9, _.-).</string>
+    <string name="register_error_invalid_email">Zadej platný e-mail.</string>
+    <string name="register_error_invalid_password">Heslo musí mít 8–128 znaků.</string>
+    <string name="register_error_taken">Toto uživatelské jméno nebo e-mail už někdo používá.</string>
+    <string name="register_error_rate_limited">Moc pokusů z této sítě. Zkus to později.</string>
+    <string name="register_error_network">Nelze se připojit k serveru.</string>
+    <string name="register_error_generic">Registrace selhala. Zkus to prosím znovu.</string>
+
+    <!-- Canonical error-key translations (mirror desktop _ERROR_CS, viz MOBILE_SYNC_v2.md §4) -->
+    <string name="err_invalid_username">Neplatné uživatelské jméno.</string>
+    <string name="err_invalid_email">Neplatný e-mail.</string>
+    <string name="err_invalid_password">Neplatné heslo (min. 8 znaků).</string>
+    <string name="err_captcha_required">Chybí captcha token (interní chyba klienta).</string>
+    <string name="err_captcha_failed">Captcha se nepodařilo ověřit.</string>
+    <string name="err_captcha_network">Nepodařilo se spojit s captcha serverem.</string>
+    <string name="err_taken">Uživatelské jméno nebo e-mail už někdo používá.</string>
+    <string name="err_bad_credentials">Nesprávné přihlašovací údaje.</string>
+    <string name="err_disabled">Účet je zablokovaný. Kontaktuj administrátora.</string>
+    <string name="err_too_fast">Moc rychle. Zkuste to znovu za chvíli.</string>
+    <string name="err_too_many_fails">Příliš mnoho neúspěšných pokusů. Zkuste později.</string>
+    <string name="err_daily_limit">Dosáhli jste denního limitu registrací.</string>
+    <string name="err_auth_required">Přihlášení vypršelo, přihlaste se znovu.</string>
+    <string name="err_auth_invalid">Session vypršela, přihlaste se znovu.</string>
+    <string name="err_forbidden">Nemáte oprávnění.</string>
+    <string name="err_not_found">Uživatel nenalezen.</string>
+    <string name="err_server_error">Chyba serveru, zkuste později.</string>
+    <string name="err_missing_identifier">Zadejte uživatelské jméno nebo e-mail.</string>
+    <string name="err_missing_password">Zadejte heslo.</string>
+    <string name="err_network">Nelze se připojit k serveru.</string>
+    <string name="err_unknown_fallback">Chyba: %1$s</string>
+
+    <!-- Update checker (MOBILE_SYNC_v2 §7) -->
+    <string name="update_prompt_title">Nová verze %1$s</string>
+    <string name="update_prompt_message">%1$s</string>
+    <string name="update_prompt_mandatory">%1$s\n\nTato aktualizace je povinná.</string>
+    <string name="update_action_install">Stáhnout</string>
+    <string name="update_action_dismiss">Později</string>
     <string name="login_remember">Zapamatovat si mě (biometrika)</string>
     <string name="login_biometric_title">Přihlásit biometrikou</string>
     <string name="login_biometric_subtitle">Potvrď identitu otiskem nebo obličejem</string>
@@ -31,7 +80,8 @@
     <string name="nav_home">Hlavní stránka</string>
     <string name="nav_servers">Servery</string>
     <string name="nav_ping">Ping tester</string>
-    <string name="nav_ip_lookup">IP Lookup</string>
+    <string name="nav_ip_lookup">IP Tracker</string>
+    <string name="nav_ip_tracker">IP Tracker</string>
     <string name="nav_device_info">Info o zařízení</string>
     <string name="nav_profile">Profil</string>
     <string name="nav_notifications">Oznámení</string>
@@ -46,11 +96,14 @@
     <string name="nav_section_network">Síť</string>
     <string name="nav_section_system_tools">Systémové nástroje</string>
     <string name="nav_section_media">Média</string>
-    <string name="nav_speedtest">Rychlost připojení</string>
+    <string name="nav_section_wifi">WiFi</string>
+    <string name="nav_speedtest">SpeedTest</string>
     <string name="nav_cache_cleaner">Cache &amp; Temp</string>
     <string name="nav_app_finder">Najít aplikaci</string>
     <string name="nav_wifi_scanner">WiFi Scanner</string>
     <string name="nav_wifi_passwords">WiFi hesla</string>
+    <string name="nav_wifi_map">WiFi mapa</string>
+    <string name="nav_wifi_tools">WiFi nástroje</string>
     <string name="nav_pdf_scanner">PDF Scanner</string>
     <string name="nav_decibel_meter">Decibelmetr</string>
     <string name="nav_flashlight">Baterka</string>
@@ -143,16 +196,41 @@
 
     <!-- SpeedTest -->
     <string name="speedtest_title">Rychlost připojení</string>
-    <string name="speedtest_subtitle">Měření pomocí Cloudflare endpointu (10 MB)</string>
+    <string name="speedtest_subtitle">Cloudflare · 25 MB ↓ + 10 MB ↑ · cap 10 s</string>
     <string name="speedtest_start">Spustit měření</string>
+    <string name="speedtest_run_again">Nový test</string>
+    <string name="speedtest_cancel">Zrušit</string>
     <string name="speedtest_running">Měřím…</string>
     <string name="speedtest_mbps">%1$.1f Mb/s</string>
     <string name="speedtest_ping">Ping</string>
+    <string name="speedtest_jitter">Jitter</string>
+    <string name="speedtest_download">Download</string>
+    <string name="speedtest_upload">Upload</string>
     <string name="speedtest_downloaded">Staženo</string>
     <string name="speedtest_elapsed">Čas</string>
     <string name="speedtest_hint">— Mb/s</string>
     <string name="speedtest_error">Chyba: %1$s</string>
     <string name="speedtest_powered_by">Endpoint: speed.cloudflare.com</string>
+
+    <!-- SpeedTest — phases -->
+    <string name="speedtest_phase_idle">Připraveno</string>
+    <string name="speedtest_phase_meta">Zjišťuji připojení…</string>
+    <string name="speedtest_phase_ping">Odezva</string>
+    <string name="speedtest_phase_download">Stahování</string>
+    <string name="speedtest_phase_upload">Odesílání</string>
+    <string name="speedtest_phase_done">Hotovo</string>
+
+    <!-- SpeedTest — extended results -->
+    <string name="speedtest_extended_title">Podrobné výsledky</string>
+    <string name="speedtest_meta_ip">IP</string>
+    <string name="speedtest_meta_isp">ISP</string>
+    <string name="speedtest_meta_server">Server</string>
+    <string name="speedtest_meta_city">Lokalita</string>
+    <string name="speedtest_loss_summary">Odezva: %1$d / %2$d odpovědí · ztráta %3$.1f %%</string>
+    <string name="speedtest_download_samples">Průběh stahování</string>
+    <string name="speedtest_upload_samples">Průběh odesílání</string>
+    <string name="speedtest_share">Sdílet výsledek</string>
+    <string name="speedtest_share_chooser_title">Sdílet výsledek</string>
 
     <!-- Cache cleaner -->
     <string name="cache_title">Cache &amp; Temp soubory</string>
@@ -241,7 +319,7 @@
     <string name="update_changelog">Co je nového</string>
 
     <!-- SpeedTest extended -->
-    <string name="speedtest_history">Historie (posledních 5)</string>
+    <string name="speedtest_history">Historie (posledních 10)</string>
     <string name="speedtest_clear_history">Smazat historii</string>
     <string name="speedtest_min">Min</string>
     <string name="speedtest_avg">Průměr</string>
@@ -351,4 +429,52 @@
     <string name="common_retry">Zkusit znovu</string>
     <string name="common_open">Otevřít</string>
     <string name="common_close">Zavřít</string>
+
+    <!-- WiFi Nástroje -->
+    <string name="wifi_tools_title">WiFi nástroje</string>
+    <string name="wifi_tools_subtitle">QR kódy, generátor hesel a tvoje uložené WiFi.</string>
+    <string name="wifi_tools_generate_title">Vygenerovat QR pro WiFi</string>
+    <string name="wifi_tools_ssid">Název sítě (SSID)</string>
+    <string name="wifi_tools_password">Heslo</string>
+    <string name="wifi_tools_generate">QR kód</string>
+    <string name="wifi_tools_save">Uložit</string>
+    <string name="wifi_tools_saved_toast">WiFi uložena do „Moje WiFi“.</string>
+    <string name="wifi_tools_scan_hint">Naskenuj kód fotoaparátem pro připojení.</string>
+    <string name="wifi_tools_pwdgen_title">Generátor silného hesla</string>
+    <string name="wifi_tools_pwdgen_length">Délka: %1$d</string>
+    <string name="wifi_tools_pwdgen_regen">Generovat</string>
+    <string name="wifi_tools_pwdgen_copy">Kopírovat</string>
+    <string name="wifi_tools_pwdgen_copied">Heslo zkopírováno.</string>
+    <string name="wifi_tools_mywifi_title">Moje WiFi</string>
+    <string name="wifi_tools_mywifi_empty">Zatím nic uloženého — vyplň formulář výše a dej „Uložit“.</string>
+    <string name="wifi_tools_system_title">Uložené v systému</string>
+    <string name="wifi_tools_system_body">Android od verze 10 neumožňuje číst hesla uložená v systému. Zobrazit jdou jen v nastavení.</string>
+    <string name="wifi_tools_open_settings">Otevřít WiFi nastavení</string>
+
+    <!-- WiFi mapa -->
+    <string name="wifi_map_title">WiFi mapa</string>
+    <string name="wifi_map_subtitle">Veřejné WiFi okolo tebe. Přispěj svou WiFi pro ostatní.</string>
+    <string name="wifi_map_loading">Načítám…</string>
+    <string name="wifi_map_empty">Žádné body poblíž. Přispěj vlastní!</string>
+    <string name="wifi_map_error">Nepodařilo se načíst data.</string>
+    <string name="wifi_map_refresh">Obnovit</string>
+    <string name="wifi_map_add">Přidat WiFi</string>
+    <string name="wifi_map_submit_title">Nová WiFi</string>
+    <string name="wifi_map_submit_subtitle">Ulož SSID, heslo a místo. GPS polohu vyplníme automaticky.</string>
+    <string name="wifi_map_submit_ssid">SSID</string>
+    <string name="wifi_map_submit_password">Heslo (volitelné)</string>
+    <string name="wifi_map_submit_open">Otevřená síť (bez hesla)</string>
+    <string name="wifi_map_submit_venue">Název místa (např. kavárna Luka)</string>
+    <string name="wifi_map_submit_note">Poznámka (volitelné)</string>
+    <string name="wifi_map_submit_send">Odeslat</string>
+    <string name="wifi_map_submit_cancel">Zrušit</string>
+    <string name="wifi_map_submit_gps_missing">Počkej prosím na GPS polohu…</string>
+    <string name="wifi_map_submit_ok">Díky! WiFi byla přidána.</string>
+    <string name="wifi_map_submit_error">Odeslání se nezdařilo.</string>
+    <string name="wifi_map_permission_title">Potřebuji polohu</string>
+    <string name="wifi_map_permission_body">WiFi mapa vyžaduje přesnou polohu pro zobrazení sítí okolo tebe a přispívání vlastních.</string>
+    <string name="wifi_map_permission_grant">Povolit polohu</string>
+    <string name="wifi_map_entry_open">Otevřená síť</string>
+    <string name="wifi_map_entry_password_hidden">Heslo ukryto — klikni pro zobrazení</string>
+    <string name="wifi_map_entry_verified">Ověřeno</string>
 </resources>

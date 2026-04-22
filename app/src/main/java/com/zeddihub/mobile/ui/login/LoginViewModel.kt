@@ -4,8 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zeddihub.mobile.data.local.AppPreferences
+import com.zeddihub.mobile.data.repository.AuthError
 import com.zeddihub.mobile.data.repository.AuthRepository
-import com.zeddihub.mobile.data.repository.LoginError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class LoginErrorKind { NONE, EMPTY, CREDENTIALS, NETWORK, GENERIC }
+enum class LoginErrorKind { NONE, EMPTY, CREDENTIALS, NETWORK, DISABLED, RATE_LIMITED, GENERIC }
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
@@ -45,7 +45,9 @@ class LoginViewModel @Inject constructor(
     val sessionFlow: StateFlow<com.zeddihub.mobile.data.local.CredentialStore.Session?> =
         authRepository.session
 
-    fun logout() { authRepository.logout() }
+    fun logout() {
+        viewModelScope.launch { authRepository.logout() }
+    }
 
     fun credentials(): com.zeddihub.mobile.data.local.CredentialStore.Credentials? =
         authRepository.rememberedCredentials()
@@ -106,10 +108,22 @@ class LoginViewModel @Inject constructor(
                 appPreferences.setBiometricEnabled(rememberMe)
                 _state.value = _state.value.copy(isLoading = false, loggedIn = true)
             } else {
-                val kind = when (result.exceptionOrNull()) {
-                    is LoginError.InvalidCredentials -> LoginErrorKind.CREDENTIALS
-                    is LoginError.Network -> LoginErrorKind.NETWORK
-                    else -> LoginErrorKind.GENERIC
+                val kind = when (val err = result.exceptionOrNull()) {
+                    is AuthError.BadCredentials,
+                    is AuthError.MissingIdentifier,
+                    is AuthError.MissingPassword -> LoginErrorKind.CREDENTIALS
+                    is AuthError.Network -> LoginErrorKind.NETWORK
+                    is AuthError.Disabled -> LoginErrorKind.DISABLED
+                    is AuthError.TooFast,
+                    is AuthError.TooManyFails,
+                    is AuthError.DailyLimit -> LoginErrorKind.RATE_LIMITED
+                    is AuthError.AuthRequired,
+                    is AuthError.AuthInvalid -> LoginErrorKind.CREDENTIALS
+                    else -> {
+                        // Keep reference to silence unused warning while falling through
+                        @Suppress("UNUSED_VARIABLE") val ignored = err
+                        LoginErrorKind.GENERIC
+                    }
                 }
                 _state.value = _state.value.copy(isLoading = false, errorKind = kind)
             }

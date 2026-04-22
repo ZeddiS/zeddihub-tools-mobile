@@ -1,6 +1,5 @@
 package com.zeddihub.mobile.ui.common
 
-import android.os.Build
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -34,6 +33,7 @@ import androidx.compose.material.icons.filled.FlashlightOn
 import androidx.compose.material.icons.filled.Forum
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.NetworkCheck
 import androidx.compose.material.icons.filled.Notifications
@@ -61,9 +61,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -80,27 +81,28 @@ data class SidebarItem(
     val section: Int = 0
 )
 
-// Sections: 0 core, 1 Network, 2 System, 3 Media, 4 Community, 5 System admin
+// Sections: 0 core, 1 Network, 2 WiFi, 3 System tools, 4 Media, 5 Community, 6 System admin
 private val baseSidebarItems = listOf(
     SidebarItem(Destinations.Home.route, R.string.nav_home, Icons.Default.Home, 0),
     SidebarItem(Destinations.Servers.route, R.string.nav_servers, Icons.Default.Storage, 0),
     SidebarItem(Destinations.SpeedTest.route, R.string.nav_speedtest, Icons.Default.NetworkCheck, 1),
-    SidebarItem(Destinations.IpLookup.route, R.string.nav_ip_lookup, Icons.Default.Public, 1),
-    SidebarItem(Destinations.WifiScanner.route, R.string.nav_wifi_scanner, Icons.Default.Wifi, 1),
-    SidebarItem(Destinations.WifiPasswords.route, R.string.nav_wifi_passwords, Icons.Default.WifiPassword, 1),
-    SidebarItem(Destinations.DeviceInfo.route, R.string.nav_device_info, Icons.Default.Devices, 2),
-    SidebarItem(Destinations.CacheCleaner.route, R.string.nav_cache_cleaner, Icons.Default.CleaningServices, 2),
-    SidebarItem(Destinations.AppFinder.route, R.string.nav_app_finder, Icons.Default.Apps, 2),
-    SidebarItem(Destinations.PdfScanner.route, R.string.nav_pdf_scanner, Icons.Default.PictureAsPdf, 3),
-    SidebarItem(Destinations.DecibelMeter.route, R.string.nav_decibel_meter, Icons.Default.GraphicEq, 3),
-    SidebarItem(Destinations.Flashlight.route, R.string.nav_flashlight, Icons.Default.FlashlightOn, 3),
-    SidebarItem(Destinations.Profile.route, R.string.nav_profile, Icons.Default.Person, 4),
-    SidebarItem(Destinations.Notifications.route, R.string.nav_notifications, Icons.Default.Notifications, 4),
-    SidebarItem(Destinations.Community.route, R.string.nav_community, Icons.Default.Forum, 4)
+    SidebarItem(Destinations.IpLookup.route, R.string.nav_ip_tracker, Icons.Default.Public, 1),
+    SidebarItem(Destinations.WifiScanner.route, R.string.nav_wifi_scanner, Icons.Default.Wifi, 2),
+    SidebarItem(Destinations.WifiMap.route, R.string.nav_wifi_map, Icons.Default.Map, 2),
+    SidebarItem(Destinations.WifiTools.route, R.string.nav_wifi_tools, Icons.Default.WifiPassword, 2),
+    SidebarItem(Destinations.DeviceInfo.route, R.string.nav_device_info, Icons.Default.Devices, 3),
+    SidebarItem(Destinations.CacheCleaner.route, R.string.nav_cache_cleaner, Icons.Default.CleaningServices, 3),
+    SidebarItem(Destinations.AppFinder.route, R.string.nav_app_finder, Icons.Default.Apps, 3),
+    SidebarItem(Destinations.PdfScanner.route, R.string.nav_pdf_scanner, Icons.Default.PictureAsPdf, 4),
+    SidebarItem(Destinations.DecibelMeter.route, R.string.nav_decibel_meter, Icons.Default.GraphicEq, 4),
+    SidebarItem(Destinations.Flashlight.route, R.string.nav_flashlight, Icons.Default.FlashlightOn, 4),
+    SidebarItem(Destinations.Profile.route, R.string.nav_profile, Icons.Default.Person, 5),
+    SidebarItem(Destinations.Notifications.route, R.string.nav_notifications, Icons.Default.Notifications, 5),
+    SidebarItem(Destinations.Community.route, R.string.nav_community, Icons.Default.Forum, 5)
 )
 
-private val adminItem = SidebarItem(Destinations.Admin.route, R.string.nav_admin, Icons.Default.AdminPanelSettings, 5)
-private val settingsItem = SidebarItem(Destinations.Settings.route, R.string.nav_settings, Icons.Default.Settings, 5)
+private val adminItem = SidebarItem(Destinations.Admin.route, R.string.nav_admin, Icons.Default.AdminPanelSettings, 6)
+private val settingsItem = SidebarItem(Destinations.Settings.route, R.string.nav_settings, Icons.Default.Settings, 6)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -186,38 +188,40 @@ private fun SidebarContent(
 ) {
     val colors = MaterialTheme.colorScheme
 
-    // Glassmorphism gradient — deep vertical gradient with surface tint blend.
-    val glassGradient = Brush.verticalGradient(
+    // Full-height opaque gradient running from primary tint down into the
+    // deep surface. Matches the elegant dark aesthetic of the rest of the
+    // app while staying fully opaque so content behind it is not visible.
+    val sidebarGradient = Brush.verticalGradient(
         colors = listOf(
-            colors.surface.copy(alpha = 0.92f),
-            colors.surfaceVariant.copy(alpha = 0.86f),
-            colors.surface.copy(alpha = 0.94f)
+            colors.primary.copy(alpha = 0.35f).compositeOver(colors.background),
+            colors.surface,
+            colors.background
         )
     )
 
-    val blurModifier = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-        Modifier.blur(0.dp) else Modifier // blur is applied to backdrop, drawer stays crisp
+    val sidebarShape = RoundedCornerShape(topEnd = 28.dp, bottomEnd = 28.dp)
 
     ModalDrawerSheet(
         drawerContainerColor = Color.Transparent,
         drawerContentColor = colors.onSurface,
-        drawerShape = RoundedCornerShape(topEnd = 28.dp, bottomEnd = 28.dp),
+        drawerShape = sidebarShape,
         modifier = Modifier.width(304.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxHeight()
                 .width(304.dp)
-                .background(glassGradient)
+                .clip(sidebarShape)
+                .background(sidebarGradient)
                 .border(
                     width = 1.dp,
                     brush = Brush.verticalGradient(
                         listOf(
-                            colors.primary.copy(alpha = 0.35f),
-                            colors.primary.copy(alpha = 0.0f)
+                            colors.primary.copy(alpha = 0.45f),
+                            colors.primary.copy(alpha = 0.05f)
                         )
                     ),
-                    shape = RoundedCornerShape(topEnd = 28.dp, bottomEnd = 28.dp)
+                    shape = sidebarShape
                 )
         ) {
             Column(
@@ -295,10 +299,11 @@ private fun SidebarContent(
                 val sectionLabels = mapOf(
                     0 to null,
                     1 to R.string.nav_section_network,
-                    2 to R.string.nav_section_system_tools,
-                    3 to R.string.nav_section_media,
-                    4 to R.string.nav_section_community,
-                    5 to R.string.nav_section_system
+                    2 to R.string.nav_section_wifi,
+                    3 to R.string.nav_section_system_tools,
+                    4 to R.string.nav_section_media,
+                    5 to R.string.nav_section_community,
+                    6 to R.string.nav_section_system
                 )
 
                 grouped.keys.sorted().forEach { sectionKey ->

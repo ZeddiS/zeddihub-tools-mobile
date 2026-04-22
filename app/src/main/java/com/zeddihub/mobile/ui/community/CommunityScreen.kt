@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Favorite
@@ -24,6 +26,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -33,6 +40,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.zeddihub.mobile.BuildConfig
 import com.zeddihub.mobile.R
+import com.zeddihub.mobile.ui.common.PullToRefreshBox
+import kotlinx.coroutines.delay
 
 @Composable
 fun CommunityScreen(padding: PaddingValues) {
@@ -43,11 +52,26 @@ fun CommunityScreen(padding: PaddingValues) {
         ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 
-    Column(
+    var refreshing by remember { mutableStateOf(false) }
+    LaunchedEffect(refreshing) {
+        if (refreshing) {
+            delay(600)
+            refreshing = false
+        }
+    }
+
+    PullToRefreshBox(
+        isRefreshing = refreshing,
+        onRefresh = { refreshing = true },
         modifier = Modifier
             .fillMaxSize()
             .background(colors.background)
             .padding(padding)
+    ) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
         Text(
@@ -85,6 +109,7 @@ fun CommunityScreen(padding: PaddingValues) {
             desc = stringResource(R.string.community_donate_desc),
             onClick = { open("https://zeddihub.eu/donate") }
         )
+    }
     }
 }
 

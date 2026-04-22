@@ -20,7 +20,8 @@ class HomeViewModel @Inject constructor(
 
     data class UiState(
         val servers: List<ServerDto> = emptyList(),
-        val displayName: String? = null
+        val displayName: String? = null,
+        val isRefreshing: Boolean = false
     )
 
     private val _state = MutableStateFlow(
@@ -35,9 +36,11 @@ class HomeViewModel @Inject constructor(
 
     fun refresh() {
         viewModelScope.launch {
+            _state.value = _state.value.copy(isRefreshing = true)
             serverRepository.getAll().onSuccess { list ->
                 _state.value = _state.value.copy(servers = list)
             }
+            _state.value = _state.value.copy(isRefreshing = false)
         }
     }
 }

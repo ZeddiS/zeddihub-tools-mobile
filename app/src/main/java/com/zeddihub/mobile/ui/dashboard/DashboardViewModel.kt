@@ -77,8 +77,10 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun logout(onDone: () -> Unit) {
-        authRepository.logout()
-        onDone()
+        viewModelScope.launch {
+            authRepository.logout()
+            onDone()
+        }
     }
 
     override fun onCleared() {

@@ -47,6 +47,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.zeddihub.mobile.BuildConfig
 import com.zeddihub.mobile.R
 import com.zeddihub.mobile.data.remote.dto.ServerDto
+import com.zeddihub.mobile.ui.common.PullToRefreshBox
 import com.zeddihub.mobile.ui.common.StatusDot
 import com.zeddihub.mobile.ui.navigation.Destinations
 import com.zeddihub.mobile.ui.theme.StateDanger
@@ -63,11 +64,17 @@ fun HomeScreen(
     val colors = MaterialTheme.colorScheme
     val ctx = LocalContext.current
 
-    Column(
+    PullToRefreshBox(
+        isRefreshing = state.isRefreshing,
+        onRefresh = viewModel::refresh,
         modifier = Modifier
             .fillMaxSize()
             .background(colors.background)
             .padding(padding)
+    ) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         Box(
@@ -213,6 +220,7 @@ fun HomeScreen(
         }
 
         Spacer(Modifier.height(32.dp))
+    }
     }
 }
 

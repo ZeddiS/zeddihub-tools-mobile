@@ -2,6 +2,7 @@ package com.zeddihub.mobile.ui.navigation
 
 sealed class Destinations(val route: String) {
     data object Login : Destinations("login")
+    data object Register : Destinations("register")
     data object Home : Destinations("home")
     data object Servers : Destinations("servers")
     data object SpeedTest : Destinations("tools/speedtest")
@@ -10,7 +11,8 @@ sealed class Destinations(val route: String) {
     data object CacheCleaner : Destinations("tools/cache")
     data object AppFinder : Destinations("tools/apps")
     data object WifiScanner : Destinations("tools/wifi/scan")
-    data object WifiPasswords : Destinations("tools/wifi/passwords")
+    data object WifiMap : Destinations("tools/wifi/map")
+    data object WifiTools : Destinations("tools/wifi/tools")
     data object PdfScanner : Destinations("tools/pdf")
     data object DecibelMeter : Destinations("tools/decibel")
     data object Flashlight : Destinations("tools/flashlight")

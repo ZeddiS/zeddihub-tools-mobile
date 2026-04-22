@@ -57,8 +57,8 @@ fun FlashlightScreen(padding: PaddingValues) {
     val colors = MaterialTheme.colorScheme
     var colorScreen by remember { mutableStateOf<Color?>(null) }
 
-    if (colorScreen != null) {
-        ColorScreen(color = colorScreen!!, onDismiss = { colorScreen = null })
+    colorScreen?.let { color ->
+        ColorScreen(color = color, onDismiss = { colorScreen = null })
         return
     }
 

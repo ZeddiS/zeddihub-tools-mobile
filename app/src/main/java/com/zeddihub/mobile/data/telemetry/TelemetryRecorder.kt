@@ -103,7 +103,7 @@ class TelemetryRecorder @Inject constructor(
         val body = adapter.toJson(payload)
             .toRequestBody("application/json".toMediaType())
         val req = Request.Builder()
-            .url(BuildConfig.API_BASE_URL.trimEnd('/') + "/api/telemetry")
+            .url(BuildConfig.API_BASE_URL.trimEnd('/') + "/telemetry")
             .post(body)
             .build()
         return runCatching {

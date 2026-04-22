@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zeddihub.mobile.R
 import com.zeddihub.mobile.data.alerts.Alert
+import com.zeddihub.mobile.ui.common.PullToRefreshBox
 import java.text.DateFormat
 import java.util.Date
 
@@ -52,12 +53,19 @@ fun NotificationsScreen(
     val colors = MaterialTheme.colorScheme
     val alerts by vm.alerts.collectAsState()
     val unread by vm.unreadCount.collectAsState()
+    val isRefreshing by vm.isRefreshing.collectAsState()
 
-    Column(
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = { vm.refresh() },
         modifier = Modifier
             .fillMaxSize()
             .background(colors.background)
             .padding(padding)
+    ) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
         Box(
@@ -129,6 +137,7 @@ fun NotificationsScreen(
                 }
             }
         }
+    }
     }
 }
 

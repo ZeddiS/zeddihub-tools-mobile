@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zeddihub.mobile.R
 import com.zeddihub.mobile.data.remote.dto.ServerDto
+import com.zeddihub.mobile.ui.common.PullToRefreshBox
 import com.zeddihub.mobile.ui.common.StatusDot
 import com.zeddihub.mobile.ui.dashboard.DashboardViewModel
 import com.zeddihub.mobile.ui.theme.GameCs2Yellow
@@ -65,11 +66,16 @@ fun ServersScreen(
     val colors = MaterialTheme.colorScheme
     val ctx = LocalContext.current
 
-    Column(
+    PullToRefreshBox(
+        isRefreshing = state.isRefreshing,
+        onRefresh = viewModel::refresh,
         modifier = Modifier
             .fillMaxSize()
             .background(colors.background)
             .padding(padding)
+    ) {
+    Column(
+        modifier = Modifier.fillMaxSize()
     ) {
         SummaryBar(state.servers)
 
@@ -112,6 +118,7 @@ fun ServersScreen(
                 }
             }
         }
+    }
     }
 }
 
@@ -240,9 +247,9 @@ private fun ServerCard(server: ServerDto, onCopyIp: () -> Unit) {
                         Icons.Default.Router,
                         server.pingMs?.let { "${it} ms" } ?: "—"
                     )
-                    if (!server.map.isNullOrBlank()) {
+                    server.map?.takeIf { it.isNotBlank() }?.let { map ->
                         Spacer(Modifier.width(14.dp))
-                        Stat(Icons.Default.Map, server.map!!)
+                        Stat(Icons.Default.Map, map)
                     }
                 }
             }

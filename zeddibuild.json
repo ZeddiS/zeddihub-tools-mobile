@@ -1,0 +1,46 @@
+{
+  "$schema": "https://zeddihub.cz/zeddibuild.schema.json",
+  "name": "ZeddiHubApkUploader",
+  "display_name": "ZeddiHub APK Uploader",
+  "version": "1.0.0",
+  "description": "CLI nástroj pro upload vybuildeného APK na Google Drive (OAuth desktop flow, resumable upload, složkování podle versionName).",
+  "author": "ZeddiHub",
+  "entry_point": "scripts/upload_apk.py",
+  "output_name": "ZeddiHubApkUploader",
+  "build": {
+    "onefile": true,
+    "console": true,
+    "upx": true,
+    "strip": false,
+    "clean": true
+  },
+  "data_files": [],
+  "hidden_imports": [],
+  "excludes": [
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "scipy",
+    "torch",
+    "tensorflow",
+    "sklearn",
+    "sympy",
+    "pytest",
+    "IPython",
+    "jupyter",
+    "notebook",
+    "sphinx",
+    "PyQt5",
+    "PyQt6",
+    "PySide2",
+    "PySide6",
+    "tkinter",
+    "PIL",
+    "customtkinter"
+  ],
+  "python_min": "3.10",
+  "post_build": {
+    "open_folder": true,
+    "run_app": false
+  }
+}

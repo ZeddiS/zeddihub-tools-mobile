@@ -17,16 +17,25 @@ android {
         applicationId = "com.zeddihub.mobile"
         minSdk = 26
         targetSdk = 34
-        versionCode = 7
-        versionName = "0.5.2"
+        versionCode = 8
+        versionName = "0.5.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
 
-        buildConfigField("String", "API_BASE_URL", "\"https://zeddihub.eu/\"")
+        buildConfigField("String", "API_BASE_URL", "\"https://zeddihub.eu/api/\"")
+        buildConfigField("String", "SITE_BASE_URL", "\"https://zeddihub.eu/\"")
         buildConfigField("String", "WS_BASE_URL", "\"wss://zeddihub.eu/ws/\"")
         buildConfigField("String", "WEB_URL", "\"https://zeddihub.eu/tools\"")
         buildConfigField("String", "DISCORD_URL", "\"https://dsc.gg/zeddihub\"")
+        // Shared secret sent as X-App-Secret so native apps bypass hCaptcha.
+        // Must match ZH_APP_SECRET in website/api/_config.php.
+        buildConfigField(
+            "String",
+            "APP_SECRET",
+            "\"696d63c65a8536637183028e4eecb841cd5b679ce7b2d33c6ef2d4054166e438\""
+        )
+        buildConfigField("String", "CLIENT_KIND", "\"mobile\"")
 
         resourceConfigurations += listOf("cs", "en")
     }
@@ -113,8 +122,8 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-moshi:2.11.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-    implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
-    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.1")
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.2")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.2")
 
     // Storage / security
     implementation("androidx.datastore:datastore-preferences:1.1.1")
@@ -144,6 +153,12 @@ dependencies {
 
     // ZXing for WiFi QR code generation
     implementation("com.google.zxing:core:3.5.3")
+
+    // osmdroid for WiFi Map (OpenStreetMap)
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
+
+    // Fused Location Provider for WiFi Map
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 
     // Testing
     testImplementation("junit:junit:4.13.2")

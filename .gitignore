@@ -18,3 +18,10 @@ google-services.json
 /tools/
 __pycache__/
 *.pyc
+
+# ZeddiHub Builder
+_launch_builder.bat
+.zeddibuild.local.json
+_build_tmp.spec
+build/
+dist/

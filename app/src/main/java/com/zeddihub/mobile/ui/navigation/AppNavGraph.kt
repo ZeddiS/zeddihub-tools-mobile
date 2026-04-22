@@ -18,6 +18,7 @@ import com.zeddihub.mobile.ui.community.CommunityScreen
 import com.zeddihub.mobile.ui.home.HomeScreen
 import com.zeddihub.mobile.ui.login.LoginScreen
 import com.zeddihub.mobile.ui.login.LoginViewModel
+import com.zeddihub.mobile.ui.login.RegisterScreen
 import com.zeddihub.mobile.ui.notifications.NotificationsScreen
 import com.zeddihub.mobile.ui.profile.ProfileScreen
 import com.zeddihub.mobile.ui.servers.ServersScreen
@@ -30,8 +31,9 @@ import com.zeddihub.mobile.ui.tools.FlashlightScreen
 import com.zeddihub.mobile.ui.tools.IpLookupScreen
 import com.zeddihub.mobile.ui.tools.PdfScannerScreen
 import com.zeddihub.mobile.ui.tools.SpeedTestScreen
-import com.zeddihub.mobile.ui.tools.WifiPasswordsScreen
+import com.zeddihub.mobile.ui.tools.WifiMapScreen
 import com.zeddihub.mobile.ui.tools.WifiScannerScreen
+import com.zeddihub.mobile.ui.tools.WifiToolsScreen
 
 @Composable
 fun AppNavGraph(
@@ -58,6 +60,26 @@ fun AppNavGraph(
                 onLoggedIn = {
                     navController.navigate(Destinations.Home.route) {
                         popUpTo(Destinations.Login.route) { inclusive = true }
+                    }
+                },
+                onGoToRegister = {
+                    navController.navigate(Destinations.Register.route)
+                }
+            )
+        }
+
+        composable(Destinations.Register.route) {
+            RegisterScreen(
+                onRegistered = {
+                    navController.navigate(Destinations.Home.route) {
+                        popUpTo(Destinations.Login.route) { inclusive = true }
+                    }
+                },
+                onBackToLogin = {
+                    if (!navController.popBackStack()) {
+                        navController.navigate(Destinations.Login.route) {
+                            popUpTo(Destinations.Register.route) { inclusive = true }
+                        }
                     }
                 }
             )
@@ -115,9 +137,15 @@ fun AppNavGraph(
             }
         }
 
-        composable(Destinations.WifiPasswords.route) {
-            Shell(navController, session, Destinations.WifiPasswords.route, stringResource(R.string.nav_wifi_passwords)) { padding ->
-                WifiPasswordsScreen(padding = padding)
+        composable(Destinations.WifiMap.route) {
+            Shell(navController, session, Destinations.WifiMap.route, stringResource(R.string.nav_wifi_map)) { padding ->
+                WifiMapScreen(padding = padding)
+            }
+        }
+
+        composable(Destinations.WifiTools.route) {
+            Shell(navController, session, Destinations.WifiTools.route, stringResource(R.string.nav_wifi_tools)) { padding ->
+                WifiToolsScreen(padding = padding)
             }
         }
 

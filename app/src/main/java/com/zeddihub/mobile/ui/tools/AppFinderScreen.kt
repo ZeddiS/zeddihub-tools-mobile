@@ -18,7 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material.icons.filled.Launch
+import androidx.compose.material.icons.automirrored.filled.Launch
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
@@ -248,7 +248,7 @@ private fun AppRow(
             Spacer(Modifier.height(10.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 androidx.compose.material3.OutlinedButton(onClick = onOpen, shape = RoundedCornerShape(10.dp)) {
-                    Icon(Icons.Default.Launch, null, modifier = Modifier.size(16.dp))
+                    Icon(Icons.AutoMirrored.Filled.Launch, null, modifier = Modifier.size(16.dp))
                     Spacer(Modifier.size(4.dp))
                     Text(stringResource(R.string.appfinder_open))
                 }

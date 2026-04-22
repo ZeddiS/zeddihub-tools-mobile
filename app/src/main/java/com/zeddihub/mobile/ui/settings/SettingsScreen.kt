@@ -196,7 +196,7 @@ fun SettingsScreen(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(stringResource(R.string.settings_check_updates), color = colors.onSurface)
                 }
-                when (val u = state.updateCheckState) {
+                when (state.updateCheckState) {
                     UpdateCheckState.Checking, UpdateCheckState.Downloading ->
                         CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp, color = colors.primary)
                     UpdateCheckState.UpToDate ->

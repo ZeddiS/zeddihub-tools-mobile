@@ -11,12 +11,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.lifecycleScope
 import com.zeddihub.mobile.data.local.AppPreferences
 import com.zeddihub.mobile.data.local.LanguageCode
 import com.zeddihub.mobile.data.local.ThemeMode
+import com.zeddihub.mobile.data.repository.AuthRepository
 import com.zeddihub.mobile.data.telemetry.TelemetryRecorder
 import com.zeddihub.mobile.data.update.UpdateChecker
 import com.zeddihub.mobile.ui.common.AppLockState
+import kotlinx.coroutines.launch
 import com.zeddihub.mobile.ui.common.BiometricLockGate
 import com.zeddihub.mobile.ui.common.StartupUpdateDialog
 import com.zeddihub.mobile.ui.navigation.AppNavGraph
@@ -40,6 +43,9 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var appLockState: AppLockState
 
+    @Inject
+    lateinit var authRepository: AuthRepository
+
     private var sessionStartNs: Long = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,8 +56,17 @@ class MainActivity : AppCompatActivity() {
         sessionStartNs = System.nanoTime()
         telemetry.sessionStart()
 
-        // Cold start / process recreation always starts locked.
-        appLockState.lock()
+        // Only lock on a genuine cold start. Configuration changes
+        // (e.g. rotation) keep the existing unlocked state.
+        if (savedInstanceState == null) {
+            appLockState.lock()
+            // Cold-start session resume per MOBILE_SYNC_v2 §3.1: validate
+            // cached token via /me, fall back to stored-password re-login,
+            // or leave session cleared so the nav graph routes to Login.
+            lifecycleScope.launch {
+                runCatching { authRepository.resumeSession() }
+            }
+        }
 
         setContent {
             val themeMode by appPreferences.theme.collectAsState()
@@ -96,7 +111,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        appLockState.lastStoppedAt = System.currentTimeMillis()
+        // Ignore onStop triggered by configuration changes (rotation, etc.)
+        // so they do not count as a background trip.
+        if (!isChangingConfigurations) {
+            appLockState.lastStoppedAt = System.currentTimeMillis()
+        }
     }
 
     override fun onStart() {

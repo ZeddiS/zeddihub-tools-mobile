@@ -85,8 +85,10 @@ class AppPreferences @Inject constructor(context: Context) {
     }
 
     private fun readTheme(): ThemeMode =
-        runCatching { ThemeMode.valueOf(prefs.getString(KEY_THEME, ThemeMode.DARK.name)!!) }
-            .getOrDefault(ThemeMode.DARK)
+        runCatching {
+            val stored = prefs.getString(KEY_THEME, ThemeMode.DARK.name) ?: ThemeMode.DARK.name
+            ThemeMode.valueOf(stored)
+        }.getOrDefault(ThemeMode.DARK)
 
     private fun readLanguage(): LanguageCode =
         LanguageCode.fromTag(prefs.getString(KEY_LANGUAGE, LanguageCode.CS.tag))

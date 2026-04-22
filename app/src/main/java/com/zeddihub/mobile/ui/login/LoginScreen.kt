@@ -30,7 +30,6 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -44,7 +43,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -81,11 +79,11 @@ fun LoginScreen(
     currentTheme: ThemeMode,
     onLanguage: (LanguageCode) -> Unit,
     onTheme: (ThemeMode) -> Unit,
-    onLoggedIn: () -> Unit
+    onLoggedIn: () -> Unit,
+    onGoToRegister: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
     var passwordVisible by remember { mutableStateOf(false) }
-    var showRegisterDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val colors = MaterialTheme.colorScheme
 
@@ -139,19 +137,6 @@ fun LoginScreen(
         }
     }
 
-    if (showRegisterDialog) {
-        AlertDialog(
-            onDismissRequest = { showRegisterDialog = false },
-            title = { Text(stringResource(R.string.login_register)) },
-            text = { Text(stringResource(R.string.login_register_info)) },
-            confirmButton = {
-                TextButton(onClick = { showRegisterDialog = false }) {
-                    Text(stringResource(R.string.login_register_close))
-                }
-            }
-        )
-    }
-
     Scaffold(containerColor = colors.background) { padding: PaddingValues ->
         Box(
             modifier = Modifier
@@ -191,7 +176,7 @@ fun LoginScreen(
                     value = state.username,
                     onValueChange = viewModel::onUsernameChange,
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text(stringResource(R.string.login_username)) },
+                    label = { Text(stringResource(R.string.login_identifier_hint)) },
                     leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
@@ -262,6 +247,8 @@ fun LoginScreen(
                     LoginErrorKind.EMPTY -> stringResource(R.string.login_error_empty)
                     LoginErrorKind.CREDENTIALS -> stringResource(R.string.login_error_credentials)
                     LoginErrorKind.NETWORK -> stringResource(R.string.login_error_offline)
+                    LoginErrorKind.DISABLED -> stringResource(R.string.login_error_disabled)
+                    LoginErrorKind.RATE_LIMITED -> stringResource(R.string.login_error_rate_limited)
                     LoginErrorKind.GENERIC -> stringResource(R.string.login_error_generic)
                     LoginErrorKind.NONE -> null
                 }
@@ -308,7 +295,7 @@ fun LoginScreen(
                 Spacer(Modifier.height(8.dp))
 
                 OutlinedButton(
-                    onClick = { showRegisterDialog = true },
+                    onClick = onGoToRegister,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(40.dp),

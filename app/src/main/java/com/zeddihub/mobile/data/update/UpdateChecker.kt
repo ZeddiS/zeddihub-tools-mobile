@@ -25,42 +25,73 @@ data class ReleaseInfo(
 @Singleton
 class UpdateChecker @Inject constructor() {
 
+    // Primary: ZeddiHub website manifest (MOBILE_SYNC_v2 §7.2). Single source of truth.
+    private val manifestUrl = "https://zeddihub.eu/tools/data/version_android.json"
+    // Fallback: GitHub Releases API (used when the website manifest is
+    // unreachable or hasn't been updated yet).
     private val releasesUrl = "https://api.github.com/repos/ZeddiS/zeddihub-tools-mobile/releases/latest"
 
     suspend fun fetchLatest(): ReleaseInfo? = withContext(Dispatchers.IO) {
-        runCatching {
-            val url = URL(releasesUrl)
-            val conn = url.openConnection() as HttpURLConnection
-            conn.connectTimeout = 5000
-            conn.readTimeout = 5000
-            conn.setRequestProperty("Accept", "application/vnd.github+json")
-            conn.setRequestProperty("User-Agent", "ZeddiHub-Mobile/${BuildConfig.VERSION_NAME}")
-            conn.requestMethod = "GET"
-            if (conn.responseCode !in 200..299) return@runCatching null
-            val body = conn.inputStream.bufferedReader().use { it.readText() }
-            val json = JSONObject(body)
-            val tag = json.optString("tag_name").ifEmpty { json.optString("name") }
-            val assets: JSONArray = json.optJSONArray("assets") ?: JSONArray()
-            var apkUrl = ""
-            var apkSize = 0L
-            for (i in 0 until assets.length()) {
-                val a = assets.getJSONObject(i)
-                val name = a.optString("name")
-                if (name.endsWith(".apk", ignoreCase = true)) {
-                    apkUrl = a.optString("browser_download_url")
-                    apkSize = a.optLong("size")
-                    break
-                }
-            }
-            ReleaseInfo(
-                tag = tag,
-                name = json.optString("name", tag),
-                body = json.optString("body"),
-                apkUrl = apkUrl,
-                apkSize = apkSize
-            )
-        }.getOrNull()
+        fetchManifest() ?: fetchGitHubRelease()
     }
+
+    private fun fetchManifest(): ReleaseInfo? = runCatching {
+        val url = URL(manifestUrl)
+        val conn = url.openConnection() as HttpURLConnection
+        conn.connectTimeout = 5000
+        conn.readTimeout = 5000
+        conn.setRequestProperty("Accept", "application/json")
+        conn.setRequestProperty("User-Agent", "ZeddiHub-Mobile/${BuildConfig.VERSION_NAME}")
+        conn.requestMethod = "GET"
+        if (conn.responseCode !in 200..299) return@runCatching null
+        val body = conn.inputStream.bufferedReader().use { it.readText() }
+        val json = JSONObject(body)
+        val version = json.optString("version")
+        if (version.isBlank()) return@runCatching null
+        val downloadUrl = json.optString("download_url")
+        val changelog = json.optString("changelog")
+        val mandatory = json.optBoolean("mandatory", false)
+        ReleaseInfo(
+            tag = version,
+            name = if (mandatory) "$version (mandatory)" else version,
+            body = changelog,
+            apkUrl = downloadUrl,
+            apkSize = 0L
+        )
+    }.getOrNull()
+
+    private fun fetchGitHubRelease(): ReleaseInfo? = runCatching {
+        val url = URL(releasesUrl)
+        val conn = url.openConnection() as HttpURLConnection
+        conn.connectTimeout = 5000
+        conn.readTimeout = 5000
+        conn.setRequestProperty("Accept", "application/vnd.github+json")
+        conn.setRequestProperty("User-Agent", "ZeddiHub-Mobile/${BuildConfig.VERSION_NAME}")
+        conn.requestMethod = "GET"
+        if (conn.responseCode !in 200..299) return@runCatching null
+        val body = conn.inputStream.bufferedReader().use { it.readText() }
+        val json = JSONObject(body)
+        val tag = json.optString("tag_name").ifEmpty { json.optString("name") }
+        val assets: JSONArray = json.optJSONArray("assets") ?: JSONArray()
+        var apkUrl = ""
+        var apkSize = 0L
+        for (i in 0 until assets.length()) {
+            val a = assets.getJSONObject(i)
+            val name = a.optString("name")
+            if (name.endsWith(".apk", ignoreCase = true)) {
+                apkUrl = a.optString("browser_download_url")
+                apkSize = a.optLong("size")
+                break
+            }
+        }
+        ReleaseInfo(
+            tag = tag,
+            name = json.optString("name", tag),
+            body = json.optString("body"),
+            apkUrl = apkUrl,
+            apkSize = apkSize
+        )
+    }.getOrNull()
 
     fun isNewer(info: ReleaseInfo): Boolean {
         val current = BuildConfig.VERSION_NAME

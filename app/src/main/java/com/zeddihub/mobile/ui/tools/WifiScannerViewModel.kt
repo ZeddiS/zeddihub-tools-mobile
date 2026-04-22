@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
+import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -75,7 +76,7 @@ class WifiScannerViewModel @Inject constructor(
         viewModelScope.launch {
             while (registered) {
                 _state.value = _state.value.copy(scanning = true)
-                runCatching { wm.startScan() }
+                runCatching { triggerScan(wm) }
                 delay(8_000)
                 _state.value = _state.value.copy(scanning = false)
                 delay(2_000)
@@ -103,13 +104,14 @@ class WifiScannerViewModel @Inject constructor(
     private fun ingest(wm: WifiManager) {
         val results = runCatching { wm.scanResults }.getOrNull() ?: return
         val nets = results.map { sr ->
-            val key = sr.BSSID ?: sr.SSID ?: ""
+            val ssid = readSsid(sr)
+            val key = sr.BSSID ?: ssid ?: ""
             val queue = historyMap.getOrPut(key) { ArrayDeque() }
             queue.addLast(sr.level)
             while (queue.size > 30) queue.removeFirst()
             val ch = frequencyToChannel(sr.frequency)
             Network(
-                ssid = sr.SSID.takeIf { !it.isNullOrBlank() } ?: "(hidden)",
+                ssid = ssid?.takeIf { it.isNotBlank() } ?: "(hidden)",
                 bssid = sr.BSSID ?: "",
                 rssi = sr.level,
                 frequencyMhz = sr.frequency,
@@ -158,5 +160,24 @@ class WifiScannerViewModel @Inject constructor(
         if (freqMhz <= 0) return 0.0
         val exp = (27.55 - 20.0 * log10(freqMhz.toDouble()) + kotlin.math.abs(rssi)) / 20.0
         return 10.0.pow(exp)
+    }
+
+    @Suppress("DEPRECATION")
+    private fun triggerScan(wm: WifiManager) {
+        // WifiManager.startScan() is deprecated since API 28 but no direct
+        // replacement exists for foreground on-demand scan triggers.
+        wm.startScan()
+    }
+
+    private fun readSsid(sr: ScanResult): String? {
+        // ScanResult.SSID (String) is deprecated since API 33 in favour of
+        // ScanResult.wifiSsid (WifiSsid). Use the modern API when available
+        // and fall back to the legacy field on older devices.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val modern = runCatching { sr.wifiSsid?.toString()?.trim('"') }.getOrNull()
+            if (!modern.isNullOrEmpty()) return modern
+        }
+        @Suppress("DEPRECATION")
+        return sr.SSID
     }
 }
