@@ -747,4 +747,85 @@
     <string name="common_back">Zpět</string>
     <string name="common_share">Sdílet</string>
     <string name="common_cancel">Zrušit</string>
+    <string name="common_save">Uložit</string>
+    <string name="common_clear">Vymazat</string>
+
+    <!-- Electrician calculators -->
+    <string name="elec_tab_ohm">Ohmův zákon</string>
+    <string name="elec_tab_power">Výkon</string>
+    <string name="elec_tab_3ph">Třífázový výkon</string>
+    <string name="elec_tab_wire">Průřez vodiče</string>
+    <string name="elec_voltage">Napětí U (V)</string>
+    <string name="elec_current">Proud I (A)</string>
+    <string name="elec_resistance">Odpor R (Ω)</string>
+    <string name="elec_power">Výkon P (W)</string>
+    <string name="elec_cosphi">Účiník cos φ</string>
+    <string name="elec_length">Délka vedení (m)</string>
+    <string name="elec_max_drop">Max. úbytek (%)</string>
+    <string name="elec_suggested_cs">Doporučený průřez: %1$s mm² (vypočtený %2$s mm²)</string>
+    <string name="elec_compute">Vypočítat</string>
+    <string name="elec_phase_single">1-fázový</string>
+    <string name="elec_phase_three">3-fázový</string>
+    <string name="elec_material_cu">Měď</string>
+    <string name="elec_material_al">Hliník</string>
+    <string name="elec_hint_fill_two">Vyplň libovolné dvě hodnoty, třetí se dopočítá.</string>
+
+    <!-- Periodic table -->
+    <string name="pt_search">Hledat prvek, zkratka, číslo</string>
+    <string name="pt_group_alkali">Alkal. kov</string>
+    <string name="pt_group_alkaline">Kov. zem.</string>
+    <string name="pt_group_transition">Přechodný kov</string>
+    <string name="pt_group_post_transition">Slabý kov</string>
+    <string name="pt_group_metalloid">Polokov</string>
+    <string name="pt_group_nonmetal">Nekov</string>
+    <string name="pt_group_halogen">Halogen</string>
+    <string name="pt_group_noble">Vzác. plyn</string>
+    <string name="pt_group_lanthanide">Lanthanoid</string>
+    <string name="pt_group_actinide">Aktinoid</string>
+    <string name="pt_detail_z">Protonové číslo</string>
+    <string name="pt_detail_mass">Atomová hmotnost</string>
+    <string name="pt_detail_group">Skupina</string>
+    <string name="pt_detail_phase">Skupenství (25 °C)</string>
+    <string name="pt_detail_electronegativity">Elektronegativita</string>
+    <string name="pt_detail_density">Hustota</string>
+    <string name="pt_detail_melting">Teplota tání</string>
+    <string name="pt_detail_boiling">Teplota varu</string>
+
+    <!-- Holidays catalog -->
+    <string name="holidays_tab_today">Dnes</string>
+    <string name="holidays_tab_all">Kalendář</string>
+    <string name="holidays_tab_state">Státní</string>
+    <string name="holidays_nameday_today">Svátek má %1$s</string>
+    <string name="holidays_tomorrow">Zítra slaví %1$s</string>
+    <string name="holidays_state_today">Státní svátek: %1$s</string>
+    <string name="holidays_no_state_today">Dnes žádný státní svátek.</string>
+    <string name="holidays_free_day">Volný den</string>
+    <string name="holidays_working_day">Pracovní den</string>
+
+    <!-- Text editor -->
+    <string name="txt_placeholder">Začni psát…</string>
+    <string name="txt_open">Otevřít soubor</string>
+    <string name="txt_save_as">Uložit jako</string>
+    <string name="txt_word_count">%1$d slov · %2$d znaků</string>
+    <string name="txt_readonly">Soubor je jen pro čtení</string>
+
+    <!-- Advanced QR -->
+    <string name="qr_tab_generate">Generovat</string>
+    <string name="qr_tab_scan">Skenovat</string>
+    <string name="qr_type_text">Text</string>
+    <string name="qr_type_url">URL</string>
+    <string name="qr_type_wifi">WiFi</string>
+    <string name="qr_type_contact">Kontakt</string>
+    <string name="qr_type_geo">GPS souřadnice</string>
+    <string name="qr_type_sms">SMS</string>
+    <string name="qr_type_mail">E-mail</string>
+    <string name="qr_contact_name">Jméno</string>
+    <string name="qr_contact_phone">Telefon</string>
+    <string name="qr_contact_email">E-mail</string>
+    <string name="qr_geo_lat">Zem. šířka</string>
+    <string name="qr_geo_lng">Zem. délka</string>
+    <string name="qr_wifi_hidden">Skrytá síť</string>
+    <string name="qr_error_empty">Zadej obsah.</string>
+    <string name="qr_scan_again">Skenovat další</string>
+    <string name="qr_scanned_text">Naskenováno:</string>
 </resources>

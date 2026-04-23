@@ -133,12 +133,12 @@ fun ToolsRootScreen(
 
         SectionHeader(stringResource(R.string.tools_section_advanced))
         ToolRow(
-            ToolEntry(R.string.nav_advanced_qr, Icons.Default.QrCode2, Destinations.AdvancedQr.route, stub = true),
+            ToolEntry(R.string.nav_advanced_qr, Icons.Default.QrCode2, Destinations.AdvancedQr.route),
             ToolEntry(R.string.nav_advanced_barcode, Icons.Default.QrCodeScanner, Destinations.AdvancedBarcode.route, stub = true),
             onNavigate
         )
         ToolRow(
-            ToolEntry(R.string.nav_advanced_text_editor, Icons.Default.TextFields, Destinations.AdvancedTextEditor.route, stub = true),
+            ToolEntry(R.string.nav_advanced_text_editor, Icons.Default.TextFields, Destinations.AdvancedTextEditor.route),
             null,
             onNavigate
         )

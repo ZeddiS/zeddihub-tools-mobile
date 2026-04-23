@@ -17,7 +17,10 @@ import com.zeddihub.mobile.ui.community.CommunityScreen
 import com.zeddihub.mobile.ui.helpers.AgeCalculatorScreen
 import com.zeddihub.mobile.ui.helpers.BubbleLevelScreen
 import com.zeddihub.mobile.ui.helpers.CurrencyConverterScreen
+import com.zeddihub.mobile.ui.helpers.ElectricianScreen
+import com.zeddihub.mobile.ui.helpers.HolidaysScreen
 import com.zeddihub.mobile.ui.helpers.MorseBrailleScreen
+import com.zeddihub.mobile.ui.helpers.PeriodicTableScreen
 import com.zeddihub.mobile.ui.helpers.StubScreen
 import com.zeddihub.mobile.ui.login.LoginScreen
 import com.zeddihub.mobile.ui.login.LoginViewModel
@@ -28,6 +31,8 @@ import com.zeddihub.mobile.ui.profile.ProfileScreen
 import com.zeddihub.mobile.ui.servers.ServersScreen
 import com.zeddihub.mobile.ui.settings.SettingsScreen
 import com.zeddihub.mobile.ui.tools.AdvancedNfcScreen
+import com.zeddihub.mobile.ui.tools.AdvancedQrScreen
+import com.zeddihub.mobile.ui.tools.AdvancedTextEditorScreen
 import com.zeddihub.mobile.ui.tools.AppFinderScreen
 import com.zeddihub.mobile.ui.tools.CacheCleanerScreen
 import com.zeddihub.mobile.ui.tools.DecibelMeterScreen
@@ -158,13 +163,13 @@ fun AppNavGraph(
         }
         // Stub advanced tools
         detail(Destinations.AdvancedQr.route, R.string.nav_advanced_qr, navController) { padding ->
-            StubScreen(padding = padding)
+            AdvancedQrScreen(padding = padding)
         }
         detail(Destinations.AdvancedBarcode.route, R.string.nav_advanced_barcode, navController) { padding ->
             StubScreen(padding = padding)
         }
         detail(Destinations.AdvancedTextEditor.route, R.string.nav_advanced_text_editor, navController) { padding ->
-            StubScreen(padding = padding)
+            AdvancedTextEditorScreen(padding = padding)
         }
 
         // ── Helper detail screens ─────────────────────────────────────────
@@ -182,7 +187,7 @@ fun AppNavGraph(
         }
         // Stub helpers
         detail(Destinations.HolidaysCatalog.route, R.string.nav_holidays, navController) { padding ->
-            StubScreen(padding = padding)
+            HolidaysScreen(padding = padding)
         }
         detail(Destinations.HazardSigns.route, R.string.nav_hazard_signs, navController) { padding ->
             StubScreen(padding = padding)
@@ -194,10 +199,10 @@ fun AppNavGraph(
             StubScreen(padding = padding)
         }
         detail(Destinations.PeriodicTable.route, R.string.nav_periodic_table, navController) { padding ->
-            StubScreen(padding = padding)
+            PeriodicTableScreen(padding = padding)
         }
         detail(Destinations.ElectricianCalc.route, R.string.nav_electrician, navController) { padding ->
-            StubScreen(padding = padding)
+            ElectricianScreen(padding = padding)
         }
 
         // ── Account detail screens ────────────────────────────────────────

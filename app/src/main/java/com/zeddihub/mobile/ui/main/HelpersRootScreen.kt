@@ -67,7 +67,7 @@ fun HelpersRootScreen(
             onNavigate
         )
         HelperRow(
-            HelperEntry(R.string.nav_electrician, Icons.Default.Bolt, Destinations.ElectricianCalc.route, stub = true),
+            HelperEntry(R.string.nav_electrician, Icons.Default.Bolt, Destinations.ElectricianCalc.route),
             null,
             onNavigate
         )
@@ -79,14 +79,14 @@ fun HelpersRootScreen(
             onNavigate
         )
         HelperRow(
-            HelperEntry(R.string.nav_periodic_table, Icons.Default.Science, Destinations.PeriodicTable.route, stub = true),
+            HelperEntry(R.string.nav_periodic_table, Icons.Default.Science, Destinations.PeriodicTable.route),
             HelperEntry(R.string.nav_school_tools, Icons.Default.School, Destinations.SchoolTools.route, stub = true),
             onNavigate
         )
 
         SectionHeader(stringResource(R.string.helpers_section_catalogs))
         HelperRow(
-            HelperEntry(R.string.nav_holidays, Icons.Default.Event, Destinations.HolidaysCatalog.route, stub = true),
+            HelperEntry(R.string.nav_holidays, Icons.Default.Event, Destinations.HolidaysCatalog.route),
             HelperEntry(R.string.nav_hazard_signs, Icons.Default.Warning, Destinations.HazardSigns.route, stub = true),
             onNavigate
         )
