@@ -31,6 +31,10 @@ class LoginViewModel @Inject constructor(
         val rememberMe: Boolean = false,
         val isLoading: Boolean = false,
         val errorKind: LoginErrorKind = LoginErrorKind.NONE,
+        /** Raw server-supplied message for GENERIC/NETWORK errors — surfaced
+         *  under the main error text so DB-config / server-side failures are
+         *  visible instead of being masked by "something went wrong". */
+        val serverMessage: String? = null,
         val loggedIn: Boolean = false,
         val biometricAvailable: Boolean = false
     )
@@ -105,10 +109,17 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             val result = authRepository.login(username.trim(), password, rememberMe)
             if (result.isSuccess) {
+                // Biometric lock follows the "remember me" checkbox: only
+                // turns ON when remember is checked, explicitly OFF otherwise.
                 appPreferences.setBiometricEnabled(rememberMe)
-                _state.value = _state.value.copy(isLoading = false, loggedIn = true)
+                _state.value = _state.value.copy(
+                    isLoading = false,
+                    loggedIn = true,
+                    serverMessage = null
+                )
             } else {
-                val kind = when (val err = result.exceptionOrNull()) {
+                val err = result.exceptionOrNull()
+                val kind = when (err) {
                     is AuthError.BadCredentials,
                     is AuthError.MissingIdentifier,
                     is AuthError.MissingPassword -> LoginErrorKind.CREDENTIALS
@@ -119,13 +130,22 @@ class LoginViewModel @Inject constructor(
                     is AuthError.DailyLimit -> LoginErrorKind.RATE_LIMITED
                     is AuthError.AuthRequired,
                     is AuthError.AuthInvalid -> LoginErrorKind.CREDENTIALS
-                    else -> {
-                        // Keep reference to silence unused warning while falling through
-                        @Suppress("UNUSED_VARIABLE") val ignored = err
-                        LoginErrorKind.GENERIC
-                    }
+                    else -> LoginErrorKind.GENERIC
                 }
-                _state.value = _state.value.copy(isLoading = false, errorKind = kind)
+                // Only forward the server message for "unknown / server error"
+                // buckets — for normal bad-credentials the localized string
+                // we already show is clearer than the raw server wording.
+                val serverMsg = when (err) {
+                    is AuthError.ServerError,
+                    is AuthError.Unknown,
+                    is AuthError.Network -> (err as? AuthError)?.message?.takeIf { it.isNotBlank() }
+                    else -> null
+                }
+                _state.value = _state.value.copy(
+                    isLoading = false,
+                    errorKind = kind,
+                    serverMessage = serverMsg
+                )
             }
         }
     }

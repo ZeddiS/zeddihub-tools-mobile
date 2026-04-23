@@ -128,14 +128,13 @@ fun LoginScreen(
         )
     }
 
-    LaunchedEffect(biometricSupported) {
-        if (biometricSupported &&
-            viewModel.state.value.rememberMe &&
-            viewModel.hasRememberedCredentials()
-        ) {
-            tryBiometric()
-        }
-    }
+    // Intentionally no auto-biometric trigger here: if the user reached the
+    // LoginScreen they are, by definition, not logged in. Biometric unlock is
+    // for re-opening an already-authenticated session (see BiometricLockGate
+    // in MainActivity); requiring it again on the login form felt surprising
+    // — especially for users who signed out on purpose to switch account.
+    // The Fingerprint button next to "Zapamatovat" still lets them trigger it
+    // manually if they want the fast remembered-creds path.
 
     Scaffold(containerColor = colors.background) { padding: PaddingValues ->
         Box(
@@ -260,6 +259,18 @@ fun LoginScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 4.dp)
+                    )
+                }
+                // Raw server message — only shown for GENERIC/NETWORK failures
+                // (bad credentials keep the clean localized line above).
+                state.serverMessage?.let { msg ->
+                    Text(
+                        text = msg,
+                        color = colors.onSurfaceVariant,
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 2.dp)
                     )
                 }
 

@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.compose.rememberNavController
@@ -74,38 +75,51 @@ class MainActivity : AppCompatActivity() {
             val language by appPreferences.language.collectAsState()
             val appLockEnabled by appPreferences.appLockEnabled.collectAsState()
             val unlocked by appLockState.unlocked.collectAsState()
+            val session by authRepository.session.collectAsState()
 
             ZeddiHubTheme(darkTheme = themeMode == ThemeMode.DARK) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val locked = appLockEnabled && !unlocked
+                    // Biometric lock is only meaningful when:
+                    //   • the user is actually logged in (session != null), AND
+                    //   • the "remember me" flow is active (appLockEnabled is
+                    //     set exclusively by successful login with remember=true).
+                    // A logged-out user should never be blocked by a biometric
+                    // prompt — they can't log in until they see LoginScreen.
+                    val hasSession = session != null
+                    val hasRemembered = remember(session) {
+                        authRepository.rememberedCredentials() != null
+                    }
+                    val locked = appLockEnabled && hasSession && hasRemembered && !unlocked
                     DuplicateInstallGate {
-                    BiometricLockGate(
-                        locked = locked,
-                        onUnlocked = { appLockState.markUnlocked() }
-                    ) {
-                        val navController = rememberNavController()
-                        AppNavGraph(
-                            navController = navController,
-                            currentLanguage = language,
-                            currentTheme = themeMode,
-                            onLanguage = { code: LanguageCode ->
-                                if (code != appPreferences.language.value) {
-                                    appPreferences.setLanguage(code)
-                                    LocaleManager.apply(code)
-                                    recreate()
+                        BiometricLockGate(
+                            locked = locked,
+                            onUnlocked = { appLockState.markUnlocked() }
+                        ) {
+                            val navController = rememberNavController()
+                            AppNavGraph(
+                                navController = navController,
+                                currentLanguage = language,
+                                currentTheme = themeMode,
+                                onLanguage = { code: LanguageCode ->
+                                    if (code != appPreferences.language.value) {
+                                        appPreferences.setLanguage(code)
+                                        LocaleManager.apply(code)
+                                        recreate()
+                                    }
+                                },
+                                onTheme = { mode: ThemeMode ->
+                                    appPreferences.setTheme(mode)
                                 }
-                            },
-                            onTheme = { mode: ThemeMode ->
-                                appPreferences.setTheme(mode)
-                            }
-                        )
+                            )
+                        }
+                        // Update dialog lives outside BiometricLockGate so it
+                        // is visible even for logged-out users on LoginScreen.
                         if (appPreferences.autoUpdate.value) {
                             StartupUpdateDialog(updateChecker = updateChecker)
                         }
-                    }
                     }
                 }
             }
