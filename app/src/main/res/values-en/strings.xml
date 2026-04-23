@@ -557,4 +557,160 @@
     <string name="duplicate_install_body">An older or duplicate copy of ZeddiHub is installed on this device. Uninstall it to avoid conflicts and out-of-sync data. ZeddiHub must only be installed once.</string>
     <string name="duplicate_install_uninstall">Uninstall %1$s</string>
     <string name="duplicate_install_recheck">Re-check</string>
+
+    <!-- v0.5.8 — 4-tab navigation and new tools -->
+
+    <string name="tab_home">Home</string>
+    <string name="tab_tools">Tools</string>
+    <string name="tab_helpers">Helpers</string>
+    <string name="tab_account">Account</string>
+
+    <string name="dashboard_home_title">Home</string>
+    <string name="dashboard_section_shortcuts">Quick shortcuts</string>
+    <string name="dashboard_section_network">My network</string>
+    <string name="dashboard_section_news">News</string>
+    <string name="dashboard_news_empty">No news yet.</string>
+    <string name="dashboard_network_ssid">WiFi</string>
+    <string name="dashboard_network_ip">IP</string>
+    <string name="dashboard_network_unknown">Unknown</string>
+    <string name="dashboard_shortcut_speedtest">Speed Test</string>
+    <string name="dashboard_shortcut_wifi">WiFi</string>
+    <string name="dashboard_shortcut_flashlight">Flashlight</string>
+    <string name="dashboard_shortcut_decibel">Decibel</string>
+
+    <string name="tools_title">Tools</string>
+    <string name="tools_section_new">New</string>
+    <string name="tools_section_network">Network</string>
+    <string name="tools_section_wifi">WiFi</string>
+    <string name="tools_section_system">System</string>
+    <string name="tools_section_media">Media</string>
+    <string name="tools_section_advanced">Advanced</string>
+
+    <string name="helpers_title">Helpers</string>
+    <string name="helpers_section_calc">Calculators &amp; converters</string>
+    <string name="helpers_section_reference">Reference</string>
+    <string name="helpers_section_catalogs">Catalogs</string>
+
+    <string name="account_title">Account</string>
+    <string name="account_guest">Guest</string>
+    <string name="account_section_me">My account</string>
+    <string name="account_section_community">Community</string>
+    <string name="account_section_app">App</string>
+
+    <string name="nav_frequency_generator">Frequency Generator</string>
+    <string name="freq_hz_label">Frequency</string>
+    <string name="freq_waveform">Waveform</string>
+    <string name="freq_waveform_sine">Sine</string>
+    <string name="freq_waveform_square">Square</string>
+    <string name="freq_waveform_triangle">Triangle</string>
+    <string name="freq_waveform_sawtooth">Sawtooth</string>
+    <string name="freq_volume">Volume</string>
+    <string name="freq_start">Play</string>
+    <string name="freq_stop">Stop</string>
+    <string name="freq_preset">Preset</string>
+    <string name="freq_warning">Warning: high frequencies or volume can damage hearing and speakers.</string>
+
+    <string name="nav_speaker_cleaner">Speaker Cleaner</string>
+    <string name="speaker_cleaner_intro">A low-frequency sweep to push water or dust out of the speaker. Hold the phone speaker-down.</string>
+    <string name="speaker_cleaner_start">Start cleaning</string>
+    <string name="speaker_cleaner_stop">Stop</string>
+    <string name="speaker_cleaner_running">Cleaning… %1$d Hz</string>
+    <string name="speaker_cleaner_preset_water">Water (165 Hz pulse)</string>
+    <string name="speaker_cleaner_preset_dust">Dust (40–200 Hz sweep)</string>
+    <string name="speaker_cleaner_preset_custom">Custom</string>
+    <string name="speaker_cleaner_duration">Duration (s)</string>
+
+    <string name="nav_video_downloader">Video Downloader</string>
+    <string name="video_dl_url_hint">URL from YouTube, Instagram, TikTok, X, Reddit…</string>
+    <string name="video_dl_fetch">Get link</string>
+    <string name="video_dl_download">Download</string>
+    <string name="video_dl_save_as">Save as</string>
+    <string name="video_dl_quality">Quality</string>
+    <string name="video_dl_audio_only">Audio only (MP3)</string>
+    <string name="video_dl_status_ready">Ready. Paste a link and tap Get link.</string>
+    <string name="video_dl_status_fetching">Fetching link…</string>
+    <string name="video_dl_status_downloading">Downloading… %1$d %%</string>
+    <string name="video_dl_status_done">Saved: %1$s</string>
+    <string name="video_dl_status_error">Error: %1$s</string>
+    <string name="video_dl_disclaimer">Using cobalt.tools service. Respect copyrights and platform terms.</string>
+
+    <string name="nav_advanced_nfc">NFC Tools</string>
+    <string name="nfc_ready">Hold an NFC tag to the phone.</string>
+    <string name="nfc_unsupported">This phone does not support NFC.</string>
+    <string name="nfc_disabled">NFC is off. Enable it in system settings.</string>
+    <string name="nfc_tab_read">Read</string>
+    <string name="nfc_tab_write">Write</string>
+    <string name="nfc_write_type">Record type</string>
+    <string name="nfc_write_type_text">Text</string>
+    <string name="nfc_write_type_url">URL</string>
+    <string name="nfc_write_type_wifi">WiFi</string>
+    <string name="nfc_write_payload">Payload</string>
+    <string name="nfc_write_ssid">SSID</string>
+    <string name="nfc_write_password">Password</string>
+    <string name="nfc_write_arm">Write on tap</string>
+    <string name="nfc_write_cancel">Cancel write</string>
+    <string name="nfc_write_ok">Write successful.</string>
+    <string name="nfc_write_fail">Write failed: %1$s</string>
+    <string name="nfc_scan_result_empty">Empty tag.</string>
+    <string name="nfc_scan_uid">UID: %1$s</string>
+    <string name="nfc_scan_type">Type: %1$s</string>
+
+    <string name="nav_currency">Currency Converter</string>
+    <string name="currency_from">From</string>
+    <string name="currency_to">To</string>
+    <string name="currency_amount">Amount</string>
+    <string name="currency_rate_source">CNB rate · %1$s</string>
+    <string name="currency_offline_hint">Offline — using last cached rates.</string>
+    <string name="currency_refresh">Refresh rates</string>
+    <string name="currency_swap">Swap</string>
+
+    <string name="nav_age_calc">Age Calculator</string>
+    <string name="age_birth_date">Date of birth</string>
+    <string name="age_target_date">As of</string>
+    <string name="age_years">%1$d years</string>
+    <string name="age_months">%1$d months</string>
+    <string name="age_days">%1$d days</string>
+    <string name="age_total_days">Total days: %1$d</string>
+    <string name="age_total_hours">Total hours: %1$d</string>
+    <string name="age_next_birthday">Next birthday in %1$d days</string>
+    <string name="age_range_title">Date range</string>
+    <string name="age_range_from">From</string>
+    <string name="age_range_to">To</string>
+    <string name="age_range_result">Between: %1$s</string>
+
+    <string name="nav_morse_braille">Morse &amp; Braille</string>
+    <string name="morse_tab_morse">Morse</string>
+    <string name="morse_tab_braille">Braille</string>
+    <string name="morse_input">Text or code</string>
+    <string name="morse_output_text">Text</string>
+    <string name="morse_output_code">Code</string>
+    <string name="morse_play">Play</string>
+    <string name="morse_copy">Copy</string>
+    <string name="morse_clear">Clear</string>
+
+    <string name="nav_bubble_level">Bubble Level</string>
+    <string name="level_angle_x">X: %1$.1f°</string>
+    <string name="level_angle_y">Y: %1$.1f°</string>
+    <string name="level_angle_z">Tilt: %1$.1f°</string>
+    <string name="level_calibrate">Calibrate</string>
+    <string name="level_reset">Reset</string>
+    <string name="level_hold_flat">Place the phone flat and tap Calibrate.</string>
+
+    <string name="stub_coming_soon_title">Coming soon</string>
+    <string name="stub_coming_soon_body">This feature will ship in a future update. Stay tuned.</string>
+    <string name="stub_back">Back</string>
+
+    <string name="nav_advanced_qr">QR Tools</string>
+    <string name="nav_advanced_barcode">Barcode Tools</string>
+    <string name="nav_advanced_text_editor">Text Editor</string>
+    <string name="nav_holidays">Holidays</string>
+    <string name="nav_hazard_signs">Hazard signs</string>
+    <string name="nav_traffic_signs">Traffic signs</string>
+    <string name="nav_school_tools">School helpers</string>
+    <string name="nav_periodic_table">Periodic table</string>
+    <string name="nav_electrician">Electrician calc</string>
+
+    <string name="common_back">Back</string>
+    <string name="common_share">Share</string>
+    <string name="common_cancel">Cancel</string>
 </resources>

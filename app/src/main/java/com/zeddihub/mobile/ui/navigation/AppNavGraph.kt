@@ -9,30 +9,38 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.zeddihub.mobile.R
-import com.zeddihub.mobile.data.local.CredentialStore
 import com.zeddihub.mobile.data.local.LanguageCode
 import com.zeddihub.mobile.data.local.ThemeMode
 import com.zeddihub.mobile.ui.admin.AdminScreen
-import com.zeddihub.mobile.ui.common.AppShell
+import com.zeddihub.mobile.ui.common.DetailShell
 import com.zeddihub.mobile.ui.community.CommunityScreen
-import com.zeddihub.mobile.ui.home.HomeScreen
+import com.zeddihub.mobile.ui.helpers.AgeCalculatorScreen
+import com.zeddihub.mobile.ui.helpers.BubbleLevelScreen
+import com.zeddihub.mobile.ui.helpers.CurrencyConverterScreen
+import com.zeddihub.mobile.ui.helpers.MorseBrailleScreen
+import com.zeddihub.mobile.ui.helpers.StubScreen
 import com.zeddihub.mobile.ui.login.LoginScreen
 import com.zeddihub.mobile.ui.login.LoginViewModel
 import com.zeddihub.mobile.ui.login.RegisterScreen
+import com.zeddihub.mobile.ui.main.MainScaffold
 import com.zeddihub.mobile.ui.notifications.NotificationsScreen
 import com.zeddihub.mobile.ui.profile.ProfileScreen
 import com.zeddihub.mobile.ui.servers.ServersScreen
 import com.zeddihub.mobile.ui.settings.SettingsScreen
+import com.zeddihub.mobile.ui.tools.AdvancedNfcScreen
 import com.zeddihub.mobile.ui.tools.AppFinderScreen
 import com.zeddihub.mobile.ui.tools.CacheCleanerScreen
 import com.zeddihub.mobile.ui.tools.DecibelMeterScreen
 import com.zeddihub.mobile.ui.tools.DeviceInfoScreen
 import com.zeddihub.mobile.ui.tools.FlashlightScreen
+import com.zeddihub.mobile.ui.tools.FrequencyGeneratorScreen
 import com.zeddihub.mobile.ui.tools.IpLookupScreen
 import com.zeddihub.mobile.ui.tools.MyNetworkScreen
 import com.zeddihub.mobile.ui.tools.PdfScannerScreen
+import com.zeddihub.mobile.ui.tools.SpeakerCleanerScreen
 import com.zeddihub.mobile.ui.tools.SpeedTestScreen
 import com.zeddihub.mobile.ui.tools.StorageManagerScreen
+import com.zeddihub.mobile.ui.tools.VideoDownloaderScreen
 import com.zeddihub.mobile.ui.tools.WifiMapScreen
 import com.zeddihub.mobile.ui.tools.WifiScannerScreen
 import com.zeddihub.mobile.ui.tools.WifiToolsScreen
@@ -47,9 +55,8 @@ fun AppNavGraph(
 ) {
     val gateVm: LoginViewModel = hiltViewModel()
     val loggedIn by gateVm.isLoggedIn.collectAsState()
-    val session by gateVm.sessionFlow.collectAsState()
 
-    val startRoute = if (loggedIn) Destinations.Home.route else Destinations.Login.route
+    val startRoute = if (loggedIn) Destinations.Main.route else Destinations.Login.route
 
     NavHost(navController = navController, startDestination = startRoute) {
 
@@ -60,7 +67,7 @@ fun AppNavGraph(
                 onLanguage = onLanguage,
                 onTheme = onTheme,
                 onLoggedIn = {
-                    navController.navigate(Destinations.Home.route) {
+                    navController.navigate(Destinations.Main.route) {
                         popUpTo(Destinations.Login.route) { inclusive = true }
                     }
                 },
@@ -73,7 +80,7 @@ fun AppNavGraph(
         composable(Destinations.Register.route) {
             RegisterScreen(
                 onRegistered = {
-                    navController.navigate(Destinations.Home.route) {
+                    navController.navigate(Destinations.Main.route) {
                         popUpTo(Destinations.Login.route) { inclusive = true }
                     }
                 },
@@ -87,113 +94,126 @@ fun AppNavGraph(
             )
         }
 
-        composable(Destinations.Home.route) {
-            Shell(navController, session, Destinations.Home.route, stringResource(R.string.home_title)) { padding ->
-                HomeScreen(
-                    padding = padding,
-                    isAdmin = session?.role?.equals("admin", ignoreCase = true) == true,
-                    onNavigate = { route -> navTo(navController, route) }
-                )
-            }
+        // ── Main tab container ────────────────────────────────────────────
+        composable(Destinations.Main.route) {
+            MainScaffold(navController = navController)
         }
 
-        composable(Destinations.Servers.route) {
-            Shell(navController, session, Destinations.Servers.route, stringResource(R.string.nav_servers)) { padding ->
-                ServersScreen(padding = padding)
-            }
+        // ── Tool detail screens ───────────────────────────────────────────
+        detail(Destinations.Servers.route, R.string.nav_servers, navController) { padding ->
+            ServersScreen(padding = padding)
+        }
+        detail(Destinations.MyNetwork.route, R.string.nav_my_network, navController) { padding ->
+            MyNetworkScreen(padding = padding, navController = navController)
+        }
+        detail(Destinations.SpeedTest.route, R.string.nav_speedtest, navController) { padding ->
+            SpeedTestScreen(padding = padding)
+        }
+        detail(Destinations.IpLookup.route, R.string.nav_ip_lookup, navController) { padding ->
+            IpLookupScreen(padding = padding)
+        }
+        detail(Destinations.DeviceInfo.route, R.string.nav_device_info, navController) { padding ->
+            DeviceInfoScreen(padding = padding)
+        }
+        detail(Destinations.CacheCleaner.route, R.string.nav_cache_cleaner, navController) { padding ->
+            CacheCleanerScreen(padding = padding)
+        }
+        detail(Destinations.AppFinder.route, R.string.nav_app_finder, navController) { padding ->
+            AppFinderScreen(padding = padding)
+        }
+        detail(Destinations.WifiScanner.route, R.string.nav_wifi_scanner, navController) { padding ->
+            WifiScannerScreen(padding = padding)
+        }
+        detail(Destinations.WifiMap.route, R.string.nav_wifi_map, navController) { padding ->
+            WifiMapScreen(padding = padding)
+        }
+        detail(Destinations.WifiTools.route, R.string.nav_wifi_tools, navController) { padding ->
+            WifiToolsScreen(padding = padding)
+        }
+        detail(Destinations.PdfScanner.route, R.string.nav_pdf_scanner, navController) { padding ->
+            PdfScannerScreen(padding = padding)
+        }
+        detail(Destinations.DecibelMeter.route, R.string.nav_decibel_meter, navController) { padding ->
+            DecibelMeterScreen(padding = padding)
+        }
+        detail(Destinations.Flashlight.route, R.string.nav_flashlight, navController) { padding ->
+            FlashlightScreen(padding = padding)
+        }
+        detail(Destinations.Storage.route, R.string.nav_storage, navController) { padding ->
+            StorageManagerScreen(padding = padding)
         }
 
-        composable(Destinations.MyNetwork.route) {
-            Shell(navController, session, Destinations.MyNetwork.route, stringResource(R.string.nav_my_network)) { padding ->
-                MyNetworkScreen(padding = padding, navController = navController)
-            }
+        // New v0.5.8 tools
+        detail(Destinations.FrequencyGenerator.route, R.string.nav_frequency_generator, navController) { padding ->
+            FrequencyGeneratorScreen(padding = padding)
+        }
+        detail(Destinations.SpeakerCleaner.route, R.string.nav_speaker_cleaner, navController) { padding ->
+            SpeakerCleanerScreen(padding = padding)
+        }
+        detail(Destinations.VideoDownloader.route, R.string.nav_video_downloader, navController) { padding ->
+            VideoDownloaderScreen(padding = padding)
+        }
+        detail(Destinations.AdvancedNfc.route, R.string.nav_advanced_nfc, navController) { padding ->
+            AdvancedNfcScreen(padding = padding)
+        }
+        // Stub advanced tools
+        detail(Destinations.AdvancedQr.route, R.string.nav_advanced_qr, navController) { padding ->
+            StubScreen(padding = padding)
+        }
+        detail(Destinations.AdvancedBarcode.route, R.string.nav_advanced_barcode, navController) { padding ->
+            StubScreen(padding = padding)
+        }
+        detail(Destinations.AdvancedTextEditor.route, R.string.nav_advanced_text_editor, navController) { padding ->
+            StubScreen(padding = padding)
         }
 
-        composable(Destinations.SpeedTest.route) {
-            Shell(navController, session, Destinations.SpeedTest.route, stringResource(R.string.nav_speedtest)) { padding ->
-                SpeedTestScreen(padding = padding)
-            }
+        // ── Helper detail screens ─────────────────────────────────────────
+        detail(Destinations.CurrencyConverter.route, R.string.nav_currency, navController) { padding ->
+            CurrencyConverterScreen(padding = padding)
+        }
+        detail(Destinations.AgeCalculator.route, R.string.nav_age_calc, navController) { padding ->
+            AgeCalculatorScreen(padding = padding)
+        }
+        detail(Destinations.MorseBraille.route, R.string.nav_morse_braille, navController) { padding ->
+            MorseBrailleScreen(padding = padding)
+        }
+        detail(Destinations.BubbleLevel.route, R.string.nav_bubble_level, navController) { padding ->
+            BubbleLevelScreen(padding = padding)
+        }
+        // Stub helpers
+        detail(Destinations.HolidaysCatalog.route, R.string.nav_holidays, navController) { padding ->
+            StubScreen(padding = padding)
+        }
+        detail(Destinations.HazardSigns.route, R.string.nav_hazard_signs, navController) { padding ->
+            StubScreen(padding = padding)
+        }
+        detail(Destinations.TrafficSigns.route, R.string.nav_traffic_signs, navController) { padding ->
+            StubScreen(padding = padding)
+        }
+        detail(Destinations.SchoolTools.route, R.string.nav_school_tools, navController) { padding ->
+            StubScreen(padding = padding)
+        }
+        detail(Destinations.PeriodicTable.route, R.string.nav_periodic_table, navController) { padding ->
+            StubScreen(padding = padding)
+        }
+        detail(Destinations.ElectricianCalc.route, R.string.nav_electrician, navController) { padding ->
+            StubScreen(padding = padding)
         }
 
-        composable(Destinations.IpLookup.route) {
-            Shell(navController, session, Destinations.IpLookup.route, stringResource(R.string.nav_ip_lookup)) { padding ->
-                IpLookupScreen(padding = padding)
-            }
-        }
-
-        composable(Destinations.DeviceInfo.route) {
-            Shell(navController, session, Destinations.DeviceInfo.route, stringResource(R.string.nav_device_info)) { padding ->
-                DeviceInfoScreen(padding = padding)
-            }
-        }
-
-        composable(Destinations.CacheCleaner.route) {
-            Shell(navController, session, Destinations.CacheCleaner.route, stringResource(R.string.nav_cache_cleaner)) { padding ->
-                CacheCleanerScreen(padding = padding)
-            }
-        }
-
-        composable(Destinations.AppFinder.route) {
-            Shell(navController, session, Destinations.AppFinder.route, stringResource(R.string.nav_app_finder)) { padding ->
-                AppFinderScreen(padding = padding)
-            }
-        }
-
-        composable(Destinations.WifiScanner.route) {
-            Shell(navController, session, Destinations.WifiScanner.route, stringResource(R.string.nav_wifi_scanner)) { padding ->
-                WifiScannerScreen(padding = padding)
-            }
-        }
-
-        composable(Destinations.WifiMap.route) {
-            Shell(
-                navController = navController,
-                session = session,
-                currentRoute = Destinations.WifiMap.route,
-                title = stringResource(R.string.nav_wifi_map),
-                gesturesEnabled = false
-            ) { padding ->
-                WifiMapScreen(padding = padding)
-            }
-        }
-
-        composable(Destinations.WifiTools.route) {
-            Shell(navController, session, Destinations.WifiTools.route, stringResource(R.string.nav_wifi_tools)) { padding ->
-                WifiToolsScreen(padding = padding)
-            }
-        }
-
-        composable(Destinations.PdfScanner.route) {
-            Shell(navController, session, Destinations.PdfScanner.route, stringResource(R.string.nav_pdf_scanner)) { padding ->
-                PdfScannerScreen(padding = padding)
-            }
-        }
-
-        composable(Destinations.DecibelMeter.route) {
-            Shell(navController, session, Destinations.DecibelMeter.route, stringResource(R.string.nav_decibel_meter)) { padding ->
-                DecibelMeterScreen(padding = padding)
-            }
-        }
-
-        composable(Destinations.Flashlight.route) {
-            Shell(navController, session, Destinations.Flashlight.route, stringResource(R.string.nav_flashlight)) { padding ->
-                FlashlightScreen(padding = padding)
-            }
-        }
-
-        composable(Destinations.Storage.route) {
-            Shell(navController, session, Destinations.Storage.route, stringResource(R.string.nav_storage)) { padding ->
-                StorageManagerScreen(padding = padding)
-            }
-        }
-
+        // ── Account detail screens ────────────────────────────────────────
         composable(Destinations.Profile.route) {
-            Shell(navController, session, Destinations.Profile.route, stringResource(R.string.nav_profile)) { padding ->
+            val vm: LoginViewModel = hiltViewModel()
+            val session by vm.sessionFlow.collectAsState()
+            DetailShell(
+                title = stringResource(R.string.nav_profile),
+                currentRoute = Destinations.Profile.route,
+                onBack = { if (!navController.popBackStack()) navController.navigate(Destinations.Main.route) }
+            ) { padding ->
                 ProfileScreen(
                     padding = padding,
                     session = session,
                     onLogout = {
-                        gateVm.logout()
+                        vm.logout()
                         navController.navigate(Destinations.Login.route) {
                             popUpTo(0) { inclusive = true }
                         }
@@ -201,83 +221,50 @@ fun AppNavGraph(
                 )
             }
         }
-
-        composable(Destinations.Notifications.route) {
-            Shell(navController, session, Destinations.Notifications.route, stringResource(R.string.nav_notifications)) { padding ->
-                NotificationsScreen(padding = padding)
-            }
+        detail(Destinations.Notifications.route, R.string.nav_notifications, navController) { padding ->
+            NotificationsScreen(padding = padding)
         }
-
-        composable(Destinations.Community.route) {
-            Shell(navController, session, Destinations.Community.route, stringResource(R.string.nav_community)) { padding ->
-                CommunityScreen(padding = padding)
-            }
+        detail(Destinations.Community.route, R.string.nav_community, navController) { padding ->
+            CommunityScreen(padding = padding)
         }
-
-        composable(Destinations.Admin.route) {
-            Shell(
-                navController = navController,
-                session = session,
-                currentRoute = Destinations.Admin.route,
-                title = stringResource(R.string.nav_admin),
-                gesturesEnabled = false
-            ) { padding ->
-                AdminScreen(
-                    padding = padding,
-                    credentials = gateVm.credentials()
-                )
-            }
+        detail(Destinations.Admin.route, R.string.nav_admin, navController) { padding ->
+            AdminScreen(
+                padding = padding,
+                credentials = gateVm.credentials()
+            )
         }
-
-        composable(Destinations.Settings.route) {
-            Shell(navController, session, Destinations.Settings.route, stringResource(R.string.nav_settings)) { padding ->
-                SettingsScreen(
-                    padding = padding,
-                    onLanguageChange = onLanguage,
-                    onThemeChange = onTheme,
-                    onFactoryReset = {
-                        navController.navigate(Destinations.Login.route) {
-                            popUpTo(0) { inclusive = true }
-                        }
+        detail(Destinations.Settings.route, R.string.nav_settings, navController) { padding ->
+            SettingsScreen(
+                padding = padding,
+                onLanguageChange = onLanguage,
+                onThemeChange = onTheme,
+                onFactoryReset = {
+                    navController.navigate(Destinations.Login.route) {
+                        popUpTo(0) { inclusive = true }
                     }
-                )
-            }
+                }
+            )
         }
     }
 }
 
-@Composable
-private fun Shell(
+/**
+ * Helper that wraps a detail route in [DetailShell] (top bar + back arrow)
+ * and registers it on the NavGraphBuilder. Pulled out to keep AppNavGraph
+ * compact — each detail becomes a single line above instead of 6-line
+ * boilerplate.
+ */
+private fun androidx.navigation.NavGraphBuilder.detail(
+    route: String,
+    titleRes: Int,
     navController: NavHostController,
-    session: CredentialStore.Session?,
-    currentRoute: String,
-    title: String,
-    gesturesEnabled: Boolean = true,
     content: @Composable (androidx.compose.foundation.layout.PaddingValues) -> Unit
 ) {
-    val gateVm: LoginViewModel = hiltViewModel()
-    AppShell(
-        title = title,
-        currentRoute = currentRoute,
-        isAdmin = session?.role?.equals("admin", ignoreCase = true) == true,
-        displayName = session?.displayName ?: session?.username,
-        role = session?.role,
-        gesturesEnabled = gesturesEnabled,
-        onNavigate = { route -> navTo(navController, route) },
-        onLogout = {
-            gateVm.logout()
-            navController.navigate(Destinations.Login.route) {
-                popUpTo(0) { inclusive = true }
-            }
-        },
-        content = content
-    )
-}
-
-private fun navTo(navController: NavHostController, route: String) {
-    navController.navigate(route) {
-        popUpTo(navController.graph.startDestinationId) { saveState = true }
-        launchSingleTop = true
-        restoreState = true
+    composable(route) {
+        DetailShell(
+            title = stringResource(titleRes),
+            currentRoute = route,
+            onBack = { if (!navController.popBackStack()) navController.navigate(Destinations.Main.route) }
+        ) { padding -> content(padding) }
     }
 }

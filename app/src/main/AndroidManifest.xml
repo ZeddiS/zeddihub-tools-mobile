@@ -27,6 +27,10 @@
     <!-- Decibel Meter -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <!-- Advanced NFC Tools: read/write NDEF tags when activity is in foreground. -->
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-feature android:name="android.hardware.nfc" android:required="false" />
+
     <!-- Flashlight -->
     <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />

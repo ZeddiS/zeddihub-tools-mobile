@@ -573,4 +573,178 @@
     <string name="duplicate_install_body">Na zařízení je nainstalována starší nebo duplicitní verze aplikace ZeddiHub. Odinstaluj ji, aby nedocházelo ke kolizím a nesynchronizovaným datům. ZeddiHub smí být nainstalován pouze jednou.</string>
     <string name="duplicate_install_uninstall">Odinstalovat %1$s</string>
     <string name="duplicate_install_recheck">Zkontrolovat znovu</string>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         v0.5.8 — 4-tab navigation and new tools
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- Bottom navigation -->
+    <string name="tab_home">Domů</string>
+    <string name="tab_tools">Nástroje</string>
+    <string name="tab_helpers">Pomůcky</string>
+    <string name="tab_account">Účet</string>
+
+    <!-- Dashboard (Home tab) -->
+    <string name="dashboard_home_title">Domů</string>
+    <string name="dashboard_section_shortcuts">Rychlé zkratky</string>
+    <string name="dashboard_section_network">Moje síť</string>
+    <string name="dashboard_section_news">Aktuality</string>
+    <string name="dashboard_news_empty">Žádné nové aktuality.</string>
+    <string name="dashboard_network_ssid">WiFi</string>
+    <string name="dashboard_network_ip">IP</string>
+    <string name="dashboard_network_unknown">Neznámé</string>
+    <string name="dashboard_shortcut_speedtest">Speed Test</string>
+    <string name="dashboard_shortcut_wifi">WiFi</string>
+    <string name="dashboard_shortcut_flashlight">Svítilna</string>
+    <string name="dashboard_shortcut_decibel">Hlukoměr</string>
+
+    <!-- Tools root (Tools tab) -->
+    <string name="tools_title">Nástroje</string>
+    <string name="tools_section_new">Novinky</string>
+    <string name="tools_section_network">Síť</string>
+    <string name="tools_section_wifi">WiFi</string>
+    <string name="tools_section_system">Systém</string>
+    <string name="tools_section_media">Média</string>
+    <string name="tools_section_advanced">Pokročilé</string>
+
+    <!-- Helpers root (Helpers tab) -->
+    <string name="helpers_title">Pomůcky</string>
+    <string name="helpers_section_calc">Kalkulačky a převodníky</string>
+    <string name="helpers_section_reference">Reference</string>
+    <string name="helpers_section_catalogs">Katalogy</string>
+
+    <!-- Account root (Account tab) -->
+    <string name="account_title">Účet</string>
+    <string name="account_guest">Host</string>
+    <string name="account_section_me">Můj účet</string>
+    <string name="account_section_community">Komunita</string>
+    <string name="account_section_app">Aplikace</string>
+
+    <!-- Frequency Generator -->
+    <string name="nav_frequency_generator">Generátor frekvencí</string>
+    <string name="freq_hz_label">Frekvence</string>
+    <string name="freq_waveform">Průběh</string>
+    <string name="freq_waveform_sine">Sinus</string>
+    <string name="freq_waveform_square">Obdélník</string>
+    <string name="freq_waveform_triangle">Trojúhelník</string>
+    <string name="freq_waveform_sawtooth">Pila</string>
+    <string name="freq_volume">Hlasitost</string>
+    <string name="freq_start">Přehrát</string>
+    <string name="freq_stop">Zastavit</string>
+    <string name="freq_preset">Předvolba</string>
+    <string name="freq_warning">Pozor: vysoké frekvence nebo hlasitost mohou poškodit sluch i reproduktory.</string>
+
+    <!-- Speaker Cleaner -->
+    <string name="nav_speaker_cleaner">Čistička reproduktorů</string>
+    <string name="speaker_cleaner_intro">Postupný sweep nízkých frekvencí pro vyhnání vody nebo prachu z reproduktoru. Drž telefon reproduktorem dolů.</string>
+    <string name="speaker_cleaner_start">Spustit čištění</string>
+    <string name="speaker_cleaner_stop">Zastavit</string>
+    <string name="speaker_cleaner_running">Čistím… %1$d Hz</string>
+    <string name="speaker_cleaner_preset_water">Voda (165 Hz pulsace)</string>
+    <string name="speaker_cleaner_preset_dust">Prach (sweep 40–200 Hz)</string>
+    <string name="speaker_cleaner_preset_custom">Vlastní</string>
+    <string name="speaker_cleaner_duration">Trvání (s)</string>
+
+    <!-- Video Downloader -->
+    <string name="nav_video_downloader">Stahování videí</string>
+    <string name="video_dl_url_hint">URL z YouTube, Instagram, TikTok, X, Reddit…</string>
+    <string name="video_dl_fetch">Získat odkaz</string>
+    <string name="video_dl_download">Stáhnout</string>
+    <string name="video_dl_save_as">Uložit jako</string>
+    <string name="video_dl_quality">Kvalita</string>
+    <string name="video_dl_audio_only">Jen zvuk (MP3)</string>
+    <string name="video_dl_status_ready">Připraveno. Vlož odkaz a klikni Získat odkaz.</string>
+    <string name="video_dl_status_fetching">Získávám odkaz…</string>
+    <string name="video_dl_status_downloading">Stahování… %1$d %%</string>
+    <string name="video_dl_status_done">Staženo: %1$s</string>
+    <string name="video_dl_status_error">Chyba: %1$s</string>
+    <string name="video_dl_disclaimer">Stahuješ přes službu cobalt.tools. Dodržuj autorská práva a podmínky platforem.</string>
+
+    <!-- Advanced NFC Tools -->
+    <string name="nav_advanced_nfc">NFC nástroje</string>
+    <string name="nfc_ready">Přilož NFC tag k telefonu.</string>
+    <string name="nfc_unsupported">Tento telefon nepodporuje NFC.</string>
+    <string name="nfc_disabled">NFC je vypnuto. Zapni ho v Nastavení.</string>
+    <string name="nfc_tab_read">Číst</string>
+    <string name="nfc_tab_write">Zapsat</string>
+    <string name="nfc_write_type">Typ záznamu</string>
+    <string name="nfc_write_type_text">Text</string>
+    <string name="nfc_write_type_url">URL</string>
+    <string name="nfc_write_type_wifi">WiFi</string>
+    <string name="nfc_write_payload">Obsah</string>
+    <string name="nfc_write_ssid">SSID</string>
+    <string name="nfc_write_password">Heslo</string>
+    <string name="nfc_write_arm">Zapsat při dotyku</string>
+    <string name="nfc_write_cancel">Zrušit zápis</string>
+    <string name="nfc_write_ok">Zapsáno úspěšně.</string>
+    <string name="nfc_write_fail">Zápis selhal: %1$s</string>
+    <string name="nfc_scan_result_empty">Prázdný tag.</string>
+    <string name="nfc_scan_uid">UID: %1$s</string>
+    <string name="nfc_scan_type">Typ: %1$s</string>
+
+    <!-- Currency Converter -->
+    <string name="nav_currency">Převodník měn</string>
+    <string name="currency_from">Z</string>
+    <string name="currency_to">Do</string>
+    <string name="currency_amount">Částka</string>
+    <string name="currency_rate_source">Kurz ČNB · %1$s</string>
+    <string name="currency_offline_hint">Offline režim — používám naposledy staženou tabulku.</string>
+    <string name="currency_refresh">Aktualizovat kurzy</string>
+    <string name="currency_swap">Prohodit</string>
+
+    <!-- Age Calculator -->
+    <string name="nav_age_calc">Kalkulačka věku</string>
+    <string name="age_birth_date">Datum narození</string>
+    <string name="age_target_date">K datu</string>
+    <string name="age_years">%1$d let</string>
+    <string name="age_months">%1$d měs.</string>
+    <string name="age_days">%1$d dní</string>
+    <string name="age_total_days">Celkem dní: %1$d</string>
+    <string name="age_total_hours">Celkem hodin: %1$d</string>
+    <string name="age_next_birthday">Další narozeniny za %1$d dní</string>
+    <string name="age_range_title">Rozsah dvou dat</string>
+    <string name="age_range_from">Od</string>
+    <string name="age_range_to">Do</string>
+    <string name="age_range_result">Mezi datumy: %1$s</string>
+
+    <!-- Morse / Braille -->
+    <string name="nav_morse_braille">Morseovka &amp; Braille</string>
+    <string name="morse_tab_morse">Morseovka</string>
+    <string name="morse_tab_braille">Braille</string>
+    <string name="morse_input">Text nebo kód</string>
+    <string name="morse_output_text">Text</string>
+    <string name="morse_output_code">Kód</string>
+    <string name="morse_play">Přehrát</string>
+    <string name="morse_copy">Kopírovat</string>
+    <string name="morse_clear">Smazat</string>
+
+    <!-- Bubble Level -->
+    <string name="nav_bubble_level">Vodováha</string>
+    <string name="level_angle_x">X: %1$.1f°</string>
+    <string name="level_angle_y">Y: %1$.1f°</string>
+    <string name="level_angle_z">Náklon: %1$.1f°</string>
+    <string name="level_calibrate">Kalibrovat</string>
+    <string name="level_reset">Resetovat</string>
+    <string name="level_hold_flat">Polož telefon na rovný povrch a klikni Kalibrovat.</string>
+
+    <!-- Stub / "coming soon" -->
+    <string name="stub_coming_soon_title">Připravujeme</string>
+    <string name="stub_coming_soon_body">Tato funkce se objeví v některém z dalších updatů. Sleduj changelog.</string>
+    <string name="stub_back">Zpět</string>
+
+    <!-- Stub feature titles -->
+    <string name="nav_advanced_qr">QR nástroje</string>
+    <string name="nav_advanced_barcode">Čárové kódy</string>
+    <string name="nav_advanced_text_editor">Editor textu</string>
+    <string name="nav_holidays">Katalog svátků</string>
+    <string name="nav_hazard_signs">Značky nebezpečí</string>
+    <string name="nav_traffic_signs">Dopravní značky</string>
+    <string name="nav_school_tools">Školní pomůcky</string>
+    <string name="nav_periodic_table">Periodická tabulka</string>
+    <string name="nav_electrician">Elektro kalkulačky</string>
+
+    <!-- Detail screen common -->
+    <string name="common_back">Zpět</string>
+    <string name="common_share">Sdílet</string>
+    <string name="common_cancel">Zrušit</string>
 </resources>
