@@ -20,6 +20,12 @@ class AppLockState @Inject constructor() {
      *  background trip (e.g. biometric prompt itself) should re-lock. */
     var lastStoppedAt: Long = 0L
 
-    fun markUnlocked() { _unlocked.value = true }
+    fun markUnlocked() {
+        _unlocked.value = true
+        // Reset the background timestamp so a stale value (e.g. from a
+        // previous backgrounding) cannot trigger a re-lock at the next
+        // onStart when no real background trip happened after unlocking.
+        lastStoppedAt = 0L
+    }
     fun lock() { _unlocked.value = false }
 }

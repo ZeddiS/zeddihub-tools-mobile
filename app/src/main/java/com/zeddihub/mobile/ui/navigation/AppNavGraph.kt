@@ -18,6 +18,7 @@ import com.zeddihub.mobile.ui.helpers.AgeCalculatorScreen
 import com.zeddihub.mobile.ui.helpers.BubbleLevelScreen
 import com.zeddihub.mobile.ui.helpers.CurrencyConverterScreen
 import com.zeddihub.mobile.ui.helpers.ElectricianScreen
+import com.zeddihub.mobile.ui.helpers.HazardSignsScreen
 import com.zeddihub.mobile.ui.helpers.HolidaysScreen
 import com.zeddihub.mobile.ui.helpers.MorseBrailleScreen
 import com.zeddihub.mobile.ui.helpers.PeriodicTableScreen
@@ -190,7 +191,7 @@ fun AppNavGraph(
             HolidaysScreen(padding = padding)
         }
         detail(Destinations.HazardSigns.route, R.string.nav_hazard_signs, navController) { padding ->
-            StubScreen(padding = padding)
+            HazardSignsScreen(padding = padding, language = currentLanguage)
         }
         detail(Destinations.TrafficSigns.route, R.string.nav_traffic_signs, navController) { padding ->
             StubScreen(padding = padding)

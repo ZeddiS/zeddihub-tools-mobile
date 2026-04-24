@@ -98,6 +98,7 @@
             android:documentLaunchMode="never"
             android:excludeFromRecents="false"
             android:theme="@style/Theme.ZeddiHub"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|uiMode|density|fontScale"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

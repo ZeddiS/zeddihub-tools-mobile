@@ -74,6 +74,7 @@ class MainActivity : AppCompatActivity() {
             val themeMode by appPreferences.theme.collectAsState()
             val language by appPreferences.language.collectAsState()
             val appLockEnabled by appPreferences.appLockEnabled.collectAsState()
+            val pinConfigured by appPreferences.pinConfigured.collectAsState()
             val unlocked by appLockState.unlocked.collectAsState()
             val session by authRepository.session.collectAsState()
 
@@ -96,7 +97,9 @@ class MainActivity : AppCompatActivity() {
                     DuplicateInstallGate {
                         BiometricLockGate(
                             locked = locked,
-                            onUnlocked = { appLockState.markUnlocked() }
+                            pinConfigured = pinConfigured,
+                            onUnlocked = { appLockState.markUnlocked() },
+                            verifyPin = { pin -> appPreferences.verifyPin(pin) }
                         ) {
                             val navController = rememberNavController()
                             AppNavGraph(

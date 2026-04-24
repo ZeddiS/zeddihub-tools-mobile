@@ -492,6 +492,34 @@
     <string name="settings_app_lock">Zámek aplikace</string>
     <string name="settings_app_lock_desc">Při spuštění aplikace vyžadovat biometriku</string>
 
+    <!-- PIN fallback -->
+    <string name="app_lock_use_pin">Použít PIN</string>
+    <string name="app_lock_use_biometric">Použít biometriku</string>
+    <string name="app_lock_pin_title">Zadej PIN</string>
+    <string name="app_lock_pin_subtitle">Zadej 4–12 cifer pro odemčení aplikace.</string>
+    <string name="app_lock_pin_wrong">Nesprávný PIN. Zkus to znovu.</string>
+    <string name="app_lock_pin_forgot">Zapomenutý PIN? Obnov aplikaci v Nastavení.</string>
+    <string name="settings_pin">PIN kód</string>
+    <string name="settings_pin_configured">PIN je nastaven</string>
+    <string name="settings_pin_not_configured">PIN není nastaven</string>
+    <string name="settings_pin_set">Nastavit PIN</string>
+    <string name="settings_pin_change">Změnit PIN</string>
+    <string name="settings_pin_remove">Odstranit PIN</string>
+    <string name="settings_pin_desc">Alternativa k biometrice. Pokud nemáš otisk prstu nebo rozpoznání obličeje, odemkni aplikaci PIN kódem.</string>
+    <string name="settings_pin_dialog_title">Nastavení PIN</string>
+    <string name="settings_pin_dialog_new">Nový PIN (4–12 cifer)</string>
+    <string name="settings_pin_dialog_confirm">Potvrdit PIN</string>
+    <string name="settings_pin_dialog_current">Aktuální PIN</string>
+    <string name="settings_pin_mismatch">PIN kódy se neshodují.</string>
+    <string name="settings_pin_too_short">PIN musí mít alespoň 4 cifry.</string>
+    <string name="settings_pin_too_long">PIN může mít nejvýše 12 cifer.</string>
+    <string name="settings_pin_digits_only">PIN smí obsahovat pouze číslice.</string>
+    <string name="settings_pin_wrong_current">Aktuální PIN není správný.</string>
+    <string name="settings_pin_saved">PIN byl uložen.</string>
+    <string name="settings_pin_removed">PIN byl odstraněn.</string>
+    <string name="pin_delete">Smazat</string>
+    <string name="pin_submit">Potvrdit</string>
+
     <!-- Flashlight -->
     <string name="flashlight_title">Baterka</string>
     <string name="flashlight_unsupported">Zařízení nemá baterku.</string>

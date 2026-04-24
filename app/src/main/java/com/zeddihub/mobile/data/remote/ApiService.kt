@@ -3,6 +3,7 @@ package com.zeddihub.mobile.data.remote
 import com.zeddihub.mobile.BuildConfig
 import com.zeddihub.mobile.data.remote.dto.AuthJsonDto
 import com.zeddihub.mobile.data.remote.dto.AuthResponse
+import com.zeddihub.mobile.data.remote.dto.HomeConfigDto
 import com.zeddihub.mobile.data.remote.dto.LoginRequest
 import com.zeddihub.mobile.data.remote.dto.LogoutResponse
 import com.zeddihub.mobile.data.remote.dto.MeResponse
@@ -66,11 +67,24 @@ interface ApiService {
     @POST("wifi-map/submit")
     suspend fun wifiMapSubmit(@Body request: WifiMapSubmitRequest): WifiMapSubmitResponse
 
+    // -------------------------------------------------------------------
+    // Admin-managed Home config (shortcuts + news). Served as a static
+    // JSON file from the website; editable via the admin panel.
+    // -------------------------------------------------------------------
+
+    @GET
+    suspend fun fetchHomeConfigAt(@Url url: String): HomeConfigDto
+
     companion object {
         val LEGACY_AUTH_URL: String = BuildConfig.SITE_BASE_URL + "tools/data/auth.json"
+        val HOME_CONFIG_URL: String = BuildConfig.SITE_BASE_URL + "tools/data/home_android.json"
     }
 }
 
 /** Convenience wrapper around [ApiService.fetchAuthAt]. */
 suspend fun ApiService.fetchAuth(): AuthJsonDto =
     fetchAuthAt(ApiService.LEGACY_AUTH_URL)
+
+/** Convenience wrapper that targets the admin-managed Home config file. */
+suspend fun ApiService.fetchHomeConfig(): HomeConfigDto =
+    fetchHomeConfigAt(ApiService.HOME_CONFIG_URL)

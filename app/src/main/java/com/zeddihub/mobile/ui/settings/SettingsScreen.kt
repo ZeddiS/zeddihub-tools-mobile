@@ -22,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Dialpad
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material.icons.filled.SystemUpdate
@@ -35,6 +36,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -50,6 +52,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -156,12 +161,92 @@ fun SettingsScreen(
 
         Spacer(Modifier.height(12.dp))
         SectionHeader(stringResource(R.string.settings_security))
+        var showPinDialog by remember { mutableStateOf(false) }
+        var showPinRemoveDialog by remember { mutableStateOf(false) }
         SettingsCard {
             SwitchRow(
                 label = stringResource(R.string.settings_app_lock),
                 sub = stringResource(R.string.settings_app_lock_desc),
                 checked = state.appLockEnabled,
                 onCheckedChange = viewModel::setAppLock
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showPinDialog = true }
+                    .padding(14.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(Icons.Default.Dialpad, contentDescription = null, tint = colors.primary)
+                Spacer(Modifier.width(14.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(stringResource(R.string.settings_pin), color = colors.onSurface)
+                    Text(
+                        text = if (state.pinConfigured)
+                            stringResource(R.string.settings_pin_configured)
+                        else stringResource(R.string.settings_pin_not_configured),
+                        color = colors.onSurfaceVariant,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+                Text(
+                    text = if (state.pinConfigured)
+                        stringResource(R.string.settings_pin_change)
+                    else stringResource(R.string.settings_pin_set),
+                    color = colors.primary,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            if (state.pinConfigured) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { showPinRemoveDialog = true }
+                        .padding(14.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(Icons.Default.Restore, contentDescription = null, tint = colors.error)
+                    Spacer(Modifier.width(14.dp))
+                    Text(
+                        stringResource(R.string.settings_pin_remove),
+                        color = colors.error
+                    )
+                }
+            }
+        }
+        if (showPinDialog) {
+            PinSetupDialog(
+                isChange = state.pinConfigured,
+                onDismiss = { showPinDialog = false },
+                onSave = { current, new, confirm ->
+                    val res = viewModel.setPin(new, confirm, currentPin = current)
+                    if (res is PinResult.Ok) {
+                        showPinDialog = false
+                        Toast.makeText(
+                            ctx,
+                            ctx.getString(R.string.settings_pin_saved),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    res
+                }
+            )
+        }
+        if (showPinRemoveDialog) {
+            PinRemoveDialog(
+                onDismiss = { showPinRemoveDialog = false },
+                onRemove = { current ->
+                    val res = viewModel.clearPin(current)
+                    if (res is PinResult.Ok) {
+                        showPinRemoveDialog = false
+                        Toast.makeText(
+                            ctx,
+                            ctx.getString(R.string.settings_pin_removed),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    res
+                }
             )
         }
 
@@ -422,6 +507,141 @@ private fun UpdateAvailableRow(
             }
         }
     }
+}
+
+@Composable
+private fun PinSetupDialog(
+    isChange: Boolean,
+    onDismiss: () -> Unit,
+    onSave: (current: String?, new: String, confirm: String) -> PinResult
+) {
+    var current by remember { mutableStateOf("") }
+    var new by remember { mutableStateOf("") }
+    var confirm by remember { mutableStateOf("") }
+    var error by remember { mutableStateOf<String?>(null) }
+
+    val tooShort = stringResource(R.string.settings_pin_too_short)
+    val tooLong = stringResource(R.string.settings_pin_too_long)
+    val digitsOnly = stringResource(R.string.settings_pin_digits_only)
+    val mismatch = stringResource(R.string.settings_pin_mismatch)
+    val wrongCurrent = stringResource(R.string.settings_pin_wrong_current)
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.settings_pin_dialog_title)) },
+        text = {
+            Column {
+                Text(
+                    stringResource(R.string.settings_pin_desc),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(12.dp))
+                if (isChange) {
+                    OutlinedTextField(
+                        value = current,
+                        onValueChange = { v -> current = v.filter { it.isDigit() }.take(12) },
+                        label = { Text(stringResource(R.string.settings_pin_dialog_current)) },
+                        singleLine = true,
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(Modifier.height(8.dp))
+                }
+                OutlinedTextField(
+                    value = new,
+                    onValueChange = { v -> new = v.filter { it.isDigit() }.take(12) },
+                    label = { Text(stringResource(R.string.settings_pin_dialog_new)) },
+                    singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = confirm,
+                    onValueChange = { v -> confirm = v.filter { it.isDigit() }.take(12) },
+                    label = { Text(stringResource(R.string.settings_pin_dialog_confirm)) },
+                    singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                error?.let {
+                    Spacer(Modifier.height(8.dp))
+                    Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                }
+            }
+        },
+        confirmButton = {
+            Button(onClick = {
+                val res = onSave(if (isChange) current else null, new, confirm)
+                error = when (res) {
+                    PinResult.Ok -> null
+                    PinResult.TooShort -> tooShort
+                    PinResult.TooLong -> tooLong
+                    PinResult.NotDigitsOnly -> digitsOnly
+                    PinResult.Mismatch -> mismatch
+                    PinResult.WrongCurrent -> wrongCurrent
+                }
+            }) { Text(stringResource(R.string.settings_confirm)) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.settings_cancel))
+            }
+        }
+    )
+}
+
+@Composable
+private fun PinRemoveDialog(
+    onDismiss: () -> Unit,
+    onRemove: (current: String) -> PinResult
+) {
+    var current by remember { mutableStateOf("") }
+    var error by remember { mutableStateOf<String?>(null) }
+    val wrongCurrent = stringResource(R.string.settings_pin_wrong_current)
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.settings_pin_remove)) },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = current,
+                    onValueChange = { v -> current = v.filter { it.isDigit() }.take(12) },
+                    label = { Text(stringResource(R.string.settings_pin_dialog_current)) },
+                    singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                error?.let {
+                    Spacer(Modifier.height(8.dp))
+                    Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    val res = onRemove(current)
+                    if (res is PinResult.WrongCurrent) error = wrongCurrent
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError
+                )
+            ) { Text(stringResource(R.string.settings_confirm)) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.settings_cancel))
+            }
+        }
+    )
 }
 
 @Composable

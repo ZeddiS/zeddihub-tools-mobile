@@ -9,6 +9,7 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -28,6 +30,7 @@ import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.filled.FlashlightOn
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.NetworkCheck
+import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.Speaker
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.Wifi
@@ -50,17 +53,26 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.runtime.collectAsState
 import com.zeddihub.mobile.R
+import com.zeddihub.mobile.data.local.LanguageCode
+import com.zeddihub.mobile.data.remote.dto.HomeNewsDto
+import com.zeddihub.mobile.data.remote.dto.HomeShortcutDto
 import com.zeddihub.mobile.ui.navigation.Destinations
 
 @Composable
 fun DashboardScreen(
     padding: PaddingValues,
     isAdmin: Boolean,
-    onNavigate: (String) -> Unit
+    onNavigate: (String) -> Unit,
+    viewModel: HomeConfigViewModel = hiltViewModel()
 ) {
     val colors = MaterialTheme.colorScheme
     val ctx = LocalContext.current
+
+    val homeConfig by viewModel.config.collectAsState()
+    val language by viewModel.language.collectAsState()
 
     var ssid by remember { mutableStateOf<String?>(null) }
     var ipv4 by remember { mutableStateOf<String?>(null) }
@@ -108,37 +120,21 @@ fun DashboardScreen(
 
         Spacer(Modifier.height(14.dp))
 
-        // Quick shortcuts
-        SectionLabel(stringResource(R.string.dashboard_section_shortcuts))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            QuickTile(
-                label = stringResource(R.string.dashboard_shortcut_speedtest),
-                icon = Icons.Default.NetworkCheck,
-                onClick = { onNavigate(Destinations.SpeedTest.route) },
-                modifier = Modifier.weight(1f)
-            )
-            QuickTile(
-                label = stringResource(R.string.dashboard_shortcut_wifi),
-                icon = Icons.Default.Wifi,
-                onClick = { onNavigate(Destinations.WifiScanner.route) },
-                modifier = Modifier.weight(1f)
-            )
-            QuickTile(
-                label = stringResource(R.string.dashboard_shortcut_flashlight),
-                icon = Icons.Default.FlashlightOn,
-                onClick = { onNavigate(Destinations.Flashlight.route) },
-                modifier = Modifier.weight(1f)
-            )
-            QuickTile(
-                label = stringResource(R.string.dashboard_shortcut_decibel),
-                icon = Icons.Default.GraphicEq,
-                onClick = { onNavigate(Destinations.DecibelMeter.route) },
-                modifier = Modifier.weight(1f)
+        // Quick shortcuts — rendered from the admin-managed home config.
+        // Hidden/unresolvable entries are silently skipped; we only
+        // show a section header if there's at least one usable item so
+        // the admin can hide the whole row by emptying the list.
+        val visibleShortcuts = homeConfig.shortcuts
+            .filter { it.visible }
+            .mapNotNull { sc ->
+                resolveNavRoute(sc.navId)?.let { route -> sc to route }
+            }
+        if (visibleShortcuts.isNotEmpty()) {
+            SectionLabel(stringResource(R.string.dashboard_section_shortcuts))
+            DynamicShortcutsRow(
+                items = visibleShortcuts,
+                language = language,
+                onNavigate = onNavigate
             )
         }
 
@@ -195,20 +191,37 @@ fun DashboardScreen(
 
         Spacer(Modifier.height(14.dp))
 
-        // Announcements placeholder
+        // News — admin-managed. Pinned items float to the top; the
+        // relative order of the rest is preserved.
         SectionLabel(stringResource(R.string.dashboard_section_news))
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            color = colors.surface,
-            shape = RoundedCornerShape(14.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.dashboard_news_empty),
-                color = colors.onSurfaceVariant,
-                modifier = Modifier.padding(16.dp)
-            )
+        val sortedNews = remember(homeConfig.news) {
+            homeConfig.news.sortedByDescending { it.pinned }
+        }
+        if (sortedNews.isEmpty()) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                color = colors.surface,
+                shape = RoundedCornerShape(14.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.dashboard_news_empty),
+                    color = colors.onSurfaceVariant,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                sortedNews.forEach { item ->
+                    NewsCard(item = item, language = language)
+                }
+            }
         }
 
         Spacer(Modifier.height(32.dp))
@@ -273,7 +286,8 @@ private fun QuickTile(
     label: String,
     icon: ImageVector,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    tint: Color? = null
 ) {
     val colors = MaterialTheme.colorScheme
     Surface(
@@ -291,7 +305,12 @@ private fun QuickTile(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(icon, contentDescription = null, tint = colors.primary, modifier = Modifier.size(26.dp))
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = tint ?: colors.primary,
+                modifier = Modifier.size(26.dp)
+            )
             Spacer(Modifier.height(6.dp))
             Text(
                 text = label,
@@ -343,6 +362,118 @@ private fun HighlightTile(
                 modifier = Modifier.align(Alignment.BottomStart)
             )
         }
+    }
+}
+
+/**
+ * Renders the admin-configured shortcut list as a horizontally-scrolling
+ * row of tiles. Keeps each tile a fixed width so arbitrarily-long lists
+ * still fit on narrow screens (4+ shortcuts used to squeeze into one
+ * screen; now we scroll instead of shrinking).
+ */
+@Composable
+private fun DynamicShortcutsRow(
+    items: List<Pair<HomeShortcutDto, String>>,
+    language: LanguageCode,
+    onNavigate: (String) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        items.forEach { (sc, route) ->
+            val label = pickLocalized(language, sc.labelCs, sc.labelEn)
+            QuickTile(
+                label = label,
+                icon = resolveIcon(sc.icon),
+                tint = parseHexColor(sc.color, MaterialTheme.colorScheme.primary),
+                onClick = { onNavigate(route) },
+                modifier = Modifier.width(104.dp)
+            )
+        }
+    }
+}
+
+/**
+ * Single news card. Non-empty `url` makes the whole card clickable and
+ * open in the system browser; otherwise the card is inert. Body text
+ * is capped to avoid pushing the rest of the Dashboard off-screen.
+ */
+@Composable
+private fun NewsCard(item: HomeNewsDto, language: LanguageCode) {
+    val colors = MaterialTheme.colorScheme
+    val ctx = LocalContext.current
+    val title = pickLocalized(language, item.titleCs, item.titleEn)
+    val body  = pickLocalized(language, item.bodyCs,  item.bodyEn)
+    val hasUrl = item.url.isNotBlank()
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .let { if (hasUrl) it.clickable { openUrl(ctx, item.url) } else it },
+        color = colors.surface,
+        shape = RoundedCornerShape(14.dp),
+        tonalElevation = 2.dp
+    ) {
+        Column(modifier = Modifier.padding(14.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (item.pinned) {
+                    Icon(
+                        Icons.Default.PushPin,
+                        contentDescription = null,
+                        tint = colors.primary,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(Modifier.size(6.dp))
+                }
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colors.onSurface,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.weight(1f)
+                )
+                if (item.date.isNotBlank()) {
+                    Text(
+                        text = item.date,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = colors.onSurfaceVariant
+                    )
+                }
+            }
+            if (body.isNotBlank()) {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = body.take(400),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = colors.onSurfaceVariant
+                )
+            }
+        }
+    }
+}
+
+private fun openUrl(ctx: android.content.Context, url: String) {
+    runCatching {
+        ctx.startActivity(
+            android.content.Intent(
+                android.content.Intent.ACTION_VIEW,
+                android.net.Uri.parse(url)
+            ).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
+    }
+}
+
+/** Returns the CS version when the app language is CS (and CS is non-empty),
+ *  otherwise falls back to EN, and finally to whichever is non-empty. */
+private fun pickLocalized(language: LanguageCode, cs: String, en: String): String {
+    return when {
+        language == LanguageCode.CS && cs.isNotBlank() -> cs
+        language == LanguageCode.EN && en.isNotBlank() -> en
+        cs.isNotBlank() -> cs
+        else -> en
     }
 }
 

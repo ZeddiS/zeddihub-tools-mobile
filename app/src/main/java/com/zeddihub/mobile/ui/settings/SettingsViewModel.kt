@@ -24,8 +24,20 @@ data class SettingsUiState(
     val autoUpdate: Boolean = true,
     val pushEnabled: Boolean = true,
     val appLockEnabled: Boolean = true,
+    val pinConfigured: Boolean = false,
     val updateCheckState: UpdateCheckState = UpdateCheckState.Idle
 )
+
+/** Result of attempting to set/change/remove the PIN — lets the UI show
+ *  a precise error without the ViewModel knowing about strings. */
+sealed class PinResult {
+    data object Ok : PinResult()
+    data object TooShort : PinResult()
+    data object TooLong : PinResult()
+    data object NotDigitsOnly : PinResult()
+    data object Mismatch : PinResult()
+    data object WrongCurrent : PinResult()
+}
 
 sealed class UpdateCheckState {
     data object Idle : UpdateCheckState()
@@ -51,10 +63,21 @@ class SettingsViewModel @Inject constructor(
             language = prefs.language.value,
             autoUpdate = prefs.autoUpdate.value,
             pushEnabled = prefs.pushEnabled.value,
-            appLockEnabled = prefs.appLockEnabled.value
+            appLockEnabled = prefs.appLockEnabled.value,
+            pinConfigured = prefs.pinConfigured.value
         )
     )
     val state: StateFlow<SettingsUiState> = _state.asStateFlow()
+
+    init {
+        // Keep the UI's pinConfigured flag in sync — other surfaces
+        // (e.g. factoryReset) can change the value at any time.
+        viewModelScope.launch {
+            prefs.pinConfigured.collect { cfg ->
+                _state.value = _state.value.copy(pinConfigured = cfg)
+            }
+        }
+    }
 
     fun setTheme(mode: ThemeMode) {
         prefs.setTheme(mode)
@@ -79,6 +102,29 @@ class SettingsViewModel @Inject constructor(
     fun setAppLock(enabled: Boolean) {
         prefs.setAppLockEnabled(enabled)
         _state.value = _state.value.copy(appLockEnabled = enabled)
+    }
+
+    /**
+     * Validate + store a PIN. Pass [currentPin]=null for the initial setup,
+     * or the user's current PIN when changing an existing one — in that
+     * case we refuse the change if the current PIN does not verify.
+     */
+    fun setPin(newPin: String, confirmPin: String, currentPin: String? = null): PinResult {
+        if (newPin.any { !it.isDigit() }) return PinResult.NotDigitsOnly
+        if (newPin.length < 4) return PinResult.TooShort
+        if (newPin.length > 12) return PinResult.TooLong
+        if (newPin != confirmPin) return PinResult.Mismatch
+        if (prefs.pinConfigured.value && currentPin != null) {
+            if (!prefs.verifyPin(currentPin)) return PinResult.WrongCurrent
+        }
+        prefs.setPin(newPin)
+        return PinResult.Ok
+    }
+
+    fun clearPin(currentPin: String): PinResult {
+        if (!prefs.verifyPin(currentPin)) return PinResult.WrongCurrent
+        prefs.clearPin()
+        return PinResult.Ok
     }
 
     fun clearCache() {

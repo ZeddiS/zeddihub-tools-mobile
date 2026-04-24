@@ -477,6 +477,34 @@
     <string name="settings_app_lock">App lock</string>
     <string name="settings_app_lock_desc">Require biometrics on app launch</string>
 
+    <!-- PIN fallback -->
+    <string name="app_lock_use_pin">Use PIN</string>
+    <string name="app_lock_use_biometric">Use biometrics</string>
+    <string name="app_lock_pin_title">Enter PIN</string>
+    <string name="app_lock_pin_subtitle">Enter 4–12 digits to unlock the app.</string>
+    <string name="app_lock_pin_wrong">Wrong PIN. Try again.</string>
+    <string name="app_lock_pin_forgot">Forgot PIN? Factory-reset the app in Settings.</string>
+    <string name="settings_pin">PIN code</string>
+    <string name="settings_pin_configured">PIN is configured</string>
+    <string name="settings_pin_not_configured">PIN is not configured</string>
+    <string name="settings_pin_set">Set PIN</string>
+    <string name="settings_pin_change">Change PIN</string>
+    <string name="settings_pin_remove">Remove PIN</string>
+    <string name="settings_pin_desc">Alternative to biometrics. If your device has no fingerprint or face unlock, use a PIN instead.</string>
+    <string name="settings_pin_dialog_title">PIN setup</string>
+    <string name="settings_pin_dialog_new">New PIN (4–12 digits)</string>
+    <string name="settings_pin_dialog_confirm">Confirm PIN</string>
+    <string name="settings_pin_dialog_current">Current PIN</string>
+    <string name="settings_pin_mismatch">PIN codes do not match.</string>
+    <string name="settings_pin_too_short">PIN must be at least 4 digits.</string>
+    <string name="settings_pin_too_long">PIN may have at most 12 digits.</string>
+    <string name="settings_pin_digits_only">PIN must contain digits only.</string>
+    <string name="settings_pin_wrong_current">Current PIN is incorrect.</string>
+    <string name="settings_pin_saved">PIN saved.</string>
+    <string name="settings_pin_removed">PIN removed.</string>
+    <string name="pin_delete">Delete</string>
+    <string name="pin_submit">Submit</string>
+
     <!-- Flashlight -->
     <string name="flashlight_title">Flashlight</string>
     <string name="flashlight_unsupported">This device has no flashlight.</string>
