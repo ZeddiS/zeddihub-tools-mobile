@@ -1,6 +1,8 @@
 package com.zeddihub.mobile.ui.main
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -20,17 +22,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.zeddihub.mobile.data.local.LanguageCode
@@ -108,7 +113,7 @@ fun CategorySection(
                                 MaterialTheme.colorScheme.primary
                             ),
                             expanded = isOpen,
-                            onClick = { expanded[key] = !isOpen },
+                            onToggle = { expanded[key] = !isOpen },
                             modifier = Modifier.weight(1f)
                         )
                     } else {
@@ -166,7 +171,10 @@ fun CategorySection(
 
 /**
  * Folder summary tile — same visual footprint as QuickTile but with a
- * chevron indicator to hint at the akordeon behaviour.
+ * chevron indicator to hint at the akordeon behaviour. The chevron
+ * rotates 180° on expand/collapse via animateFloatAsState, and the
+ * whole tile triggers a light haptic pulse on click so the accordion
+ * feels physical.
  */
 @Composable
 private fun FolderTile(
@@ -174,14 +182,23 @@ private fun FolderTile(
     icon: ImageVector,
     tint: Color,
     expanded: Boolean,
-    onClick: () -> Unit,
+    onToggle: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val colors = MaterialTheme.colorScheme
+    val haptics = LocalHapticFeedback.current
+    val chevronAngle by animateFloatAsState(
+        targetValue = if (expanded) 180f else 0f,
+        animationSpec = tween(durationMillis = 220),
+        label = "chevronRotation"
+    )
     Surface(
         modifier = modifier
             .height(92.dp)
-            .clickable(onClick = onClick),
+            .clickable {
+                haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                onToggle()
+            },
         color = colors.surface,
         shape = RoundedCornerShape(14.dp),
         tonalElevation = 2.dp
@@ -212,11 +229,12 @@ private fun FolderTile(
                 )
                 Spacer(Modifier.size(2.dp))
                 Icon(
-                    if (expanded) Icons.Default.KeyboardArrowUp
-                    else Icons.Default.KeyboardArrowDown,
+                    Icons.Default.KeyboardArrowDown,
                     contentDescription = null,
                     tint = colors.onSurfaceVariant,
-                    modifier = Modifier.size(14.dp)
+                    modifier = Modifier
+                        .size(14.dp)
+                        .rotate(chevronAngle)
                 )
             }
         }
@@ -294,10 +312,14 @@ private fun QuickTileMirror(
     modifier: Modifier = Modifier,
 ) {
     val colors = MaterialTheme.colorScheme
+    val haptics = LocalHapticFeedback.current
     Surface(
         modifier = modifier
             .height(92.dp)
-            .clickable(onClick = onClick),
+            .clickable {
+                haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                onClick()
+            },
         color = colors.surface,
         shape = RoundedCornerShape(14.dp),
         tonalElevation = 2.dp

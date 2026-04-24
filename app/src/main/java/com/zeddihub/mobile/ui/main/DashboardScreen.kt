@@ -23,6 +23,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.filled.FlashlightOn
@@ -42,23 +46,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import java.time.LocalTime
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.collectAsState
+import kotlinx.coroutines.launch
 import com.zeddihub.mobile.R
 import com.zeddihub.mobile.data.local.LanguageCode
 import com.zeddihub.mobile.data.remote.dto.HomeNewsDto
 import com.zeddihub.mobile.ui.navigation.Destinations
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DashboardScreen(
     padding: PaddingValues,
@@ -80,14 +90,47 @@ fun DashboardScreen(
         ipv4 = info.second
     }
 
-    Column(
+    // Pull-to-refresh: swipe down from the top to force a fresh
+    // home-config fetch. The indicator is rendered as a floating
+    // overlay via Box/align so it doesn't affect the scroll layout.
+    var isRefreshing by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val pullState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = {
+            isRefreshing = true
+            scope.launch {
+                val refreshed = readNetworkInfo(ctx)
+                ssid = refreshed.first
+                ipv4 = refreshed.second
+                viewModel.refresh()
+                // Short artificial dwell so the spinner is visible even
+                // when the API responds in a few hundred ms — otherwise
+                // the indicator blinks and users aren't sure if it did
+                // anything.
+                kotlinx.coroutines.delay(600)
+                isRefreshing = false
+            }
+        }
+    )
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(colors.background)
             .padding(padding)
+            .pullRefresh(pullState)
+    ) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        // Welcome hero
+        // Welcome hero — time-based greeting sits above the localized
+        // dashboard title so returning users get a small personal nudge
+        // (Dobré ráno / odpoledne / večer) without any account-specific
+        // data. The hour is read once per composition; that's precise
+        // enough for a greeting and avoids a Flow/ticker for zero gain.
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -99,6 +142,13 @@ fun DashboardScreen(
                 .padding(horizontal = 20.dp, vertical = 20.dp)
         ) {
             Column {
+                Text(
+                    text = greetingForHour(LocalTime.now().hour, language),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = colors.onBackground.copy(alpha = 0.72f),
+                    fontWeight = FontWeight.Medium
+                )
+                Spacer(Modifier.height(2.dp))
                 Text(
                     text = stringResource(R.string.dashboard_home_title),
                     style = MaterialTheme.typography.headlineSmall,
@@ -221,6 +271,14 @@ fun DashboardScreen(
 
         Spacer(Modifier.height(32.dp))
     }
+        PullRefreshIndicator(
+            refreshing = isRefreshing,
+            state = pullState,
+            modifier = Modifier.align(Alignment.TopCenter),
+            backgroundColor = colors.surface,
+            contentColor = colors.primary,
+        )
+    }
 }
 
 @Composable
@@ -326,10 +384,14 @@ private fun HighlightTile(
     modifier: Modifier = Modifier
 ) {
     val colors = MaterialTheme.colorScheme
+    val haptics = LocalHapticFeedback.current
     Surface(
         modifier = modifier
             .height(108.dp)
-            .clickable(onClick = onClick),
+            .clickable {
+                haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                onClick()
+            },
         shape = RoundedCornerShape(16.dp),
         color = Color.Transparent
     ) {
@@ -473,3 +535,34 @@ private fun readNetworkInfo(ctx: Context): Pair<String?, String?> {
 
 @Suppress("unused")
 private val buildFlagIsAtLeastR = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+
+/**
+ * Time-of-day greeting, localized to the current UI language. We keep
+ * this inline (no strings.xml entry) because each locale maps to a
+ * fixed string set, and piping three keys × two locales through
+ * resources would outweigh the maintenance cost of a local switch.
+ *
+ * Windows:
+ *   05:00–11:59  →  morning
+ *   12:00–17:59  →  afternoon
+ *   18:00–04:59  →  evening  (incl. late night)
+ */
+private fun greetingForHour(hour: Int, language: LanguageCode): String {
+    val bucket = when (hour) {
+        in 5..11  -> 0   // morning
+        in 12..17 -> 1   // afternoon
+        else      -> 2   // evening
+    }
+    return when (language) {
+        LanguageCode.CS -> when (bucket) {
+            0 -> "Dobré ráno"
+            1 -> "Dobré odpoledne"
+            else -> "Dobrý večer"
+        }
+        LanguageCode.EN -> when (bucket) {
+            0 -> "Good morning"
+            1 -> "Good afternoon"
+            else -> "Good evening"
+        }
+    }
+}
