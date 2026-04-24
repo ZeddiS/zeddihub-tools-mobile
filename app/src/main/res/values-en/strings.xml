@@ -601,6 +601,8 @@
     <string name="dashboard_network_ssid">WiFi</string>
     <string name="dashboard_network_ip">IP</string>
     <string name="dashboard_network_unknown">Unknown</string>
+    <string name="dashboard_network_connected">Connected</string>
+    <string name="dashboard_network_offline">Not connected</string>
     <string name="dashboard_shortcut_speedtest">Speed Test</string>
     <string name="dashboard_shortcut_wifi">WiFi</string>
     <string name="dashboard_shortcut_flashlight">Flashlight</string>
@@ -715,6 +717,10 @@
     <string name="morse_play">Play</string>
     <string name="morse_copy">Copy</string>
     <string name="morse_clear">Clear</string>
+
+    <string name="nav_compass">Compass</string>
+    <string name="nav_battery_info">Battery status</string>
+    <string name="nav_quick_note">Quick note</string>
 
     <string name="nav_bubble_level">Bubble Level</string>
     <string name="level_angle_x">X: %1$.1f°</string>

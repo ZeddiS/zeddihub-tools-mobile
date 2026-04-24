@@ -40,6 +40,9 @@ sealed class Destinations(val route: String) {
     data object AgeCalculator : Destinations("help/age")
     data object MorseBraille : Destinations("help/morse_braille")
     data object BubbleLevel : Destinations("help/level")
+    data object Compass : Destinations("help/compass")
+    data object BatteryInfo : Destinations("help/battery")
+    data object QuickNote : Destinations("help/quick_note")
 
     // Stub helpers (will be fully implemented in later releases)
     data object HolidaysCatalog : Destinations("help/holidays")

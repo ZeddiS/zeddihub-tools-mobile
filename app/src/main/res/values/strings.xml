@@ -621,6 +621,8 @@
     <string name="dashboard_network_ssid">WiFi</string>
     <string name="dashboard_network_ip">IP</string>
     <string name="dashboard_network_unknown">Neznámé</string>
+    <string name="dashboard_network_connected">Připojeno</string>
+    <string name="dashboard_network_offline">Bez připojení</string>
     <string name="dashboard_shortcut_speedtest">Speed Test</string>
     <string name="dashboard_shortcut_wifi">WiFi</string>
     <string name="dashboard_shortcut_flashlight">Svítilna</string>
@@ -745,6 +747,11 @@
     <string name="morse_play">Přehrát</string>
     <string name="morse_copy">Kopírovat</string>
     <string name="morse_clear">Smazat</string>
+
+    <!-- Nové pomůcky v0.7.2 -->
+    <string name="nav_compass">Kompas</string>
+    <string name="nav_battery_info">Stav baterie</string>
+    <string name="nav_quick_note">Rychlá poznámka</string>
 
     <!-- Bubble Level -->
     <string name="nav_bubble_level">Vodováha</string>

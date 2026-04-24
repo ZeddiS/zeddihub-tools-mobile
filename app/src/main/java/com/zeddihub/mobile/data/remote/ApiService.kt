@@ -1,6 +1,7 @@
 package com.zeddihub.mobile.data.remote
 
 import com.zeddihub.mobile.BuildConfig
+import com.zeddihub.mobile.data.remote.dto.AppVersionDto
 import com.zeddihub.mobile.data.remote.dto.AuthJsonDto
 import com.zeddihub.mobile.data.remote.dto.AuthResponse
 import com.zeddihub.mobile.data.remote.dto.HomeConfigDto
@@ -74,6 +75,16 @@ interface ApiService {
 
     @GET
     suspend fun fetchHomeConfigAt(@Url url: String): HomeConfigDto
+
+    // -------------------------------------------------------------------
+    // Release-gating: latest PUBLISHED app version for the mobile
+    // platform. Called on startup to decide whether to show the update
+    // banner. The admin publishes a pending release via Admin → Systém →
+    // App releases; only then does this endpoint surface the new version.
+    // -------------------------------------------------------------------
+
+    @GET("app-version.php")
+    suspend fun fetchAppVersion(@Query("platform") platform: String = "mobile"): AppVersionDto
 
     companion object {
         val LEGACY_AUTH_URL: String = BuildConfig.SITE_BASE_URL + "tools/data/auth.json"

@@ -5,6 +5,7 @@ import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.BatteryFull
 import androidx.compose.material.icons.filled.Cake
 import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -19,6 +20,8 @@ import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.NoteAlt
 import androidx.compose.material.icons.filled.FlashlightOn
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Map
@@ -75,6 +78,9 @@ fun resolveNavRoute(navId: String): String? = when (navId) {
     "age"               -> Destinations.AgeCalculator.route
     "morse_braille"     -> Destinations.MorseBraille.route
     "bubble_level"      -> Destinations.BubbleLevel.route
+    "compass"           -> Destinations.Compass.route
+    "battery_info"      -> Destinations.BatteryInfo.route
+    "quick_note"        -> Destinations.QuickNote.route
     "holidays"          -> Destinations.HolidaysCatalog.route
     "hazard"            -> Destinations.HazardSigns.route
     "traffic"           -> Destinations.TrafficSigns.route
@@ -129,6 +135,9 @@ fun resolveIcon(name: String): ImageVector = when (name) {
     "Build"             -> Icons.Default.Build
     "Settings"          -> Icons.Default.Settings
     "Folder"            -> Icons.Default.Folder
+    "Explore"           -> Icons.Default.Explore
+    "BatteryFull"       -> Icons.Default.BatteryFull
+    "NoteAlt"           -> Icons.Default.NoteAlt
     "Calculate"         -> Icons.Default.Calculate
     "ChangeHistory"     -> Icons.Default.ChangeHistory
     "Functions"         -> Icons.Default.Functions

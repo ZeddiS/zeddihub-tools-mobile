@@ -15,8 +15,11 @@ import com.zeddihub.mobile.ui.admin.AdminScreen
 import com.zeddihub.mobile.ui.common.DetailShell
 import com.zeddihub.mobile.ui.community.CommunityScreen
 import com.zeddihub.mobile.ui.helpers.AgeCalculatorScreen
+import com.zeddihub.mobile.ui.helpers.BatteryInfoScreen
 import com.zeddihub.mobile.ui.helpers.BubbleLevelScreen
+import com.zeddihub.mobile.ui.helpers.CompassScreen
 import com.zeddihub.mobile.ui.helpers.CurrencyConverterScreen
+import com.zeddihub.mobile.ui.helpers.QuickNoteScreen
 import com.zeddihub.mobile.ui.helpers.ElectricianScreen
 import com.zeddihub.mobile.ui.helpers.HazardSignsScreen
 import com.zeddihub.mobile.ui.helpers.HolidaysScreen
@@ -195,6 +198,15 @@ fun AppNavGraph(
         }
         detail(Destinations.BubbleLevel.route, R.string.nav_bubble_level, navController) { padding ->
             BubbleLevelScreen(padding = padding)
+        }
+        detail(Destinations.Compass.route, R.string.nav_compass, navController) { padding ->
+            CompassScreen(padding = padding)
+        }
+        detail(Destinations.BatteryInfo.route, R.string.nav_battery_info, navController) { padding ->
+            BatteryInfoScreen(padding = padding)
+        }
+        detail(Destinations.QuickNote.route, R.string.nav_quick_note, navController) { padding ->
+            QuickNoteScreen(padding = padding)
         }
         // Stub helpers
         detail(Destinations.HolidaysCatalog.route, R.string.nav_holidays, navController) { padding ->

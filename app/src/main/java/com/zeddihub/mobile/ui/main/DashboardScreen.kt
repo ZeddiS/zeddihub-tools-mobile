@@ -81,6 +81,7 @@ fun DashboardScreen(
 
     val homeConfig by viewModel.config.collectAsState()
     val language by viewModel.language.collectAsState()
+    val updateState by viewModel.updateState.collectAsState()
 
     var ssid by remember { mutableStateOf<String?>(null) }
     var ipv4 by remember { mutableStateOf<String?>(null) }
@@ -158,11 +159,23 @@ fun DashboardScreen(
             }
         }
 
-        // Network card
+        // Release-gated update banner. Only renders if the admin has
+        // published a version_code strictly higher than our BuildConfig
+        // value and the user hasn't already dismissed this specific
+        // version.
+        UpdateBanner(
+            state = updateState,
+            language = language,
+            onDismiss = { viewModel.dismissUpdate() },
+        )
+
+        // Network card — IP is intentionally NOT shown here (it's shown
+        // on the MyNetwork detail screen instead). Dashboard just
+        // signals "you're on <SSID>, connected" for a glanceable view.
         SectionLabel(stringResource(R.string.dashboard_section_network))
         NetworkCard(
             ssid = ssid ?: stringResource(R.string.dashboard_network_unknown),
-            ipv4 = ipv4 ?: stringResource(R.string.dashboard_network_unknown),
+            hasIp = ipv4 != null,
             onClick = { onNavigate(Destinations.MyNetwork.route) }
         )
 
@@ -292,9 +305,22 @@ private fun SectionLabel(text: String) {
     )
 }
 
+/**
+ * Compact network summary card. By policy the IPv4 address is NOT
+ * surfaced on the Dashboard by default — it's a PII-ish identifier
+ * that users generally don't need to see while glancing at the home
+ * screen. We show a generic "Připojeno" / "Not connected" subtitle
+ * instead; full details (IP, gateway, DNS) live one tap deeper in
+ * `MyNetwork` where users who care can find them.
+ */
 @Composable
-private fun NetworkCard(ssid: String, ipv4: String, onClick: () -> Unit) {
+private fun NetworkCard(ssid: String, hasIp: Boolean, onClick: () -> Unit) {
     val colors = MaterialTheme.colorScheme
+    val subtitle = if (hasIp) {
+        stringResource(R.string.dashboard_network_connected)
+    } else {
+        stringResource(R.string.dashboard_network_offline)
+    }
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -325,7 +351,7 @@ private fun NetworkCard(ssid: String, ipv4: String, onClick: () -> Unit) {
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = "${stringResource(R.string.dashboard_network_ip)}: $ipv4",
+                    text = subtitle,
                     style = MaterialTheme.typography.labelMedium,
                     color = colors.onSurfaceVariant
                 )
