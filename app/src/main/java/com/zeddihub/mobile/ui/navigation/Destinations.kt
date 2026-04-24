@@ -45,7 +45,17 @@ sealed class Destinations(val route: String) {
     data object HolidaysCatalog : Destinations("help/holidays")
     data object HazardSigns : Destinations("help/hazard")
     data object TrafficSigns : Destinations("help/traffic")
+    // Školní pomůcky — hub + 7 sub-tools. Hub je rozcestník (tiles), každý
+    // nástroj vlastní route. Osmá "dlaždice" v hubu je zkratka na existující
+    // PeriodicTable (sdílený nav route).
     data object SchoolTools : Destinations("help/school")
+    data object SchoolGrade : Destinations("help/school/grade")
+    data object SchoolUnitConverter : Destinations("help/school/units")
+    data object SchoolMathFormulas : Destinations("help/school/formulas")
+    data object SchoolFractions : Destinations("help/school/fractions")
+    data object SchoolTriangle : Destinations("help/school/triangle")
+    data object SchoolStatistics : Destinations("help/school/stats")
+    data object SchoolTime : Destinations("help/school/time")
     data object PeriodicTable : Destinations("help/periodic")
     data object ElectricianCalc : Destinations("help/electrician")
 

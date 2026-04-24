@@ -23,6 +23,15 @@ import com.zeddihub.mobile.ui.helpers.HolidaysScreen
 import com.zeddihub.mobile.ui.helpers.MorseBrailleScreen
 import com.zeddihub.mobile.ui.helpers.PeriodicTableScreen
 import com.zeddihub.mobile.ui.helpers.StubScreen
+import com.zeddihub.mobile.ui.helpers.TrafficSignsScreen
+import com.zeddihub.mobile.ui.helpers.school.FractionsCalculatorScreen
+import com.zeddihub.mobile.ui.helpers.school.GradeCalculatorScreen
+import com.zeddihub.mobile.ui.helpers.school.MathFormulasScreen
+import com.zeddihub.mobile.ui.helpers.school.SchoolToolsHubScreen
+import com.zeddihub.mobile.ui.helpers.school.StatisticsCalculatorScreen
+import com.zeddihub.mobile.ui.helpers.school.TimeCalculatorScreen
+import com.zeddihub.mobile.ui.helpers.school.TriangleCalculatorScreen
+import com.zeddihub.mobile.ui.helpers.school.UnitConverterScreen
 import com.zeddihub.mobile.ui.login.LoginScreen
 import com.zeddihub.mobile.ui.login.LoginViewModel
 import com.zeddihub.mobile.ui.login.RegisterScreen
@@ -31,6 +40,7 @@ import com.zeddihub.mobile.ui.notifications.NotificationsScreen
 import com.zeddihub.mobile.ui.profile.ProfileScreen
 import com.zeddihub.mobile.ui.servers.ServersScreen
 import com.zeddihub.mobile.ui.settings.SettingsScreen
+import com.zeddihub.mobile.ui.tools.AdvancedBarcodeScreen
 import com.zeddihub.mobile.ui.tools.AdvancedNfcScreen
 import com.zeddihub.mobile.ui.tools.AdvancedQrScreen
 import com.zeddihub.mobile.ui.tools.AdvancedTextEditorScreen
@@ -167,7 +177,7 @@ fun AppNavGraph(
             AdvancedQrScreen(padding = padding)
         }
         detail(Destinations.AdvancedBarcode.route, R.string.nav_advanced_barcode, navController) { padding ->
-            StubScreen(padding = padding)
+            AdvancedBarcodeScreen(padding = padding)
         }
         detail(Destinations.AdvancedTextEditor.route, R.string.nav_advanced_text_editor, navController) { padding ->
             AdvancedTextEditorScreen(padding = padding)
@@ -194,10 +204,31 @@ fun AppNavGraph(
             HazardSignsScreen(padding = padding, language = currentLanguage)
         }
         detail(Destinations.TrafficSigns.route, R.string.nav_traffic_signs, navController) { padding ->
-            StubScreen(padding = padding)
+            TrafficSignsScreen(padding = padding, language = currentLanguage)
         }
         detail(Destinations.SchoolTools.route, R.string.nav_school_tools, navController) { padding ->
-            StubScreen(padding = padding)
+            SchoolToolsHubScreen(padding = padding, onNavigate = { navController.navigate(it) })
+        }
+        detail(Destinations.SchoolGrade.route, R.string.nav_school_grade, navController) { padding ->
+            GradeCalculatorScreen(padding = padding)
+        }
+        detail(Destinations.SchoolUnitConverter.route, R.string.nav_school_units, navController) { padding ->
+            UnitConverterScreen(padding = padding)
+        }
+        detail(Destinations.SchoolMathFormulas.route, R.string.nav_school_formulas, navController) { padding ->
+            MathFormulasScreen(padding = padding)
+        }
+        detail(Destinations.SchoolFractions.route, R.string.nav_school_fractions, navController) { padding ->
+            FractionsCalculatorScreen(padding = padding)
+        }
+        detail(Destinations.SchoolTriangle.route, R.string.nav_school_triangle, navController) { padding ->
+            TriangleCalculatorScreen(padding = padding)
+        }
+        detail(Destinations.SchoolStatistics.route, R.string.nav_school_stats, navController) { padding ->
+            StatisticsCalculatorScreen(padding = padding)
+        }
+        detail(Destinations.SchoolTime.route, R.string.nav_school_time, navController) { padding ->
+            TimeCalculatorScreen(padding = padding)
         }
         detail(Destinations.PeriodicTable.route, R.string.nav_periodic_table, navController) { padding ->
             PeriodicTableScreen(padding = padding)

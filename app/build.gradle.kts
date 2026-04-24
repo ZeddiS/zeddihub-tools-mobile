@@ -28,8 +28,8 @@ android {
         applicationId = "com.zeddihub.mobile"
         minSdk = 26
         targetSdk = 34
-        versionCode = 15
-        versionName = "0.6.0"
+        versionCode = 16
+        versionName = "0.7.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
@@ -187,6 +187,23 @@ dependencies {
     // Google Code Scanner — unbundled, no camera permission required.
     // Used by WiFi Tools to scan WIFI: QR codes and extract SSID + password.
     implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
+
+    // ML Kit Barcode Scanning (bundled) — backs AdvancedBarcode live camera
+    // scan with torch + fine-grained control (vs. the unbundled code-scanner
+    // which opens its own Activity).
+    implementation("com.google.mlkit:barcode-scanning:17.2.0")
+
+    // CameraX — preview + image analysis pipeline for AdvancedBarcode live
+    // scanner. Using camera2 under the hood so it works reliably on older
+    // devices; lifecycle integration avoids the usual camera-leak pitfalls.
+    implementation("androidx.camera:camera-core:1.3.4")
+    implementation("androidx.camera:camera-camera2:1.3.4")
+    implementation("androidx.camera:camera-lifecycle:1.3.4")
+    implementation("androidx.camera:camera-view:1.3.4")
+    // accompanist-permissions would be cleaner but the one existing
+    // permission prompt (RECORD_AUDIO in Decibel) is vanilla Compose, so
+    // we stay consistent and use the same `rememberLauncherForActivityResult`
+    // pattern for CAMERA.
 
     // osmdroid for WiFi Map (OpenStreetMap)
     implementation("org.osmdroid:osmdroid-android:6.1.18")

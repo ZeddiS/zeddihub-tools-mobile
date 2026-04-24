@@ -9,7 +9,6 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,7 +20,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -41,6 +39,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -58,7 +57,6 @@ import androidx.compose.runtime.collectAsState
 import com.zeddihub.mobile.R
 import com.zeddihub.mobile.data.local.LanguageCode
 import com.zeddihub.mobile.data.remote.dto.HomeNewsDto
-import com.zeddihub.mobile.data.remote.dto.HomeShortcutDto
 import com.zeddihub.mobile.ui.navigation.Destinations
 
 @Composable
@@ -120,20 +118,17 @@ fun DashboardScreen(
 
         Spacer(Modifier.height(14.dp))
 
-        // Quick shortcuts — rendered from the admin-managed home config.
-        // Hidden/unresolvable entries are silently skipped; we only
-        // show a section header if there's at least one usable item so
-        // the admin can hide the whole row by emptying the list.
-        val visibleShortcuts = homeConfig.shortcuts
-            .filter { it.visible }
-            .mapNotNull { sc ->
-                resolveNavRoute(sc.navId)?.let { route -> sc to route }
-            }
-        if (visibleShortcuts.isNotEmpty()) {
-            SectionLabel(stringResource(R.string.dashboard_section_shortcuts))
-            DynamicShortcutsRow(
-                items = visibleShortcuts,
+        // Hierarchical categories from the admin-managed home config.
+        // Each category renders its own SectionLabel + 4-column grid of
+        // tiles/folders with inline akordeon expansion. Expansion state
+        // is hoisted here so it survives recomposition across the whole
+        // Dashboard but resets when the screen leaves the composition.
+        val folderExpanded = remember { mutableStateMapOf<String, Boolean>() }
+        homeConfig.categories.forEach { category ->
+            CategorySection(
+                category = category,
                 language = language,
+                expanded = folderExpanded,
                 onNavigate = onNavigate
             )
         }
@@ -360,38 +355,6 @@ private fun HighlightTile(
                 fontWeight = FontWeight.SemiBold,
                 color = colors.onSurface,
                 modifier = Modifier.align(Alignment.BottomStart)
-            )
-        }
-    }
-}
-
-/**
- * Renders the admin-configured shortcut list as a horizontally-scrolling
- * row of tiles. Keeps each tile a fixed width so arbitrarily-long lists
- * still fit on narrow screens (4+ shortcuts used to squeeze into one
- * screen; now we scroll instead of shrinking).
- */
-@Composable
-private fun DynamicShortcutsRow(
-    items: List<Pair<HomeShortcutDto, String>>,
-    language: LanguageCode,
-    onNavigate: (String) -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .horizontalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        items.forEach { (sc, route) ->
-            val label = pickLocalized(language, sc.labelCs, sc.labelEn)
-            QuickTile(
-                label = label,
-                icon = resolveIcon(sc.icon),
-                tint = parseHexColor(sc.color, MaterialTheme.colorScheme.primary),
-                onClick = { onNavigate(route) },
-                modifier = Modifier.width(104.dp)
             )
         }
     }

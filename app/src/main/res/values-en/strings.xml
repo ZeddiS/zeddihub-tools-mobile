@@ -735,6 +735,13 @@
     <string name="nav_hazard_signs">Hazard signs</string>
     <string name="nav_traffic_signs">Traffic signs</string>
     <string name="nav_school_tools">School helpers</string>
+    <string name="nav_school_grade">Grade calculator</string>
+    <string name="nav_school_units">Unit converter</string>
+    <string name="nav_school_formulas">Math formulas</string>
+    <string name="nav_school_fractions">Fractions &amp; ratios</string>
+    <string name="nav_school_triangle">Triangle solver</string>
+    <string name="nav_school_stats">Statistics</string>
+    <string name="nav_school_time">Time calculator</string>
     <string name="nav_periodic_table">Periodic table</string>
     <string name="nav_electrician">Electrician calc</string>
 

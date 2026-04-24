@@ -77,7 +77,18 @@ interface ApiService {
 
     companion object {
         val LEGACY_AUTH_URL: String = BuildConfig.SITE_BASE_URL + "tools/data/auth.json"
-        val HOME_CONFIG_URL: String = BuildConfig.SITE_BASE_URL + "tools/data/home_android.json"
+
+        /**
+         * MySQL-backed endpoint (since v0.6.x). Returns the hierarchical
+         * categories/folders/tiles payload maintained in Admin → Aplikace
+         * → Mobilní Domů. A cache-buster query param is appended at call
+         * time so CDN / Cloudflare don't serve stale content after admin
+         * edits.
+         */
+        val HOME_CONFIG_URL: String = BuildConfig.SITE_BASE_URL + "api/home-config.php"
+
+        /** Legacy static file — kept as fallback only. Not used by default. */
+        val HOME_CONFIG_LEGACY_URL: String = BuildConfig.SITE_BASE_URL + "tools/data/home_android.json"
     }
 }
 
@@ -85,6 +96,6 @@ interface ApiService {
 suspend fun ApiService.fetchAuth(): AuthJsonDto =
     fetchAuthAt(ApiService.LEGACY_AUTH_URL)
 
-/** Convenience wrapper that targets the admin-managed Home config file. */
+/** Convenience wrapper that targets the admin-managed Home config endpoint. */
 suspend fun ApiService.fetchHomeConfig(): HomeConfigDto =
     fetchHomeConfigAt(ApiService.HOME_CONFIG_URL)

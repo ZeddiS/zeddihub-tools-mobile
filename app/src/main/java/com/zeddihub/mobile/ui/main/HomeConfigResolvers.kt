@@ -6,8 +6,16 @@ import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Cake
+import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.ChangeHistory
 import androidx.compose.material.icons.filled.CleaningServices
+import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.Functions
+import androidx.compose.material.icons.filled.Percent
+import androidx.compose.material.icons.filled.QueryStats
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Edit
@@ -71,6 +79,13 @@ fun resolveNavRoute(navId: String): String? = when (navId) {
     "hazard"            -> Destinations.HazardSigns.route
     "traffic"           -> Destinations.TrafficSigns.route
     "school"            -> Destinations.SchoolTools.route
+    "school_grade"      -> Destinations.SchoolGrade.route
+    "school_units"      -> Destinations.SchoolUnitConverter.route
+    "school_formulas"   -> Destinations.SchoolMathFormulas.route
+    "school_fractions"  -> Destinations.SchoolFractions.route
+    "school_triangle"   -> Destinations.SchoolTriangle.route
+    "school_stats"      -> Destinations.SchoolStatistics.route
+    "school_time"       -> Destinations.SchoolTime.route
     "periodic"          -> Destinations.PeriodicTable.route
     "electrician"       -> Destinations.ElectricianCalc.route
     else                -> null
@@ -113,6 +128,14 @@ fun resolveIcon(name: String): ImageVector = when (name) {
     "Star"              -> Icons.Default.Star
     "Build"             -> Icons.Default.Build
     "Settings"          -> Icons.Default.Settings
+    "Folder"            -> Icons.Default.Folder
+    "Calculate"         -> Icons.Default.Calculate
+    "ChangeHistory"     -> Icons.Default.ChangeHistory
+    "Functions"         -> Icons.Default.Functions
+    "Percent"           -> Icons.Default.Percent
+    "QueryStats"        -> Icons.Default.QueryStats
+    "Schedule"          -> Icons.Default.Schedule
+    "SwapHoriz"         -> Icons.Default.SwapHoriz
     else                -> Icons.Default.Star
 }
 

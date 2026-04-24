@@ -768,6 +768,13 @@
     <string name="nav_hazard_signs">Značky nebezpečí</string>
     <string name="nav_traffic_signs">Dopravní značky</string>
     <string name="nav_school_tools">Školní pomůcky</string>
+    <string name="nav_school_grade">Kalkulačka známky</string>
+    <string name="nav_school_units">Převodník jednotek</string>
+    <string name="nav_school_formulas">Matematické vzorce</string>
+    <string name="nav_school_fractions">Zlomky a poměry</string>
+    <string name="nav_school_triangle">Trojúhelník</string>
+    <string name="nav_school_stats">Statistika</string>
+    <string name="nav_school_time">Kalkulačka času</string>
     <string name="nav_periodic_table">Periodická tabulka</string>
     <string name="nav_electrician">Elektro kalkulačky</string>
 
