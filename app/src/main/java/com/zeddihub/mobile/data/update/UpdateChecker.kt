@@ -25,15 +25,51 @@ data class ReleaseInfo(
 @Singleton
 class UpdateChecker @Inject constructor() {
 
-    // Primary: ZeddiHub website manifest (MOBILE_SYNC_v2 §7.2). Single source of truth.
+    // Primary: release-gating endpoint. Single source of truth, gated by
+    // admin "Publikovat" — admin must explicitly publish a `pending`
+    // build before users see it. See tools/admin/app_releases.php.
+    private val gatingUrl = "${BuildConfig.API_BASE_URL}app-version.php?platform=mobile"
+    // Legacy fallback: static manifest auto-generated from the gating
+    // system after each publish (tools/admin/app_releases.php →
+    // ar_sync_legacy_manifest()). Kept around because installs on
+    // ≤ v0.7.2 still read this file directly.
     private val manifestUrl = "https://zeddihub.eu/tools/data/version_android.json"
-    // Fallback: GitHub Releases API (used when the website manifest is
-    // unreachable or hasn't been updated yet).
+    // Last-resort fallback: GitHub Releases API.
     private val releasesUrl = "https://api.github.com/repos/ZeddiS/zeddihub-tools-mobile/releases/latest"
 
     suspend fun fetchLatest(): ReleaseInfo? = withContext(Dispatchers.IO) {
-        fetchManifest() ?: fetchGitHubRelease()
+        fetchGating() ?: fetchManifest() ?: fetchGitHubRelease()
     }
+
+    /**
+     * /api/app-version.php returns the *currently published* mobile
+     * build only (rows in zh_app_releases with status='published'). If
+     * no release is published, the endpoint returns ok=false and we
+     * fall through to the legacy manifest. This guarantees we never
+     * advertise a `pending` build to users by accident.
+     */
+    private fun fetchGating(): ReleaseInfo? = runCatching {
+        val url = URL(gatingUrl)
+        val conn = url.openConnection() as HttpURLConnection
+        conn.connectTimeout = 5000
+        conn.readTimeout = 5000
+        conn.setRequestProperty("Accept", "application/json")
+        conn.setRequestProperty("User-Agent", "ZeddiHub-Mobile/${BuildConfig.VERSION_NAME}")
+        conn.requestMethod = "GET"
+        if (conn.responseCode !in 200..299) return@runCatching null
+        val body = conn.inputStream.bufferedReader().use { it.readText() }
+        val json = JSONObject(body)
+        if (!json.optBoolean("ok", false)) return@runCatching null
+        val versionName = json.optString("version_name")
+        if (versionName.isBlank()) return@runCatching null
+        ReleaseInfo(
+            tag = versionName,
+            name = versionName,
+            body = json.optString("release_notes_cs"),
+            apkUrl = json.optString("apk_url"),
+            apkSize = 0L
+        )
+    }.getOrNull()
 
     private fun fetchManifest(): ReleaseInfo? = runCatching {
         val url = URL(manifestUrl)
