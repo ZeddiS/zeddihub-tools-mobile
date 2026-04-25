@@ -620,6 +620,7 @@
     <string name="helpers_section_calc">Calculators &amp; converters</string>
     <string name="helpers_section_reference">Reference</string>
     <string name="helpers_section_catalogs">Catalogs</string>
+    <string name="helpers_section_v080">Productivity &amp; fun</string>
 
     <string name="account_title">Account</string>
     <string name="account_guest">Guest</string>
@@ -879,4 +880,111 @@
     <string name="qr_error_empty">Enter content.</string>
     <string name="qr_scan_again">Scan another</string>
     <string name="qr_scanned_text">Scanned:</string>
+
+    <!-- Tuner (v0.8.0) -->
+    <string name="nav_tuner">Tuner</string>
+    <string name="tuner_perm_title">Microphone access</string>
+    <string name="tuner_perm_body">The tuner needs the microphone to hear your instrument. Audio never leaves your device.</string>
+    <string name="tuner_perm_grant">Grant microphone</string>
+    <string name="tuner_listening">--</string>
+    <string name="tuner_listen_hint">Play a note…</string>
+    <string name="tuner_hz_cents">%1$d Hz · %2$+d c</string>
+    <string name="tuner_a4_label">Reference A4 = %1$d Hz</string>
+    <string name="tuner_a4_hint">Standard 440 Hz · Orchestral 442 Hz · Baroque 415 Hz</string>
+    <string name="tuner_preset_chromatic">Chromatic</string>
+    <string name="tuner_preset_guitar_std">Guitar · Standard</string>
+    <string name="tuner_preset_guitar_drop_d">Guitar · Drop D</string>
+    <string name="tuner_preset_guitar_dadgad">Guitar · DADGAD</string>
+    <string name="tuner_preset_guitar_open_g">Guitar · Open G</string>
+    <string name="tuner_preset_guitar_open_d">Guitar · Open D</string>
+    <string name="tuner_preset_guitar_half_down">Guitar · Half-step down</string>
+    <string name="tuner_preset_guitar_7">Guitar · 7-string</string>
+    <string name="tuner_preset_bass_4">Bass · 4-string</string>
+    <string name="tuner_preset_bass_5">Bass · 5-string</string>
+    <string name="tuner_preset_violin">Violin</string>
+    <string name="tuner_preset_viola">Viola</string>
+    <string name="tuner_preset_cello">Cello</string>
+    <string name="tuner_preset_ukulele">Ukulele</string>
+    <string name="tuner_preset_mandolin">Mandolin</string>
+    <string name="tuner_preset_banjo_5">Banjo · 5-string</string>
+    <string name="tuner_preset_piano">Piano</string>
+
+    <!-- Fullscreen text (v0.8.0) -->
+    <string name="nav_fullscreen_text">Fullscreen text</string>
+    <string name="fst_text_label">Text</string>
+    <string name="fst_text_placeholder">Type what to display…</string>
+    <string name="fst_markup_hint">Tip: for multi-color text use markup [#FF0000]red[/] [#00FF00]green[/] etc.</string>
+    <string name="fst_section_orientation">Orientation</string>
+    <string name="fst_orient_h">Horizontal</string>
+    <string name="fst_orient_v">Vertical</string>
+    <string name="fst_section_marquee">Marquee (scrolling)</string>
+    <string name="fst_marquee_off">Off</string>
+    <string name="fst_marquee_left">Left</string>
+    <string name="fst_marquee_right">Right</string>
+    <string name="fst_speed_label">Speed: %1$d dp/s</string>
+    <string name="fst_section_blink">Blink</string>
+    <string name="fst_blink_solid">Solid</string>
+    <string name="fst_blink_slow">Slow blink</string>
+    <string name="fst_blink_fast">Fast blink</string>
+    <string name="fst_blink_sos">SOS</string>
+    <string name="fst_blink_pulse">Pulse</string>
+    <string name="fst_section_bg">Background</string>
+    <string name="fst_section_fg">Text</string>
+    <string name="fst_section_format">Format</string>
+    <string name="fst_size_label">Size: %1$d sp</string>
+    <string name="fst_bold">Bold</string>
+    <string name="fst_show">Show fullscreen</string>
+
+    <!-- Clothes size converter (v0.8.0) -->
+    <string name="nav_clothes_sizes">Clothing sizes</string>
+    <string name="size_demo_men">Men</string>
+    <string name="size_demo_women">Women</string>
+    <string name="size_demo_kids">Kids</string>
+    <string name="size_cat_tops">Tops / sweaters</string>
+    <string name="size_cat_pants">Pants</string>
+    <string name="size_cat_shoes">Shoes</string>
+    <string name="size_cat_bras">Bras</string>
+    <string name="size_cat_rings">Rings</string>
+    <string name="size_cat_hats">Hats</string>
+    <string name="size_query_label">Your size</string>
+    <string name="size_query_placeholder">e.g. M, 42, L, 7…</string>
+
+    <!-- Smart reminders (v0.8.0) -->
+    <string name="nav_reminders">Smart reminders</string>
+    <string name="reminder_channel_name">Reminders</string>
+    <string name="reminder_channel_desc">Scheduled and contextual reminders</string>
+    <string name="reminder_default_title">Reminder</string>
+    <string name="reminder_new">New reminder</string>
+    <string name="reminder_edit">Edit reminder</string>
+    <string name="reminder_save">Save</string>
+    <string name="reminder_cancel">Cancel</string>
+    <string name="reminder_title_label">Title</string>
+    <string name="reminder_body_label">Notification text</string>
+    <string name="reminder_enabled_label">Enabled</string>
+    <string name="reminder_trigger_label">Trigger type</string>
+    <string name="reminder_kind_oneshot">One-shot</string>
+    <string name="reminder_kind_weekly">Weekly</string>
+    <string name="reminder_kind_geofence">Location</string>
+    <string name="reminder_kind_wifi">WiFi</string>
+    <string name="reminder_kind_bt">Bluetooth</string>
+    <string name="reminder_kind_weather">Weather</string>
+    <string name="reminder_other_kinds_v090">Location, WiFi, Bluetooth and weather triggers ship in v0.9.0 alongside the matching hardware tools.</string>
+    <string name="reminder_empty_title">No reminders yet</string>
+    <string name="reminder_empty_body">Tap + to add your first smart reminder.</string>
+
+    <!-- Rubik solver (v0.8.0) -->
+    <string name="nav_rubik">Rubik\'s cube</string>
+    <string name="rubik_help_title">Rubik\'s cube solver</string>
+    <string name="rubik_help_body">Tap a sticker to paint it the selected colour to mirror your physical cube, or hit Scramble. Then tap Solve and the app will walk you through the moves step by step.</string>
+    <string name="rubik_color_picker">Paint colour</string>
+    <string name="rubik_scramble">Scramble</string>
+    <string name="rubik_reset">Solved</string>
+    <string name="rubik_solve">Solve</string>
+    <string name="rubik_solving">Searching…</string>
+    <string name="rubik_status_solved">Cube is solved 🎉</string>
+    <string name="rubik_too_deep">This state is further than 12 moves from solved. The full Kociemba two-phase solver lands in v1.0.0 — for now Scramble + Solve always works.</string>
+    <string name="rubik_solution">Solution (%1$d moves)</string>
+    <string name="rubik_step">Step</string>
+    <string name="rubik_play_all">Play all</string>
+    <string name="rubik_manual_moves">Manual moves</string>
 </resources>

@@ -17,15 +17,19 @@ import com.zeddihub.mobile.ui.community.CommunityScreen
 import com.zeddihub.mobile.ui.helpers.AgeCalculatorScreen
 import com.zeddihub.mobile.ui.helpers.BatteryInfoScreen
 import com.zeddihub.mobile.ui.helpers.BubbleLevelScreen
+import com.zeddihub.mobile.ui.helpers.ClothesSizeScreen
 import com.zeddihub.mobile.ui.helpers.CompassScreen
 import com.zeddihub.mobile.ui.helpers.CurrencyConverterScreen
+import com.zeddihub.mobile.ui.helpers.FullscreenTextScreen
+import com.zeddihub.mobile.ui.helpers.InstrumentTunerScreen
 import com.zeddihub.mobile.ui.helpers.QuickNoteScreen
 import com.zeddihub.mobile.ui.helpers.ElectricianScreen
 import com.zeddihub.mobile.ui.helpers.HazardSignsScreen
 import com.zeddihub.mobile.ui.helpers.HolidaysScreen
 import com.zeddihub.mobile.ui.helpers.MorseBrailleScreen
 import com.zeddihub.mobile.ui.helpers.PeriodicTableScreen
-import com.zeddihub.mobile.ui.helpers.StubScreen
+import com.zeddihub.mobile.ui.helpers.RubikSolverScreen
+import com.zeddihub.mobile.ui.helpers.SmartRemindersScreen
 import com.zeddihub.mobile.ui.helpers.TrafficSignsScreen
 import com.zeddihub.mobile.ui.helpers.school.FractionsCalculatorScreen
 import com.zeddihub.mobile.ui.helpers.school.GradeCalculatorScreen
@@ -247,6 +251,23 @@ fun AppNavGraph(
         }
         detail(Destinations.ElectricianCalc.route, R.string.nav_electrician, navController) { padding ->
             ElectricianScreen(padding = padding)
+        }
+
+        // ── v0.8.0 helpers ────────────────────────────────────────────────
+        detail(Destinations.Tuner.route, R.string.nav_tuner, navController) { padding ->
+            InstrumentTunerScreen(padding = padding)
+        }
+        detail(Destinations.FullscreenText.route, R.string.nav_fullscreen_text, navController) { padding ->
+            FullscreenTextScreen(padding = padding)
+        }
+        detail(Destinations.ClothesSizes.route, R.string.nav_clothes_sizes, navController) { padding ->
+            ClothesSizeScreen(padding = padding)
+        }
+        detail(Destinations.SmartReminders.route, R.string.nav_reminders, navController) { padding ->
+            SmartRemindersScreen(padding = padding)
+        }
+        detail(Destinations.RubikSolver.route, R.string.nav_rubik, navController) { padding ->
+            RubikSolverScreen(padding = padding)
         }
 
         // ── Account detail screens ────────────────────────────────────────

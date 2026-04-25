@@ -13,6 +13,16 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
+    <!--
+      Smart Reminders (v0.8.0) need exact alarms so a 09:00 medication
+      reminder really fires at 09:00, not "sometime in the next hour" the
+      way Doze would batch inexact alarms. Android 12+ also wants
+      RECEIVE_BOOT_COMPLETED so we can rearm pending alarms after a reboot.
+    -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <!-- WiFi scanner (needs location per Android 9+) -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -105,6 +115,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--
+          Smart Reminders broadcast receiver. Fires when an AlarmManager alarm
+          goes off; not exported because we never want third-party apps to
+          spoof reminder firings. The boot receiver re-arms persisted rules
+          after device restart since AlarmManager forgets them.
+        -->
+        <receiver
+            android:name="com.zeddihub.mobile.data.reminders.ReminderReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.zeddihub.mobile.REMINDER_FIRE" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.zeddihub.mobile.data.reminders.ReminderBootReceiver"
+            android:exported="true"
+            android:enabled="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
 
         <provider
             android:name="androidx.core.content.FileProvider"

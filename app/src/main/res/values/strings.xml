@@ -642,6 +642,7 @@
     <string name="helpers_section_calc">Kalkulačky a převodníky</string>
     <string name="helpers_section_reference">Reference</string>
     <string name="helpers_section_catalogs">Katalogy</string>
+    <string name="helpers_section_v080">Produktivita a zábava</string>
 
     <!-- Account root (Account tab) -->
     <string name="account_title">Účet</string>
@@ -919,4 +920,111 @@
     <string name="qr_error_empty">Zadej obsah.</string>
     <string name="qr_scan_again">Skenovat další</string>
     <string name="qr_scanned_text">Naskenováno:</string>
+
+    <!-- Tuner (v0.8.0) -->
+    <string name="nav_tuner">Ladička</string>
+    <string name="tuner_perm_title">Přístup k mikrofonu</string>
+    <string name="tuner_perm_body">Ladička potřebuje mikrofon, aby slyšela tóny tvého nástroje. Zvuk z mikrofonu nikdy neopouští tvoje zařízení.</string>
+    <string name="tuner_perm_grant">Povolit mikrofon</string>
+    <string name="tuner_listening">--</string>
+    <string name="tuner_listen_hint">Zahraj tón…</string>
+    <string name="tuner_hz_cents">%1$d Hz · %2$+d c</string>
+    <string name="tuner_a4_label">Reference A4 = %1$d Hz</string>
+    <string name="tuner_a4_hint">Standard 440 Hz · Orchestrální 442 Hz · Barokní 415 Hz</string>
+    <string name="tuner_preset_chromatic">Chromatický</string>
+    <string name="tuner_preset_guitar_std">Kytara · Standard</string>
+    <string name="tuner_preset_guitar_drop_d">Kytara · Drop D</string>
+    <string name="tuner_preset_guitar_dadgad">Kytara · DADGAD</string>
+    <string name="tuner_preset_guitar_open_g">Kytara · Open G</string>
+    <string name="tuner_preset_guitar_open_d">Kytara · Open D</string>
+    <string name="tuner_preset_guitar_half_down">Kytara · Půltón dolů</string>
+    <string name="tuner_preset_guitar_7">Kytara · 7-strunná</string>
+    <string name="tuner_preset_bass_4">Basa · 4-strunná</string>
+    <string name="tuner_preset_bass_5">Basa · 5-strunná</string>
+    <string name="tuner_preset_violin">Housle</string>
+    <string name="tuner_preset_viola">Viola</string>
+    <string name="tuner_preset_cello">Violoncello</string>
+    <string name="tuner_preset_ukulele">Ukulele</string>
+    <string name="tuner_preset_mandolin">Mandolína</string>
+    <string name="tuner_preset_banjo_5">Banjo · 5-strunné</string>
+    <string name="tuner_preset_piano">Piáno</string>
+
+    <!-- Fullscreen text (v0.8.0) -->
+    <string name="nav_fullscreen_text">Fullscreen text</string>
+    <string name="fst_text_label">Text</string>
+    <string name="fst_text_placeholder">Napiš co chceš zobrazit…</string>
+    <string name="fst_markup_hint">Tip: pro vícebarevný text použij značku [#FF0000]červené[/] [#00FF00]zelené[/] atd.</string>
+    <string name="fst_section_orientation">Orientace</string>
+    <string name="fst_orient_h">Horizontálně</string>
+    <string name="fst_orient_v">Vertikálně</string>
+    <string name="fst_section_marquee">Marquee (běžící text)</string>
+    <string name="fst_marquee_off">Vypnuto</string>
+    <string name="fst_marquee_left">Doleva</string>
+    <string name="fst_marquee_right">Doprava</string>
+    <string name="fst_speed_label">Rychlost: %1$d dp/s</string>
+    <string name="fst_section_blink">Blikání</string>
+    <string name="fst_blink_solid">Statický</string>
+    <string name="fst_blink_slow">Pomalé blikání</string>
+    <string name="fst_blink_fast">Rychlé blikání</string>
+    <string name="fst_blink_sos">SOS</string>
+    <string name="fst_blink_pulse">Pulz</string>
+    <string name="fst_section_bg">Pozadí</string>
+    <string name="fst_section_fg">Text</string>
+    <string name="fst_section_format">Formát</string>
+    <string name="fst_size_label">Velikost: %1$d sp</string>
+    <string name="fst_bold">Tučně</string>
+    <string name="fst_show">Zobrazit fullscreen</string>
+
+    <!-- Clothes size converter (v0.8.0) -->
+    <string name="nav_clothes_sizes">Velikosti oblečení</string>
+    <string name="size_demo_men">Pánské</string>
+    <string name="size_demo_women">Dámské</string>
+    <string name="size_demo_kids">Dětské</string>
+    <string name="size_cat_tops">Trička / svetry</string>
+    <string name="size_cat_pants">Kalhoty</string>
+    <string name="size_cat_shoes">Boty</string>
+    <string name="size_cat_bras">Podprsenky</string>
+    <string name="size_cat_rings">Prsteny</string>
+    <string name="size_cat_hats">Klobouky</string>
+    <string name="size_query_label">Tvoje velikost</string>
+    <string name="size_query_placeholder">např. M, 42, L, 7…</string>
+
+    <!-- Smart reminders (v0.8.0) -->
+    <string name="nav_reminders">Chytré připomínky</string>
+    <string name="reminder_channel_name">Připomínky</string>
+    <string name="reminder_channel_desc">Plánované a kontextové připomínky</string>
+    <string name="reminder_default_title">Připomínka</string>
+    <string name="reminder_new">Nová připomínka</string>
+    <string name="reminder_edit">Upravit připomínku</string>
+    <string name="reminder_save">Uložit</string>
+    <string name="reminder_cancel">Zrušit</string>
+    <string name="reminder_title_label">Název</string>
+    <string name="reminder_body_label">Text upozornění</string>
+    <string name="reminder_enabled_label">Povoleno</string>
+    <string name="reminder_trigger_label">Typ spouštění</string>
+    <string name="reminder_kind_oneshot">Jednorázově</string>
+    <string name="reminder_kind_weekly">Týdně</string>
+    <string name="reminder_kind_geofence">Místo</string>
+    <string name="reminder_kind_wifi">WiFi</string>
+    <string name="reminder_kind_bt">Bluetooth</string>
+    <string name="reminder_kind_weather">Počasí</string>
+    <string name="reminder_other_kinds_v090">Spouštění podle místa, WiFi, Bluetooth a počasí přijde s v0.9.0 spolu s odpovídajícími hardwarovými nástroji.</string>
+    <string name="reminder_empty_title">Zatím žádné připomínky</string>
+    <string name="reminder_empty_body">Klikni na tlačítko + a přidej první chytrou připomínku.</string>
+
+    <!-- Rubik solver (v0.8.0) -->
+    <string name="nav_rubik">Rubikova kostka</string>
+    <string name="rubik_help_title">Skladač Rubikovy kostky</string>
+    <string name="rubik_help_body">Klikni na čtverečky a nastav barvy podle své kostky, nebo zmáchni Zamíchat. Pak ťukni Vyřešit a aplikace ti ukáže tahy krok po kroku.</string>
+    <string name="rubik_color_picker">Barva pro klikání</string>
+    <string name="rubik_scramble">Zamíchat</string>
+    <string name="rubik_reset">Vyřešená</string>
+    <string name="rubik_solve">Vyřešit</string>
+    <string name="rubik_solving">Hledám…</string>
+    <string name="rubik_status_solved">Kostka je vyřešená 🎉</string>
+    <string name="rubik_too_deep">Tahle pozice je dál než 12 tahů od složené kostky. Plný řešitel (Kociemba) přijde s v1.0.0 — zatím pomůže Zamíchat + Vyřešit.</string>
+    <string name="rubik_solution">Řešení (%1$d tahů)</string>
+    <string name="rubik_step">Krok</string>
+    <string name="rubik_play_all">Přehrát vše</string>
+    <string name="rubik_manual_moves">Tahy ručně</string>
 </resources>

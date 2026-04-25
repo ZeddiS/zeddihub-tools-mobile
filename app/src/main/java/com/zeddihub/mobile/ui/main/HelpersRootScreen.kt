@@ -19,14 +19,18 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Cake
-import androidx.compose.material.icons.filled.Calculate
+import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.CurrencyExchange
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Event
-import androidx.compose.material.icons.filled.Straighten
+import androidx.compose.material.icons.filled.Extension
+import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Keyboard
+import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Science
+import androidx.compose.material.icons.filled.Straighten
+import androidx.compose.material.icons.filled.TextFields
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -92,7 +96,20 @@ fun HelpersRootScreen(
         )
         HelperRow(
             HelperEntry(R.string.nav_traffic_signs, Icons.Default.DirectionsCar, Destinations.TrafficSigns.route, stub = true),
-            null,
+            HelperEntry(R.string.nav_clothes_sizes, Icons.Default.Checkroom, Destinations.ClothesSizes.route),
+            onNavigate
+        )
+
+        // v0.8.0 productivity / multimedia helpers
+        SectionHeader(stringResource(R.string.helpers_section_v080))
+        HelperRow(
+            HelperEntry(R.string.nav_reminders, Icons.Default.NotificationsActive, Destinations.SmartReminders.route),
+            HelperEntry(R.string.nav_tuner, Icons.Default.GraphicEq, Destinations.Tuner.route),
+            onNavigate
+        )
+        HelperRow(
+            HelperEntry(R.string.nav_fullscreen_text, Icons.Default.TextFields, Destinations.FullscreenText.route),
+            HelperEntry(R.string.nav_rubik, Icons.Default.Extension, Destinations.RubikSolver.route),
             onNavigate
         )
 

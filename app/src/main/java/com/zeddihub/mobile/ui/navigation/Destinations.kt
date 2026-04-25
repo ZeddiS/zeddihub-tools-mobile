@@ -62,6 +62,13 @@ sealed class Destinations(val route: String) {
     data object PeriodicTable : Destinations("help/periodic")
     data object ElectricianCalc : Destinations("help/electrician")
 
+    // ── v0.8.0 helpers ────────────────────────────────────────────────────
+    data object Tuner : Destinations("help/tuner")
+    data object FullscreenText : Destinations("help/fst")
+    data object ClothesSizes : Destinations("help/sizes")
+    data object SmartReminders : Destinations("help/reminders")
+    data object RubikSolver : Destinations("help/rubik")
+
     // ── Account detail screens (Účet tab) ─────────────────────────────────
     data object Profile : Destinations("profile")
     data object Notifications : Destinations("notifications")
