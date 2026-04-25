@@ -35,9 +35,11 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.zeddihub.mobile.R
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -99,7 +101,7 @@ fun CompassScreen(padding: PaddingValues) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                "Toto zařízení nemá senzor rotace — kompas nelze použít.",
+                stringResource(R.string.compass_no_sensor),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(24.dp)
@@ -143,7 +145,7 @@ fun CompassScreen(padding: PaddingValues) {
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "Azimut (odchylka od severu, po směru hodinových ručiček)",
+                    stringResource(R.string.compass_caption),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
@@ -152,8 +154,7 @@ fun CompassScreen(padding: PaddingValues) {
         }
 
         Text(
-            "Tip: pro vyšší přesnost opiš ve vzduchu velkou osmičku — tím " +
-                "kalibruješ magnetometer.",
+            stringResource(R.string.compass_calibration_tip),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -188,6 +189,22 @@ private fun CompassRose(angleDeg: Float) {
     val outline = MaterialTheme.colorScheme.outline
     val onSurface = MaterialTheme.colorScheme.onSurface
     val tertiary = MaterialTheme.colorScheme.tertiary
+
+    // Hoist the Paint and pre-resolved ARGB ints out of the draw scope.
+    // The original code allocated a new Paint and called Color.toArgb()
+    // (which itself constructs an Int from four float multiplications)
+    // on every frame. With the sensor pumping at SENSOR_DELAY_UI plus
+    // the smoothing animation, that's ~60 frames/sec of throwaway
+    // garbage. `remember` keeps a single shared instance.
+    val cardinalPaint = remember { android.graphics.Paint().apply {
+        isAntiAlias = true
+        textAlign = android.graphics.Paint.Align.CENTER
+        textSize = 38f
+        isFakeBoldText = true
+    } }
+    val primaryArgb = remember(primary) { primary.toArgb() }
+    val onSurfaceArgb = remember(onSurface) { onSurface.toArgb() }
+    val letters = remember { listOf(0 to "N", 90 to "E", 180 to "S", 270 to "W") }
 
     Canvas(modifier = Modifier.size(300.dp)) {
         val cx = size.width / 2f
@@ -226,21 +243,14 @@ private fun CompassRose(angleDeg: Float) {
             // Cardinal letters (N/E/S/W). Drawn via nativeCanvas because
             // Compose doesn't yet expose a first-class text in Canvas API
             // that rotates cleanly with the shape.
-            val letters = listOf(0 to "N", 90 to "E", 180 to "S", 270 to "W")
-            val paint = android.graphics.Paint().apply {
-                isAntiAlias = true
-                textAlign = android.graphics.Paint.Align.CENTER
-                textSize = 38f
-                isFakeBoldText = true
-            }
             for ((deg, label) in letters) {
-                paint.color = if (label == "N") primary.toArgb() else onSurface.toArgb()
+                cardinalPaint.color = if (label == "N") primaryArgb else onSurfaceArgb
                 val radians = Math.toRadians(deg.toDouble() - 90.0)
                 val r = radius - 52f
                 val x = cx + r * Math.cos(radians).toFloat()
                 val y = cy + r * Math.sin(radians).toFloat() +
-                    (paint.textSize / 3f) // baseline adjust
-                drawContext.canvas.nativeCanvas.drawText(label, x, y, paint)
+                    (cardinalPaint.textSize / 3f) // baseline adjust
+                drawContext.canvas.nativeCanvas.drawText(label, x, y, cardinalPaint)
             }
         }
 

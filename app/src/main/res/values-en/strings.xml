@@ -729,6 +729,55 @@
     <string name="level_calibrate">Calibrate</string>
     <string name="level_reset">Reset</string>
     <string name="level_hold_flat">Place the phone flat and tap Calibrate.</string>
+    <string name="level_sensor_missing">This device has no accelerometer — bubble level can\'t be used.</string>
+
+    <!-- Battery info screen -->
+    <string name="battery_status_charging">Charging</string>
+    <string name="battery_status_discharging">Discharging</string>
+    <string name="battery_status_full">Full</string>
+    <string name="battery_status_not_charging">Not charging</string>
+    <string name="battery_status_unknown">Unknown</string>
+    <string name="battery_plug_ac">AC adapter</string>
+    <string name="battery_plug_usb">USB</string>
+    <string name="battery_plug_wireless">Wireless</string>
+    <string name="battery_plug_none">Unplugged</string>
+    <string name="battery_plug_other">Other (%1$d)</string>
+    <string name="battery_health_good">Good</string>
+    <string name="battery_health_overheat">Overheating</string>
+    <string name="battery_health_dead">Dead</string>
+    <string name="battery_health_overvoltage">Overvoltage</string>
+    <string name="battery_health_failure">Failure</string>
+    <string name="battery_health_cold">Cold</string>
+    <string name="battery_label_temperature">Temperature</string>
+    <string name="battery_label_voltage">Voltage</string>
+    <string name="battery_label_current">Current</string>
+    <string name="battery_label_status">Status</string>
+    <string name="battery_label_plugged">Power source</string>
+    <string name="battery_label_health">Health</string>
+    <string name="battery_label_technology">Technology</string>
+    <string name="battery_footer">Read live from the system broadcast — no permissions required.</string>
+
+    <!-- Compass -->
+    <string name="compass_no_sensor">This device has no rotation sensor — compass can\'t be used.</string>
+    <string name="compass_caption">Azimuth (clockwise deviation from north)</string>
+    <string name="compass_calibration_tip">Tip: trace a figure-eight in the air to calibrate the magnetometer.</string>
+
+    <!-- Quick note -->
+    <string name="quicknote_label">Note</string>
+    <string name="quicknote_placeholder">Shopping list, guest WiFi password, address, anything…</string>
+    <string name="quicknote_saving">Saving…</string>
+    <string name="quicknote_saved">Saved · %1$d chars</string>
+    <string name="quicknote_qr_button">QR</string>
+    <string name="quicknote_copy_button">Copy</string>
+    <string name="quicknote_share_button">Share</string>
+    <string name="quicknote_clear_button">Clear</string>
+    <string name="quicknote_qr_limit_hint">QR can hold ~2,900 characters. For longer notes, use Share.</string>
+    <string name="quicknote_qr_dialog_title">Note QR code</string>
+    <string name="quicknote_qr_dialog_close">Close</string>
+    <string name="quicknote_qr_dialog_caption">Aim another device at this code — it will read %1$d characters.</string>
+    <string name="quicknote_qr_dialog_failed">Cannot generate QR — text is too long or contains unsupported characters.</string>
+    <string name="quicknote_qr_content_description">QR code containing the note</string>
+    <string name="quicknote_share_chooser">Share note</string>
 
     <string name="stub_coming_soon_title">Coming soon</string>
     <string name="stub_coming_soon_body">This feature will ship in a future update. Stay tuned.</string>

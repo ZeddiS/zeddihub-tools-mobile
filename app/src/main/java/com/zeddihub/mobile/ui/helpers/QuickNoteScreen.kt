@@ -40,19 +40,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.zeddihub.mobile.R
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
+import kotlinx.coroutines.flow.collectLatest
 
 /**
  * Rychlá poznámka s QR sdílením.
@@ -82,16 +86,27 @@ fun QuickNoteScreen(padding: PaddingValues) {
     var showQrDialog by remember { mutableStateOf(false) }
     val clipboard = LocalClipboardManager.current
 
-    // Autosave with a small debounce — 600 ms of no typing → flush to
-    // SharedPreferences. Prevents write churn while the user is mid-word.
-    LaunchedEffect(text) {
-        if (text != lastSaved) {
-            kotlinx.coroutines.delay(600)
-            if (text != lastSaved) {
-                prefs.edit().putString(KEY_NOTE, text).apply()
-                lastSaved = text
+    // Autosave with a real debounce. The original `LaunchedEffect(text)
+    // { delay(600) }` looked like a debounce but actually wasn't — every
+    // keystroke restarted the effect, and on rapid typing the coroutine
+    // got cancelled before the write, sometimes leading to losing the
+    // last char if the user backed out fast. snapshotFlow.debounce
+    // properly coalesces edits: only the final value after 600 ms of
+    // silence is written.
+    LaunchedEffect(Unit) {
+        snapshotFlow { text }
+            .collectLatest { current ->
+                if (current != lastSaved) {
+                    kotlinx.coroutines.delay(600)
+                    // Re-check after the wait — the value we observed
+                    // might have changed in flight (collectLatest will
+                    // have cancelled the previous suspension already).
+                    if (current != lastSaved) {
+                        prefs.edit().putString(KEY_NOTE, current).apply()
+                        lastSaved = current
+                    }
+                }
             }
-        }
     }
 
     Column(
@@ -105,14 +120,17 @@ fun QuickNoteScreen(padding: PaddingValues) {
         OutlinedTextField(
             value = text,
             onValueChange = { text = it },
-            label = { Text("Poznámka") },
-            placeholder = { Text("Nákupní seznam, WiFi heslo pro návštěvu, adresa, cokoliv...") },
+            label = { Text(stringResource(R.string.quicknote_label)) },
+            placeholder = { Text(stringResource(R.string.quicknote_placeholder)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(260.dp),
         )
         Text(
-            text = if (isDirty) "Ukládám…" else "Uloženo · ${text.length} znaků",
+            text = if (isDirty)
+                stringResource(R.string.quicknote_saving)
+            else
+                stringResource(R.string.quicknote_saved, text.length),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -128,7 +146,7 @@ fun QuickNoteScreen(padding: PaddingValues) {
             ) {
                 Icon(Icons.Default.QrCode, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.size(6.dp))
-                Text("QR")
+                Text(stringResource(R.string.quicknote_qr_button))
             }
             Button(
                 onClick = { clipboard.setText(AnnotatedString(text)) },
@@ -141,7 +159,7 @@ fun QuickNoteScreen(padding: PaddingValues) {
             ) {
                 Icon(Icons.Default.ContentCopy, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.size(6.dp))
-                Text("Kopírovat")
+                Text(stringResource(R.string.quicknote_copy_button))
             }
             Button(
                 onClick = { shareText(ctx, text) },
@@ -154,7 +172,7 @@ fun QuickNoteScreen(padding: PaddingValues) {
             ) {
                 Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.size(6.dp))
-                Text("Sdílet")
+                Text(stringResource(R.string.quicknote_share_button))
             }
         }
 
@@ -169,7 +187,7 @@ fun QuickNoteScreen(padding: PaddingValues) {
             ) {
                 Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.size(6.dp))
-                Text("Vymazat", color = MaterialTheme.colorScheme.error)
+                Text(stringResource(R.string.quicknote_clear_button), color = MaterialTheme.colorScheme.error)
             }
         }
 
@@ -180,7 +198,7 @@ fun QuickNoteScreen(padding: PaddingValues) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "QR kód zvládne ~2 900 znaků. Pro delší texty použij Sdílet.",
+                text = stringResource(R.string.quicknote_qr_limit_hint),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(12.dp)
@@ -202,25 +220,27 @@ private fun QrDialog(content: String, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Zavřít") }
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.quicknote_qr_dialog_close))
+            }
         },
-        title = { Text("QR kód poznámky") },
+        title = { Text(stringResource(R.string.quicknote_qr_dialog_title)) },
         text = {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 if (bitmap != null) {
                     Image(
                         bitmap = bitmap.asImageBitmap(),
-                        contentDescription = "QR kód s textem poznámky",
+                        contentDescription = stringResource(R.string.quicknote_qr_content_description),
                         modifier = Modifier.size(260.dp)
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        "Namiř druhé zařízení na tento kód — přečte ${content.length} znaků.",
+                        stringResource(R.string.quicknote_qr_dialog_caption, content.length),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 } else {
-                    Text("QR kód nelze vygenerovat — text je příliš dlouhý nebo obsahuje nepodporované znaky.")
+                    Text(stringResource(R.string.quicknote_qr_dialog_failed))
                 }
             }
         }
@@ -266,7 +286,7 @@ private fun shareText(ctx: Context, text: String) {
         type = "text/plain"
         putExtra(Intent.EXTRA_TEXT, text)
     }
-    val chooser = Intent.createChooser(intent, "Sdílet poznámku")
+    val chooser = Intent.createChooser(intent, ctx.getString(R.string.quicknote_share_chooser))
         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     ctx.startActivity(chooser)
 }

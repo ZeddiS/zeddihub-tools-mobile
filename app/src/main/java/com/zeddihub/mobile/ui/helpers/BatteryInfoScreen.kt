@@ -36,8 +36,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import com.zeddihub.mobile.R
 
 /**
  * Stav baterie — realtime odběr přes `ACTION_BATTERY_CHANGED` sticky
@@ -62,14 +65,27 @@ fun BatteryInfoScreen(padding: PaddingValues) {
     // Live: refresh on every ACTION_BATTERY_CHANGED. The system sends
     // this roughly every 30 s or on any change (level, charging state,
     // temperature spike), so we don't need a polling loop.
-    DisposableEffect(ctx) {
+    //
+    // key = Unit (not ctx): the LocalContext provider technically can
+    // emit a new instance across configuration changes, which would
+    // re-register the receiver and leak the old one. Unit pins the
+    // effect to the screen's full lifetime, so dispose runs exactly
+    // once when we leave.
+    //
+    // ContextCompat.registerReceiver + RECEIVER_NOT_EXPORTED makes
+    // this future-proof for API 34+ where unexported flags are
+    // mandatory; ACTION_BATTERY_CHANGED is system-protected so
+    // there's no security difference.
+    DisposableEffect(Unit) {
         val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(c: Context?, intent: Intent?) {
                 snap = readBatterySnapshot(ctx, intent)
             }
         }
-        ctx.registerReceiver(receiver, filter)
+        ContextCompat.registerReceiver(
+            ctx, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED
+        )
         onDispose { runCatching { ctx.unregisterReceiver(receiver) } }
     }
 
@@ -92,18 +108,18 @@ fun BatteryInfoScreen(padding: PaddingValues) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(modifier = Modifier.padding(14.dp)) {
-                InfoRow("Teplota",       snap.temperatureC?.let { "%.1f °C".format(it) } ?: "—")
-                InfoRow("Napětí",        snap.voltageMv?.let { "$it mV" } ?: "—")
-                InfoRow("Proud",         snap.currentMa?.let { "${kotlin.math.abs(it)} mA" } ?: "—")
-                InfoRow("Stav",          snap.statusLabel)
-                InfoRow("Zdroj napájení", snap.pluggedLabel)
-                InfoRow("Zdraví",        snap.healthLabel)
-                InfoRow("Technologie",   snap.technology ?: "—")
+                InfoRow(stringResource(R.string.battery_label_temperature), snap.temperatureC?.let { "%.1f °C".format(it) } ?: "—")
+                InfoRow(stringResource(R.string.battery_label_voltage),     snap.voltageMv?.let { "$it mV" } ?: "—")
+                InfoRow(stringResource(R.string.battery_label_current),     snap.currentMa?.let { "${kotlin.math.abs(it)} mA" } ?: "—")
+                InfoRow(stringResource(R.string.battery_label_status),      snap.statusLabel)
+                InfoRow(stringResource(R.string.battery_label_plugged),     snap.pluggedLabel)
+                InfoRow(stringResource(R.string.battery_label_health),      snap.healthLabel)
+                InfoRow(stringResource(R.string.battery_label_technology),  snap.technology ?: "—")
             }
         }
 
         Text(
-            "Data čteme v reálném čase ze systémového broadcastu — žádné oprávnění není potřeba.",
+            stringResource(R.string.battery_footer),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -253,32 +269,35 @@ private fun readBatterySnapshot(ctx: Context, intentIn: Intent? = null): Battery
     val charging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
         status == BatteryManager.BATTERY_STATUS_FULL
 
+    // Labels go through ctx.getString so the screen respects the
+    // user's locale. Fallback "Unknown" maps to battery_status_unknown
+    // (CS: „Neznámé", EN: „Unknown").
     return BatterySnapshot(
         levelPercent = pct,
         isCharging = charging,
-        statusLabel = when (status) {
-            BatteryManager.BATTERY_STATUS_CHARGING     -> "Nabíjí se"
-            BatteryManager.BATTERY_STATUS_DISCHARGING  -> "Vybíjí se"
-            BatteryManager.BATTERY_STATUS_FULL         -> "Plně nabito"
-            BatteryManager.BATTERY_STATUS_NOT_CHARGING -> "Nenabíjí"
-            else                                        -> "Neznámé"
-        },
+        statusLabel = ctx.getString(when (status) {
+            BatteryManager.BATTERY_STATUS_CHARGING     -> R.string.battery_status_charging
+            BatteryManager.BATTERY_STATUS_DISCHARGING  -> R.string.battery_status_discharging
+            BatteryManager.BATTERY_STATUS_FULL         -> R.string.battery_status_full
+            BatteryManager.BATTERY_STATUS_NOT_CHARGING -> R.string.battery_status_not_charging
+            else                                        -> R.string.battery_status_unknown
+        }),
         pluggedLabel = when (plugged) {
-            BatteryManager.BATTERY_PLUGGED_AC       -> "Síťový adaptér"
-            BatteryManager.BATTERY_PLUGGED_USB      -> "USB"
-            BatteryManager.BATTERY_PLUGGED_WIRELESS -> "Bezdrátově"
-            0                                        -> "Odpojeno"
-            else                                     -> "Neznámé ($plugged)"
+            BatteryManager.BATTERY_PLUGGED_AC       -> ctx.getString(R.string.battery_plug_ac)
+            BatteryManager.BATTERY_PLUGGED_USB      -> ctx.getString(R.string.battery_plug_usb)
+            BatteryManager.BATTERY_PLUGGED_WIRELESS -> ctx.getString(R.string.battery_plug_wireless)
+            0                                        -> ctx.getString(R.string.battery_plug_none)
+            else                                     -> ctx.getString(R.string.battery_plug_other, plugged)
         },
-        healthLabel = when (health) {
-            BatteryManager.BATTERY_HEALTH_GOOD             -> "Dobré"
-            BatteryManager.BATTERY_HEALTH_OVERHEAT         -> "Přehřívá se"
-            BatteryManager.BATTERY_HEALTH_DEAD             -> "Vadné"
-            BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE     -> "Přepětí"
-            BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE -> "Selhání"
-            BatteryManager.BATTERY_HEALTH_COLD             -> "Chladno"
-            else                                           -> "Neznámé"
-        },
+        healthLabel = ctx.getString(when (health) {
+            BatteryManager.BATTERY_HEALTH_GOOD                 -> R.string.battery_health_good
+            BatteryManager.BATTERY_HEALTH_OVERHEAT             -> R.string.battery_health_overheat
+            BatteryManager.BATTERY_HEALTH_DEAD                 -> R.string.battery_health_dead
+            BatteryManager.BATTERY_HEALTH_OVER_VOLTAGE         -> R.string.battery_health_overvoltage
+            BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE  -> R.string.battery_health_failure
+            BatteryManager.BATTERY_HEALTH_COLD                 -> R.string.battery_health_cold
+            else                                                -> R.string.battery_status_unknown
+        }),
         temperatureC = if (temp >= 0) temp / 10f else null,
         voltageMv = if (voltage >= 0) voltage else null,
         currentMa = currentMa,

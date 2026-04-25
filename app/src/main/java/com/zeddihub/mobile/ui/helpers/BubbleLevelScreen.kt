@@ -71,9 +71,18 @@ fun BubbleLevelScreen(padding: PaddingValues) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
 
+    // Track sensor availability so we can surface a friendly error
+    // instead of silently rendering a frozen bubble at (0,0).
+    var sensorMissing by remember { mutableStateOf(false) }
+
     DisposableEffect(Unit) {
-        val sm = ctx.getSystemService(android.content.Context.SENSOR_SERVICE) as SensorManager
-        val sensor: Sensor? = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        val sm = ctx.getSystemService(android.content.Context.SENSOR_SERVICE) as? SensorManager
+        val sensor: Sensor? = sm?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        if (sm == null || sensor == null) {
+            sensorMissing = true
+            // Nothing to register / unregister — return a no-op disposer.
+            return@DisposableEffect onDispose { /* noop */ }
+        }
         val listener = object : SensorEventListener {
             override fun onSensorChanged(event: SensorEvent?) {
                 val v = event?.values ?: return
@@ -86,8 +95,24 @@ fun BubbleLevelScreen(padding: PaddingValues) {
             }
             override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
         }
-        if (sensor != null) sm.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_UI)
+        sm.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_UI)
         onDispose { sm.unregisterListener(listener) }
+    }
+
+    if (sensorMissing) {
+        Box(
+            modifier = Modifier.fillMaxSize().padding(padding),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stringResource(R.string.level_sensor_missing),
+                style = MaterialTheme.typography.bodyMedium,
+                color = colors.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(24.dp)
+            )
+        }
+        return
     }
 
     // Compute angles after offset.

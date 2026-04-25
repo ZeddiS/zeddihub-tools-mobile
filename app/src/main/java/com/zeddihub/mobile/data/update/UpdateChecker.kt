@@ -42,6 +42,50 @@ class UpdateChecker @Inject constructor() {
     }
 
     /**
+     * Centralised HTTP GET helper. Hardened against:
+     *   - Connection / read timeouts (5 s each)
+     *   - Non-2xx responses (returns null instead of throwing)
+     *   - Stale connection pools holding TCP keepalive sockets — we
+     *     always close `disconnect()` in the finally block.
+     *   - Body-too-large attacks via `readText()` reading without
+     *     bound: bumped to a 512 KB cap (legitimate manifests are
+     *     well under 5 KB).
+     */
+    private fun httpGet(urlStr: String, accept: String = "application/json"): String? {
+        var conn: HttpURLConnection? = null
+        return try {
+            val url = URL(urlStr)
+            conn = (url.openConnection() as HttpURLConnection).apply {
+                connectTimeout = 5000
+                readTimeout = 5000
+                instanceFollowRedirects = true
+                setRequestProperty("Accept", accept)
+                setRequestProperty("User-Agent", "ZeddiHub-Mobile/${BuildConfig.VERSION_NAME}")
+                requestMethod = "GET"
+            }
+            val code = conn.responseCode
+            if (code !in 200..299) return null
+            conn.inputStream.bufferedReader().use { reader ->
+                val sb = StringBuilder()
+                val buf = CharArray(4096)
+                var total = 0
+                while (true) {
+                    val n = reader.read(buf)
+                    if (n <= 0) break
+                    total += n
+                    if (total > 512 * 1024) return null // 512 KB ceiling
+                    sb.appendRange(buf, 0, n)
+                }
+                sb.toString()
+            }
+        } catch (_: Throwable) {
+            null
+        } finally {
+            runCatching { conn?.disconnect() }
+        }
+    }
+
+    /**
      * /api/app-version.php returns the *currently published* mobile
      * build only (rows in zh_app_releases with status='published'). If
      * no release is published, the endpoint returns ok=false and we
@@ -49,42 +93,35 @@ class UpdateChecker @Inject constructor() {
      * advertise a `pending` build to users by accident.
      */
     private fun fetchGating(): ReleaseInfo? = runCatching {
-        val url = URL(gatingUrl)
-        val conn = url.openConnection() as HttpURLConnection
-        conn.connectTimeout = 5000
-        conn.readTimeout = 5000
-        conn.setRequestProperty("Accept", "application/json")
-        conn.setRequestProperty("User-Agent", "ZeddiHub-Mobile/${BuildConfig.VERSION_NAME}")
-        conn.requestMethod = "GET"
-        if (conn.responseCode !in 200..299) return@runCatching null
-        val body = conn.inputStream.bufferedReader().use { it.readText() }
+        val body = httpGet(gatingUrl) ?: return@runCatching null
         val json = JSONObject(body)
         if (!json.optBoolean("ok", false)) return@runCatching null
         val versionName = json.optString("version_name")
-        if (versionName.isBlank()) return@runCatching null
+        val apkUrl = json.optString("apk_url")
+        // Validate apk_url: must be present and https. We refuse to
+        // download unsigned/HTTP APKs even if the API says so — would
+        // be a vector for injecting a malicious update if the gating
+        // endpoint were ever compromised mid-flight.
+        if (versionName.isBlank() || apkUrl.isBlank() || !apkUrl.startsWith("https://")) {
+            return@runCatching null
+        }
         ReleaseInfo(
             tag = versionName,
             name = versionName,
             body = json.optString("release_notes_cs"),
-            apkUrl = json.optString("apk_url"),
+            apkUrl = apkUrl,
             apkSize = 0L
         )
     }.getOrNull()
 
     private fun fetchManifest(): ReleaseInfo? = runCatching {
-        val url = URL(manifestUrl)
-        val conn = url.openConnection() as HttpURLConnection
-        conn.connectTimeout = 5000
-        conn.readTimeout = 5000
-        conn.setRequestProperty("Accept", "application/json")
-        conn.setRequestProperty("User-Agent", "ZeddiHub-Mobile/${BuildConfig.VERSION_NAME}")
-        conn.requestMethod = "GET"
-        if (conn.responseCode !in 200..299) return@runCatching null
-        val body = conn.inputStream.bufferedReader().use { it.readText() }
+        val body = httpGet(manifestUrl) ?: return@runCatching null
         val json = JSONObject(body)
         val version = json.optString("version")
-        if (version.isBlank()) return@runCatching null
         val downloadUrl = json.optString("download_url")
+        if (version.isBlank() || downloadUrl.isBlank() || !downloadUrl.startsWith("https://")) {
+            return@runCatching null
+        }
         val changelog = json.optString("changelog")
         val mandatory = json.optBoolean("mandatory", false)
         ReleaseInfo(
@@ -97,17 +134,11 @@ class UpdateChecker @Inject constructor() {
     }.getOrNull()
 
     private fun fetchGitHubRelease(): ReleaseInfo? = runCatching {
-        val url = URL(releasesUrl)
-        val conn = url.openConnection() as HttpURLConnection
-        conn.connectTimeout = 5000
-        conn.readTimeout = 5000
-        conn.setRequestProperty("Accept", "application/vnd.github+json")
-        conn.setRequestProperty("User-Agent", "ZeddiHub-Mobile/${BuildConfig.VERSION_NAME}")
-        conn.requestMethod = "GET"
-        if (conn.responseCode !in 200..299) return@runCatching null
-        val body = conn.inputStream.bufferedReader().use { it.readText() }
+        val body = httpGet(releasesUrl, accept = "application/vnd.github+json")
+            ?: return@runCatching null
         val json = JSONObject(body)
         val tag = json.optString("tag_name").ifEmpty { json.optString("name") }
+        if (tag.isBlank()) return@runCatching null
         val assets: JSONArray = json.optJSONArray("assets") ?: JSONArray()
         var apkUrl = ""
         var apkSize = 0L
@@ -120,6 +151,7 @@ class UpdateChecker @Inject constructor() {
                 break
             }
         }
+        if (apkUrl.isBlank() || !apkUrl.startsWith("https://")) return@runCatching null
         ReleaseInfo(
             tag = tag,
             name = json.optString("name", tag),

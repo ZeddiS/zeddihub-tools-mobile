@@ -43,6 +43,21 @@ import com.zeddihub.mobile.R
 import com.zeddihub.mobile.data.local.CredentialStore
 
 private const val ADMIN_URL = "https://zeddihub.eu/tools/admin/"
+private const val ADMIN_HOST = "zeddihub.eu"
+
+/**
+ * Returns true if [url] is on the trusted admin host. We refuse to
+ * inject credentials anywhere else — a redirect off-domain would
+ * otherwise leak the stored password to a third-party origin.
+ */
+private fun isTrustedAdminUrl(url: String?): Boolean {
+    if (url.isNullOrBlank()) return false
+    return runCatching {
+        val parsed = Uri.parse(url)
+        parsed.scheme.equals("https", ignoreCase = true) &&
+            parsed.host?.equals(ADMIN_HOST, ignoreCase = true) == true
+    }.getOrDefault(false)
+}
 
 @Composable
 fun AdminScreen(
@@ -54,6 +69,11 @@ fun AdminScreen(
     var isLoading by remember { mutableStateOf(true) }
     var hasError by remember { mutableStateOf(false) }
     var webView by remember { mutableStateOf<WebView?>(null) }
+    // Single-shot guard: once we've successfully filled the login form,
+    // never re-inject. Prevents credential leakage if the user navigates
+    // to a different page within the trusted host that happens to also
+    // contain a password field (e.g. user-settings).
+    val credsInjected = remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -72,6 +92,15 @@ fun AdminScreen(
                     settings.apply {
                         javaScriptEnabled = true
                         domStorageEnabled = true
+                        // Tighten attack surface: block file://, content://
+                        // and mixed (HTTP) content. WebView defaults are
+                        // historically permissive — these flags lock it
+                        // down to https-only content from our origin.
+                        allowFileAccess = false
+                        allowContentAccess = false
+                        allowFileAccessFromFileURLs = false
+                        allowUniversalAccessFromFileURLs = false
+                        mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
                         cacheMode = WebSettings.LOAD_DEFAULT
                         useWideViewPort = true
                         loadWithOverviewMode = true
@@ -88,9 +117,39 @@ fun AdminScreen(
                             hasError = false
                         }
 
+                        override fun shouldOverrideUrlLoading(
+                            view: WebView?,
+                            request: WebResourceRequest?
+                        ): Boolean {
+                            val target = request?.url?.toString().orEmpty()
+                            // Keep all navigation on our origin inside
+                            // the WebView; bounce everything else out to
+                            // the system browser so the in-app session
+                            // can never end up on third-party pages
+                            // where credentials might be auto-filled.
+                            return if (isTrustedAdminUrl(target)) {
+                                false
+                            } else if (target.isNotBlank()) {
+                                runCatching {
+                                    ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(target)))
+                                }
+                                true
+                            } else true
+                        }
+
                         override fun onPageFinished(view: WebView?, url: String?) {
                             isLoading = false
-                            if (credentials != null) {
+                            // Only inject credentials when:
+                            //   1) we have any to inject,
+                            //   2) the page is on the trusted host (no
+                            //      cross-domain redirect),
+                            //   3) we haven't already injected this
+                            //      session (single-shot login).
+                            if (
+                                credentials != null &&
+                                !credsInjected.value &&
+                                isTrustedAdminUrl(url)
+                            ) {
                                 val safeUser = credentials.username.replace("\\", "\\\\").replace("\"", "\\\"")
                                 val safePass = credentials.password.replace("\\", "\\\\").replace("\"", "\\\"")
                                 val js = "(function(){try{" +
@@ -100,9 +159,18 @@ fun AdminScreen(
                                     "u.dispatchEvent(new Event('input',{bubbles:true}));" +
                                     "p.dispatchEvent(new Event('input',{bubbles:true}));" +
                                     "var f=p.closest('form');if(f){var s=f.querySelector('button[type=submit],input[type=submit]');" +
-                                    "if(s){s.click();}else{f.submit();}}}" +
-                                    "}catch(e){}})();"
-                                view?.evaluateJavascript(js, null)
+                                    "if(s){s.click();}else{f.submit();}}return 'filled';}return 'noform';" +
+                                    "}catch(e){return 'err';}})();"
+                                view?.evaluateJavascript(js) { result ->
+                                    // Lock the guard once we actually
+                                    // filled a form. If the page didn't
+                                    // have a login form (`noform`), keep
+                                    // listening — admin login is at /tools/admin/
+                                    // root and we may be on a redirect.
+                                    if (result?.contains("filled") == true) {
+                                        credsInjected.value = true
+                                    }
+                                }
                             }
                         }
 

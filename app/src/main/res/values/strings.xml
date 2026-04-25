@@ -761,6 +761,55 @@
     <string name="level_calibrate">Kalibrovat</string>
     <string name="level_reset">Resetovat</string>
     <string name="level_hold_flat">Polož telefon na rovný povrch a klikni Kalibrovat.</string>
+    <string name="level_sensor_missing">Toto zařízení nemá akcelerometr — vodováhu nelze použít.</string>
+
+    <!-- Battery info screen (CompassScreen + BatteryInfoScreen labels) -->
+    <string name="battery_status_charging">Nabíjí se</string>
+    <string name="battery_status_discharging">Vybíjí se</string>
+    <string name="battery_status_full">Plně nabito</string>
+    <string name="battery_status_not_charging">Nenabíjí</string>
+    <string name="battery_status_unknown">Neznámé</string>
+    <string name="battery_plug_ac">Síťový adaptér</string>
+    <string name="battery_plug_usb">USB</string>
+    <string name="battery_plug_wireless">Bezdrátově</string>
+    <string name="battery_plug_none">Odpojeno</string>
+    <string name="battery_plug_other">Jiné (%1$d)</string>
+    <string name="battery_health_good">Dobré</string>
+    <string name="battery_health_overheat">Přehřívá se</string>
+    <string name="battery_health_dead">Vadné</string>
+    <string name="battery_health_overvoltage">Přepětí</string>
+    <string name="battery_health_failure">Selhání</string>
+    <string name="battery_health_cold">Chladno</string>
+    <string name="battery_label_temperature">Teplota</string>
+    <string name="battery_label_voltage">Napětí</string>
+    <string name="battery_label_current">Proud</string>
+    <string name="battery_label_status">Stav</string>
+    <string name="battery_label_plugged">Zdroj napájení</string>
+    <string name="battery_label_health">Zdraví</string>
+    <string name="battery_label_technology">Technologie</string>
+    <string name="battery_footer">Data čteme v reálném čase ze systémového broadcastu — žádné oprávnění není potřeba.</string>
+
+    <!-- Compass -->
+    <string name="compass_no_sensor">Toto zařízení nemá senzor rotace — kompas nelze použít.</string>
+    <string name="compass_caption">Azimut (odchylka od severu, po směru hodinových ručiček)</string>
+    <string name="compass_calibration_tip">Tip: pro vyšší přesnost opiš ve vzduchu velkou osmičku — tím kalibruješ magnetometer.</string>
+
+    <!-- Quick note -->
+    <string name="quicknote_label">Poznámka</string>
+    <string name="quicknote_placeholder">Nákupní seznam, WiFi heslo pro návštěvu, adresa, cokoliv…</string>
+    <string name="quicknote_saving">Ukládám…</string>
+    <string name="quicknote_saved">Uloženo · %1$d znaků</string>
+    <string name="quicknote_qr_button">QR</string>
+    <string name="quicknote_copy_button">Kopírovat</string>
+    <string name="quicknote_share_button">Sdílet</string>
+    <string name="quicknote_clear_button">Vymazat</string>
+    <string name="quicknote_qr_limit_hint">QR kód zvládne ~2 900 znaků. Pro delší texty použij Sdílet.</string>
+    <string name="quicknote_qr_dialog_title">QR kód poznámky</string>
+    <string name="quicknote_qr_dialog_close">Zavřít</string>
+    <string name="quicknote_qr_dialog_caption">Namiř druhé zařízení na tento kód — přečte %1$d znaků.</string>
+    <string name="quicknote_qr_dialog_failed">QR kód nelze vygenerovat — text je příliš dlouhý nebo obsahuje nepodporované znaky.</string>
+    <string name="quicknote_qr_content_description">QR kód s textem poznámky</string>
+    <string name="quicknote_share_chooser">Sdílet poznámku</string>
 
     <!-- Stub / "coming soon" -->
     <string name="stub_coming_soon_title">Připravujeme</string>

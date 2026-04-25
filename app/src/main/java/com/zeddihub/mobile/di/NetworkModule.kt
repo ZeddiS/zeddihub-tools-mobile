@@ -5,6 +5,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.zeddihub.mobile.BuildConfig
 import com.zeddihub.mobile.data.remote.ApiService
 import com.zeddihub.mobile.data.remote.AppHeadersInterceptor
+import com.zeddihub.mobile.data.remote.RetryInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,7 +29,10 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(headers: AppHeadersInterceptor): OkHttpClient {
+    fun provideOkHttpClient(
+        headers: AppHeadersInterceptor,
+        retry: RetryInterceptor,
+    ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
             else HttpLoggingInterceptor.Level.NONE
@@ -37,8 +41,15 @@ object NetworkModule {
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
-            // Headers first so logging can see them.
+            // Order matters:
+            //   1. headers — auth + client identity must be on every retry
+            //   2. retry   — sits as an *application* interceptor so it
+            //      sees the final response after redirects/auth retries
+            //      from OkHttp's own machinery, and so we don't double-up
+            //      with the network-layer retry-on-connection-failure.
+            //   3. logging — last so we log every attempt body/headers
             .addInterceptor(headers)
+            .addInterceptor(retry)
             .addInterceptor(logging)
             .build()
     }
