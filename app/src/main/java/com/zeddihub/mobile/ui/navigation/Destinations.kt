@@ -85,6 +85,9 @@ sealed class Destinations(val route: String) {
     data object LicensePlate : Destinations("help/license_plate")
     data object PrankTools : Destinations("help/prank")
 
+    // ── v0.8.0 helpers ────────────────────────────────────────────────────
+    data object BeforeAfter : Destinations("help/before_after")
+
     // ── Account detail screens (Účet tab) ─────────────────────────────────
     data object Profile : Destinations("profile")
     data object Notifications : Destinations("notifications")

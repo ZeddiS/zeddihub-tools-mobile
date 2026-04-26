@@ -1214,4 +1214,22 @@
     <string name="prank_disk_full">Disk full</string>
     <string name="prank_bank_otp">Bank OTP</string>
     <string name="prank_magic_button">Magic button</string>
+
+    <!-- Before/After photo (v0.8.0) -->
+    <string name="nav_before_after">Before / After photo</string>
+    <string name="ba_title">Before / After photo</string>
+    <string name="ba_subtitle">Pick two photos and compare them side by side. Three modes: split L/R, interactive reveal slider, vertical stack. Per-side brightness / contrast / saturation sliders. Export as JPG to your gallery.</string>
+    <string name="ba_pick_before">Pick \"Before\"</string>
+    <string name="ba_pick_after">Pick \"After\"</string>
+    <string name="ba_mode_split">Split L/R</string>
+    <string name="ba_mode_reveal">Reveal slider</string>
+    <string name="ba_mode_stacked">Stacked</string>
+    <string name="ba_brightness">Brightness</string>
+    <string name="ba_contrast">Contrast</string>
+    <string name="ba_saturation">Saturation</string>
+    <string name="ba_reset">Reset</string>
+    <string name="ba_labels">Labels</string>
+    <string name="ba_save_button">Save to gallery</string>
+    <string name="ba_saved">✓ Saved to Pictures/ZeddiHub</string>
+    <string name="ba_save_failed">✗ Save failed</string>
 </resources>

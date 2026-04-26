@@ -1255,4 +1255,22 @@
     <string name="prank_disk_full">Úložiště plné</string>
     <string name="prank_bank_otp">Bankovní kód</string>
     <string name="prank_magic_button">Magické tlačítko</string>
+
+    <!-- Before/After photo (v0.8.0) -->
+    <string name="nav_before_after">Před / Po fotka</string>
+    <string name="ba_title">Před / Po fotka</string>
+    <string name="ba_subtitle">Vyber dvě fotky a srovnej je vedle sebe. Tři režimy: rozdělené L/R, interaktivní reveal slider a vertikální skládání. Per-strana sliders pro jas/kontrast/saturaci. Export jako JPG do galerie.</string>
+    <string name="ba_pick_before">Vybrat \"Před\"</string>
+    <string name="ba_pick_after">Vybrat \"Po\"</string>
+    <string name="ba_mode_split">Rozděleno L/R</string>
+    <string name="ba_mode_reveal">Reveal slider</string>
+    <string name="ba_mode_stacked">Skládáno</string>
+    <string name="ba_brightness">Jas</string>
+    <string name="ba_contrast">Kontrast</string>
+    <string name="ba_saturation">Saturace</string>
+    <string name="ba_reset">Reset</string>
+    <string name="ba_labels">Popisky</string>
+    <string name="ba_save_button">Uložit do galerie</string>
+    <string name="ba_saved">✓ Uloženo do Pictures/ZeddiHub</string>
+    <string name="ba_save_failed">✗ Uložení selhalo</string>
 </resources>

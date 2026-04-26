@@ -18,6 +18,7 @@ import com.zeddihub.mobile.ui.common.DetailShell
 import com.zeddihub.mobile.ui.community.CommunityScreen
 import com.zeddihub.mobile.ui.helpers.AgeCalculatorScreen
 import com.zeddihub.mobile.ui.helpers.BatteryInfoScreen
+import com.zeddihub.mobile.ui.helpers.BeforeAfterScreen
 import com.zeddihub.mobile.ui.helpers.BluetoothAdvertiseScreen
 import com.zeddihub.mobile.ui.helpers.BluetoothToolsScreen
 import com.zeddihub.mobile.ui.helpers.BubbleLevelScreen
@@ -332,6 +333,9 @@ fun AppNavGraph(
         }
         detail(Destinations.PrankTools.route, R.string.nav_prank, navController) { padding ->
             PrankToolsScreen(padding = padding)
+        }
+        detail(Destinations.BeforeAfter.route, R.string.nav_before_after, navController) { padding ->
+            BeforeAfterScreen(padding = padding)
         }
 
         // ── Account detail screens ────────────────────────────────────────

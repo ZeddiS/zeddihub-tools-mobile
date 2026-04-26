@@ -8,6 +8,7 @@ import com.zeddihub.mobile.data.remote.dto.HomeConfigDto
 import com.zeddihub.mobile.data.remote.dto.LoginRequest
 import com.zeddihub.mobile.data.remote.dto.LogoutResponse
 import com.zeddihub.mobile.data.remote.dto.MeResponse
+import com.zeddihub.mobile.data.remote.dto.PermissionsDto
 import com.zeddihub.mobile.data.remote.dto.RegisterRequest
 import com.zeddihub.mobile.data.remote.dto.WifiMapListDto
 import com.zeddihub.mobile.data.remote.dto.WifiMapSubmitRequest
@@ -85,6 +86,20 @@ interface ApiService {
 
     @GET("app-version.php")
     suspend fun fetchAppVersion(@Query("platform") platform: String = "mobile"): AppVersionDto
+
+    // -------------------------------------------------------------------
+    // Feature-permission matrix per role. The web admin (Admin → Mobilní
+    // aplikace → Role a oprávnění) lets a human flip every feature to
+    // visible / soon / hidden per role; this endpoint returns the
+    // resulting state map for whoever is calling. Anonymous callers get
+    // the 'guest' role's matrix; authenticated ones get whatever role
+    // the database has on their user record.
+    // -------------------------------------------------------------------
+
+    @GET("permissions.php")
+    suspend fun fetchPermissions(
+        @Header("Authorization") bearer: String? = null
+    ): PermissionsDto
 
     companion object {
         val LEGACY_AUTH_URL: String = BuildConfig.SITE_BASE_URL + "tools/data/auth.json"

@@ -50,6 +50,9 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var authRepository: AuthRepository
 
+    @Inject
+    lateinit var permissionsRepository: com.zeddihub.mobile.data.repository.PermissionsRepository
+
     private var sessionStartNs: Long = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,8 +78,14 @@ class MainActivity : AppCompatActivity() {
             // Cold-start session resume per MOBILE_SYNC_v2 §3.1: validate
             // cached token via /me, fall back to stored-password re-login,
             // or leave session cleared so the nav graph routes to Login.
+            // Then refresh the feature-permission matrix so the UI knows
+            // which tiles to SOON-badge or hide. Both are wrapped in
+            // runCatching because neither should ever crash startup —
+            // the cached state from DataStore is enough to render.
             lifecycleScope.launch {
                 runCatching { authRepository.resumeSession() }
+                runCatching { permissionsRepository.loadCached() }
+                runCatching { permissionsRepository.refresh() }
             }
         }
 
