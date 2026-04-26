@@ -981,7 +981,7 @@
     <string name="rubik_solve">Solve</string>
     <string name="rubik_solving">Searching…</string>
     <string name="rubik_status_solved">Cube is solved 🎉</string>
-    <string name="rubik_too_deep">This state is further than 12 moves from solved. The full Kociemba two-phase solver lands in v1.0.0 — for now Scramble + Solve always works.</string>
+    <string name="rubik_too_deep">This state is further than 12 moves from solved. The full Kociemba two-phase solver lands in a later release — for now Scramble + Solve always works.</string>
     <string name="rubik_solution">Solution (%1$d moves)</string>
     <string name="rubik_step">Step</string>
     <string name="rubik_play_all">Play all</string>
@@ -1103,7 +1103,7 @@
     <string name="nav_multi_remote">Multi remote</string>
     <string name="mr_title">Universal IR remote</string>
     <string name="mr_no_ir_title">This phone has no IR emitter</string>
-    <string name="mr_no_ir_body">Most modern phones (Pixel, OnePlus, Samsung S6+, iPhone) ship without an IR blaster. Network TV control (WoL, Cast, vendor APIs) ships as a separate tool in v0.10.</string>
+    <string name="mr_no_ir_body">Most modern phones (Pixel, OnePlus, Samsung S6+, iPhone) ship without an IR blaster. Network TV control (WoL, Cast, vendor APIs) ships as a separate tool in a future release.</string>
     <string name="mr_brand_label">TV brand</string>
     <string name="mr_buttons_label">Commands</string>
 

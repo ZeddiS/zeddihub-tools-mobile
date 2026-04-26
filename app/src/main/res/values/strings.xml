@@ -1022,7 +1022,7 @@
     <string name="rubik_solve">Vyřešit</string>
     <string name="rubik_solving">Hledám…</string>
     <string name="rubik_status_solved">Kostka je vyřešená 🎉</string>
-    <string name="rubik_too_deep">Tahle pozice je dál než 12 tahů od složené kostky. Plný řešitel (Kociemba) přijde s v1.0.0 — zatím pomůže Zamíchat + Vyřešit.</string>
+    <string name="rubik_too_deep">Tahle pozice je dál než 12 tahů od složené kostky. Plný řešitel (Kociemba) přijde s pozdější verzí — zatím pomůže tlačítko Zamíchat + Vyřešit.</string>
     <string name="rubik_solution">Řešení (%1$d tahů)</string>
     <string name="rubik_step">Krok</string>
     <string name="rubik_play_all">Přehrát vše</string>
@@ -1144,7 +1144,7 @@
     <string name="nav_multi_remote">Multi Remote</string>
     <string name="mr_title">Univerzální dálkový ovladač</string>
     <string name="mr_no_ir_title">Tento telefon nemá IR vysílač</string>
-    <string name="mr_no_ir_body">Většina moderních telefonů (Pixel, OnePlus, Samsung S6+, iPhone) IR blaster nemá. Síťové ovládání TV (WoL, Cast, vendor API) přijde v samostatném nástroji v0.10.</string>
+    <string name="mr_no_ir_body">Většina moderních telefonů (Pixel, OnePlus, Samsung S6+, iPhone) IR blaster nemá. Síťové ovládání TV (WoL, Cast, vendor API) přijde v samostatném nástroji v některé z příštích verzí.</string>
     <string name="mr_brand_label">Značka TV</string>
     <string name="mr_buttons_label">Příkazy</string>
 
