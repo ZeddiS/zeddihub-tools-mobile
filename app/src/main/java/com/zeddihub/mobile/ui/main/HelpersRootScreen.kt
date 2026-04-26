@@ -17,20 +17,28 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Cake
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Checkroom
 import androidx.compose.material.icons.filled.CurrencyExchange
 import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Extension
+import androidx.compose.material.icons.filled.FormatPaint
 import androidx.compose.material.icons.filled.GraphicEq
 import androidx.compose.material.icons.filled.Keyboard
+import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material.icons.filled.PhonelinkSetup
+import androidx.compose.material.icons.filled.RecordVoiceOver
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Science
+import androidx.compose.material.icons.filled.SettingsRemote
 import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material.icons.filled.TextFields
+import androidx.compose.material.icons.filled.Usb
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -110,6 +118,29 @@ fun HelpersRootScreen(
         HelperRow(
             HelperEntry(R.string.nav_fullscreen_text, Icons.Default.TextFields, Destinations.FullscreenText.route),
             HelperEntry(R.string.nav_rubik, Icons.Default.Extension, Destinations.RubikSolver.route),
+            onNavigate
+        )
+        HelperRow(
+            HelperEntry(R.string.nav_phone_test, Icons.Default.PhonelinkSetup, Destinations.PhoneTest.route),
+            HelperEntry(R.string.nav_voice_changer, Icons.Default.RecordVoiceOver, Destinations.VoiceChanger.route),
+            onNavigate
+        )
+
+        // v0.9.0 hardware diagnostics + media tools
+        SectionHeader(stringResource(R.string.helpers_section_v090))
+        HelperRow(
+            HelperEntry(R.string.nav_bt_tools, Icons.Default.Bluetooth, Destinations.BluetoothTools.route),
+            HelperEntry(R.string.nav_usb_tools, Icons.Default.Usb, Destinations.UsbTools.route),
+            onNavigate
+        )
+        HelperRow(
+            HelperEntry(R.string.nav_usb_format, Icons.Default.FormatPaint, Destinations.UsbFormat.route),
+            HelperEntry(R.string.nav_multi_remote, Icons.Default.SettingsRemote, Destinations.MultiRemote.route),
+            onNavigate
+        )
+        HelperRow(
+            HelperEntry(R.string.nav_music_tools, Icons.Default.LibraryMusic, Destinations.MusicTools.route),
+            HelperEntry(R.string.nav_call_recorder, Icons.Default.Call, Destinations.CallRecorder.route),
             onNavigate
         )
 

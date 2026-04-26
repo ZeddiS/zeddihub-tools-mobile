@@ -69,6 +69,16 @@ sealed class Destinations(val route: String) {
     data object SmartReminders : Destinations("help/reminders")
     data object RubikSolver : Destinations("help/rubik")
 
+    // ── v0.9.0 helpers ────────────────────────────────────────────────────
+    data object PhoneTest : Destinations("help/phone_test")
+    data object BluetoothTools : Destinations("help/bt")
+    data object UsbTools : Destinations("help/usb")
+    data object UsbFormat : Destinations("help/usb_format")
+    data object MusicTools : Destinations("help/music")
+    data object VoiceChanger : Destinations("help/voice")
+    data object MultiRemote : Destinations("help/remote")
+    data object CallRecorder : Destinations("help/call_recorder")
+
     // ── Account detail screens (Účet tab) ─────────────────────────────────
     data object Profile : Destinations("profile")
     data object Notifications : Destinations("notifications")

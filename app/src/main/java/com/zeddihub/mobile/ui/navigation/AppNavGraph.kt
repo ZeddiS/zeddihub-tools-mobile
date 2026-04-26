@@ -16,7 +16,9 @@ import com.zeddihub.mobile.ui.common.DetailShell
 import com.zeddihub.mobile.ui.community.CommunityScreen
 import com.zeddihub.mobile.ui.helpers.AgeCalculatorScreen
 import com.zeddihub.mobile.ui.helpers.BatteryInfoScreen
+import com.zeddihub.mobile.ui.helpers.BluetoothToolsScreen
 import com.zeddihub.mobile.ui.helpers.BubbleLevelScreen
+import com.zeddihub.mobile.ui.helpers.CallRecorderScreen
 import com.zeddihub.mobile.ui.helpers.ClothesSizeScreen
 import com.zeddihub.mobile.ui.helpers.CompassScreen
 import com.zeddihub.mobile.ui.helpers.CurrencyConverterScreen
@@ -27,8 +29,14 @@ import com.zeddihub.mobile.ui.helpers.ElectricianScreen
 import com.zeddihub.mobile.ui.helpers.HazardSignsScreen
 import com.zeddihub.mobile.ui.helpers.HolidaysScreen
 import com.zeddihub.mobile.ui.helpers.MorseBrailleScreen
+import com.zeddihub.mobile.ui.helpers.MultiRemoteScreen
+import com.zeddihub.mobile.ui.helpers.MusicToolsScreen
 import com.zeddihub.mobile.ui.helpers.PeriodicTableScreen
+import com.zeddihub.mobile.ui.helpers.PhoneTestScreen
 import com.zeddihub.mobile.ui.helpers.RubikSolverScreen
+import com.zeddihub.mobile.ui.helpers.UsbFormatScreen
+import com.zeddihub.mobile.ui.helpers.UsbToolsScreen
+import com.zeddihub.mobile.ui.helpers.VoiceChangerScreen
 import com.zeddihub.mobile.ui.helpers.SmartRemindersScreen
 import com.zeddihub.mobile.ui.helpers.TrafficSignsScreen
 import com.zeddihub.mobile.ui.helpers.school.FractionsCalculatorScreen
@@ -268,6 +276,30 @@ fun AppNavGraph(
         }
         detail(Destinations.RubikSolver.route, R.string.nav_rubik, navController) { padding ->
             RubikSolverScreen(padding = padding)
+        }
+        detail(Destinations.PhoneTest.route, R.string.nav_phone_test, navController) { padding ->
+            PhoneTestScreen(padding = padding)
+        }
+        detail(Destinations.BluetoothTools.route, R.string.nav_bt_tools, navController) { padding ->
+            BluetoothToolsScreen(padding = padding)
+        }
+        detail(Destinations.UsbTools.route, R.string.nav_usb_tools, navController) { padding ->
+            UsbToolsScreen(padding = padding)
+        }
+        detail(Destinations.UsbFormat.route, R.string.nav_usb_format, navController) { padding ->
+            UsbFormatScreen(padding = padding)
+        }
+        detail(Destinations.MusicTools.route, R.string.nav_music_tools, navController) { padding ->
+            MusicToolsScreen(padding = padding)
+        }
+        detail(Destinations.VoiceChanger.route, R.string.nav_voice_changer, navController) { padding ->
+            VoiceChangerScreen(padding = padding)
+        }
+        detail(Destinations.MultiRemote.route, R.string.nav_multi_remote, navController) { padding ->
+            MultiRemoteScreen(padding = padding)
+        }
+        detail(Destinations.CallRecorder.route, R.string.nav_call_recorder, navController) { padding ->
+            CallRecorderScreen(padding = padding)
         }
 
         // ── Account detail screens ────────────────────────────────────────

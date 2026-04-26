@@ -41,6 +41,43 @@
     <uses-permission android:name="android.permission.NFC" />
     <uses-feature android:name="android.hardware.nfc" android:required="false" />
 
+    <!--
+      Bluetooth Tools (v0.9.0). Permissions split across API levels:
+      • Legacy BLUETOOTH / BLUETOOTH_ADMIN = device API 30 and below.
+      • BLUETOOTH_SCAN / BLUETOOTH_CONNECT = API 31+ (Android 12).
+      We declare both so the same APK works across the full supported
+      range. neverForLocation tells the system we're not deriving the
+      user's position from BT scan results.
+    -->
+    <uses-permission android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation"
+        tools:targetApi="s" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"
+        tools:targetApi="s" />
+    <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
+
+    <!-- USB host (OTG) tools — kernel exposes UsbManager without a permission
+         declaration, but the host feature needs to be marked optional so we
+         don't filter ourselves off non-OTG devices. -->
+    <uses-feature android:name="android.hardware.usb.host" android:required="false" />
+
+    <!-- Multi Remote — IR blaster tool. Optional because most modern phones
+         lack the emitter; the screen detects this and tells the user. -->
+    <uses-permission android:name="android.permission.TRANSMIT_IR" />
+    <uses-feature android:name="android.hardware.consumerir" android:required="false" />
+
+    <!-- Phonecall Recorder — see CallRecorderScreen.kt KDoc for the
+         legal + technical caveats. WRITE_EXTERNAL_STORAGE is only needed
+         on API 28 and earlier; on API 29+ we use scoped storage. -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <!-- Flashlight -->
     <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />

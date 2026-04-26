@@ -987,4 +987,131 @@
     <string name="rubik_step">Step</string>
     <string name="rubik_play_all">Play all</string>
     <string name="rubik_manual_moves">Manual moves</string>
+
+    <!-- Phone Test (v0.8.1) -->
+    <string name="nav_phone_test">Phone test</string>
+    <string name="pt_tab_display">Display</string>
+    <string name="pt_tab_touch">Touch</string>
+    <string name="pt_tab_vibration">Vibration</string>
+    <string name="pt_tab_sensors">Sensors</string>
+    <string name="pt_tab_speakers">Speakers</string>
+    <string name="pt_tab_mic">Mic</string>
+    <string name="pt_tab_flash">Torch</string>
+    <string name="pt_tab_buttons">Buttons</string>
+    <string name="pt_display_title">Display test</string>
+    <string name="pt_display_body">Cycle through fullscreen colours — surface dead pixels, backlight bleed, and uneven illumination. Tap for the next colour.</string>
+    <string name="pt_display_start">Start cycle</string>
+    <string name="pt_display_tap_next">tap = next</string>
+    <string name="pt_vibration_title">Vibration motor</string>
+    <string name="pt_vibration_body">Test short pulse, long pulse, and a multi-amplitude waveform.</string>
+    <string name="pt_vib_short">Short</string>
+    <string name="pt_vib_long">Long</string>
+    <string name="pt_vib_pattern">Pattern</string>
+    <string name="pt_vibration_unavailable">This phone has no vibration motor.</string>
+    <string name="pt_sensors_title">Sensors</string>
+    <string name="pt_sensors_unavailable">SensorManager unavailable.</string>
+    <string name="pt_speakers_title">Speakers</string>
+    <string name="pt_speakers_body">Sine tone at the selected frequency. Test L/R/both — useful for spotting dead speakers and stereo imaging issues.</string>
+    <string name="pt_speakers_play">Play</string>
+    <string name="pt_speakers_stop">Stop</string>
+    <string name="pt_mic_title">Microphone</string>
+    <string name="pt_mic_body">Live RMS level meter. Speak normally — should respond smoothly without dropouts.</string>
+    <string name="pt_mic_grant">Grant microphone</string>
+    <string name="pt_mic_start">Start</string>
+    <string name="pt_mic_stop">Stop</string>
+    <string name="pt_flash_title">Torch / flash</string>
+    <string name="pt_flash_body">Toggles the rear camera torch.</string>
+    <string name="pt_flash_unavailable">This device has no flash-capable camera or torch API.</string>
+    <string name="pt_flash_on">Turn on</string>
+    <string name="pt_flash_off">Turn off</string>
+    <string name="pt_buttons_title">Hardware buttons</string>
+    <string name="pt_buttons_body">Press the volume keys — the value should change and the last direction should appear below.</string>
+    <string name="pt_buttons_power_note">The Power button cannot be detected from inside an app (Android intercepts it system-wide). Verify it works by toggling the screen.</string>
+
+    <!-- v0.9.0 hardware tools section -->
+    <string name="helpers_section_v090">Hardware &amp; media</string>
+
+    <!-- Bluetooth Tools -->
+    <string name="nav_bt_tools">Bluetooth tools</string>
+    <string name="bt_title">Bluetooth diagnostics</string>
+    <string name="bt_no_adapter">This device has no Bluetooth adapter.</string>
+    <string name="bt_scan_start">Scan</string>
+    <string name="bt_scan_stop">Stop</string>
+    <string name="bt_bonded_label">Bonded devices</string>
+    <string name="bt_bonded_empty">No bonded devices.</string>
+    <string name="bt_scan_label">Discovered devices</string>
+    <string name="bt_scan_empty">Run a scan to find nearby devices (Classic + BLE merged).</string>
+
+    <!-- USB Tools -->
+    <string name="nav_usb_tools">USB tools</string>
+    <string name="usb_title">USB diagnostics</string>
+    <string name="usb_state">USB state</string>
+    <string name="usb_unplugged">unplugged</string>
+    <string name="usb_devices_label">Connected USB devices (host mode)</string>
+    <string name="usb_devices_empty">No USB devices visible. Connect via OTG cable — flash drive, keyboard, MIDI keyboard, etc.</string>
+
+    <!-- USB Format -->
+    <string name="nav_usb_format">USB wipe</string>
+    <string name="usbf_title">Wipe drive contents</string>
+    <string name="usbf_disclaimer">Apps cannot truly format storage (only Settings → Storage can). This screen recursively deletes EVERYTHING under the picked tree via Storage Access Framework — same filesystem, just empty.</string>
+    <string name="usbf_pick_root">Pick drive root</string>
+    <string name="usbf_picked">Picked:</string>
+    <string name="usbf_wipe">Wipe everything</string>
+    <string name="usbf_forget">Forget selection</string>
+    <string name="usbf_confirm_title">Really wipe everything?</string>
+    <string name="usbf_confirm_body">This is IRREVERSIBLE. Every file and folder under the picked root will be permanently deleted. Continue?</string>
+    <string name="usbf_confirm_yes">Yes, wipe</string>
+    <string name="usbf_confirm_no">Cancel</string>
+    <string name="usbf_done">✓ Done</string>
+
+    <!-- Music Tools -->
+    <string name="nav_music_tools">Music tools</string>
+    <string name="music_title">MP3 / audio metadata</string>
+    <string name="music_subtitle">Tag (ID3) reader — pick a file and it shows every metadata field plus embedded cover art. Tag editing ships in v1.0.0.</string>
+    <string name="music_pick">Pick file</string>
+    <string name="music_field_title">Title</string>
+    <string name="music_field_artist">Artist</string>
+    <string name="music_field_album">Album</string>
+    <string name="music_field_albumartist">Album artist</string>
+    <string name="music_field_genre">Genre</string>
+    <string name="music_field_year">Year</string>
+    <string name="music_field_track">Track</string>
+    <string name="music_field_composer">Composer</string>
+    <string name="music_field_duration">Duration</string>
+    <string name="music_field_bitrate">Bitrate</string>
+    <string name="music_field_samplerate">Sample rate</string>
+    <string name="music_field_channels">Channels</string>
+    <string name="music_field_mime">MIME</string>
+
+    <!-- Voice Changer -->
+    <string name="nav_voice_changer">Voice changer</string>
+    <string name="vc_title">Voice changer</string>
+    <string name="vc_body">Record yourself and play back at a different pitch. The slider shifts pitch and tempo together (chipmunk effect).</string>
+    <string name="vc_grant">Grant microphone</string>
+    <string name="vc_record">Record</string>
+    <string name="vc_stop">Stop recording</string>
+    <string name="vc_pitch">Pitch:</string>
+    <string name="vc_play">Play</string>
+    <string name="vc_stop_play">Stop playback</string>
+
+    <!-- Multi Remote -->
+    <string name="nav_multi_remote">Multi remote</string>
+    <string name="mr_title">Universal IR remote</string>
+    <string name="mr_no_ir_title">This phone has no IR emitter</string>
+    <string name="mr_no_ir_body">Most modern phones (Pixel, OnePlus, Samsung S6+, iPhone) ship without an IR blaster. Network TV control (WoL, Cast, vendor APIs) ships as a separate tool in v0.10.</string>
+    <string name="mr_brand_label">TV brand</string>
+    <string name="mr_buttons_label">Commands</string>
+
+    <!-- Call Recorder -->
+    <string name="nav_call_recorder">Call recorder</string>
+    <string name="cr_title">Call recorder</string>
+    <string name="cr_legal_title">⚠ Legal warning</string>
+    <string name="cr_legal_body">In CZ / EU recording a call without the other party\'s consent is illegal (GDPR + telecommunications law). Inform the other party and obtain consent before each call. The user is solely responsible for use.</string>
+    <string name="cr_technical_note">Technical limitation: since Android 10 non-system apps cannot capture call audio (uplink/downlink) directly. We record via the mic while speakerphone is on — enable it in your dialer.</string>
+    <string name="cr_grant_mic">Grant microphone</string>
+    <string name="cr_consent">I confirm both parties consent</string>
+    <string name="cr_start">Start recording</string>
+    <string name="cr_stop">Stop</string>
+    <string name="cr_saved">Saved:</string>
+    <string name="cr_open_sound_settings">Open sound settings</string>
 </resources>

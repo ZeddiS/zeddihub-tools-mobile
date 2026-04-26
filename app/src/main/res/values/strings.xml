@@ -1027,4 +1027,131 @@
     <string name="rubik_step">Krok</string>
     <string name="rubik_play_all">Přehrát vše</string>
     <string name="rubik_manual_moves">Tahy ručně</string>
+
+    <!-- Phone Test (v0.8.1) -->
+    <string name="nav_phone_test">Test telefonu</string>
+    <string name="pt_tab_display">Displej</string>
+    <string name="pt_tab_touch">Dotyk</string>
+    <string name="pt_tab_vibration">Vibrace</string>
+    <string name="pt_tab_sensors">Senzory</string>
+    <string name="pt_tab_speakers">Reproduktory</string>
+    <string name="pt_tab_mic">Mikrofon</string>
+    <string name="pt_tab_flash">Baterka</string>
+    <string name="pt_tab_buttons">Tlačítka</string>
+    <string name="pt_display_title">Test displeje</string>
+    <string name="pt_display_body">Procházej barvami fullscreen — hledej mrtvé pixely, světlé okraje a nerovnoměrné podsvícení. Klikni pro další barvu.</string>
+    <string name="pt_display_start">Spustit cyklus</string>
+    <string name="pt_display_tap_next">klik = další</string>
+    <string name="pt_vibration_title">Vibrační motor</string>
+    <string name="pt_vibration_body">Otestuj krátký puls, dlouhý puls a vlnu více intenzit.</string>
+    <string name="pt_vib_short">Krátká</string>
+    <string name="pt_vib_long">Dlouhá</string>
+    <string name="pt_vib_pattern">Vzorec</string>
+    <string name="pt_vibration_unavailable">Tento telefon nemá vibrační motor.</string>
+    <string name="pt_sensors_title">Senzory</string>
+    <string name="pt_sensors_unavailable">SensorManager není dostupný.</string>
+    <string name="pt_speakers_title">Reproduktory</string>
+    <string name="pt_speakers_body">Sinusový tón na vybrané frekvenci. Otestuj L/R/oba kanály — užitečné na hledání mrtvých reproduktorů a problémů se stereo obrazem.</string>
+    <string name="pt_speakers_play">Přehrát</string>
+    <string name="pt_speakers_stop">Zastavit</string>
+    <string name="pt_mic_title">Mikrofon</string>
+    <string name="pt_mic_body">RMS úrovňoměr v reálném čase. Mluv normálně — měl by reagovat plynule, bez výpadků.</string>
+    <string name="pt_mic_grant">Povolit mikrofon</string>
+    <string name="pt_mic_start">Start</string>
+    <string name="pt_mic_stop">Stop</string>
+    <string name="pt_flash_title">Baterka / blesk</string>
+    <string name="pt_flash_body">Sepnutí torch režimu hlavní kamery.</string>
+    <string name="pt_flash_unavailable">Toto zařízení nemá kameru s bleskem nebo torch API.</string>
+    <string name="pt_flash_on">Zapnout</string>
+    <string name="pt_flash_off">Vypnout</string>
+    <string name="pt_buttons_title">Hardware tlačítka</string>
+    <string name="pt_buttons_body">Stiskni tlačítka hlasitosti — měla by se měnit hodnota a zobrazit poslední směr.</string>
+    <string name="pt_buttons_power_note">Tlačítko Power nelze z aplikace detekovat (Android ho zachytává systémově). Funkčnost ověříš tím, že zhasne/rozsvítí displej.</string>
+
+    <!-- v0.9.0 hardware tools section -->
+    <string name="helpers_section_v090">Hardware a média</string>
+
+    <!-- Bluetooth Tools -->
+    <string name="nav_bt_tools">Bluetooth nástroje</string>
+    <string name="bt_title">Bluetooth diagnostika</string>
+    <string name="bt_no_adapter">Toto zařízení nemá Bluetooth adaptér.</string>
+    <string name="bt_scan_start">Skenovat</string>
+    <string name="bt_scan_stop">Stop</string>
+    <string name="bt_bonded_label">Spárovaná zařízení</string>
+    <string name="bt_bonded_empty">Žádná spárovaná zařízení.</string>
+    <string name="bt_scan_label">Nalezená zařízení</string>
+    <string name="bt_scan_empty">Spusť sken pro vyhledání okolních zařízení (Classic + BLE).</string>
+
+    <!-- USB Tools -->
+    <string name="nav_usb_tools">USB nástroje</string>
+    <string name="usb_title">USB diagnostika</string>
+    <string name="usb_state">Stav USB</string>
+    <string name="usb_unplugged">odpojeno</string>
+    <string name="usb_devices_label">Připojená USB zařízení (host)</string>
+    <string name="usb_devices_empty">Žádná zařízení na USB. Připoj přes OTG kabel — flash disk, klávesnice, MIDI keyboard apod.</string>
+
+    <!-- USB Format -->
+    <string name="nav_usb_format">USB formátování</string>
+    <string name="usbf_title">Smazání obsahu disku</string>
+    <string name="usbf_disclaimer">Aplikace nemůže klasicky naformátovat disk (to umí jen Nastavení → Úložiště). Tahle obrazovka rekurzivně smaže VŠE na vybraném stromě složek přes Storage Access Framework — výsledek je prázdný disk se stejným filesystémem.</string>
+    <string name="usbf_pick_root">Vybrat kořen disku</string>
+    <string name="usbf_picked">Vybráno:</string>
+    <string name="usbf_wipe">Smazat vše</string>
+    <string name="usbf_forget">Zrušit výběr</string>
+    <string name="usbf_confirm_title">Opravdu smazat všechno?</string>
+    <string name="usbf_confirm_body">Tato akce je NEVRATNÁ. Všechny soubory a složky pod vybraným kořenem budou trvale smazány. Pokračovat?</string>
+    <string name="usbf_confirm_yes">Ano, smazat</string>
+    <string name="usbf_confirm_no">Zrušit</string>
+    <string name="usbf_done">✓ Hotovo</string>
+
+    <!-- Music Tools -->
+    <string name="nav_music_tools">Hudební nástroje</string>
+    <string name="music_title">MP3 / audio metadata</string>
+    <string name="music_subtitle">Čtečka tagů (ID3) — vybereš soubor a zobrazí se všechny metadata + obal alba. Zápis tagů přijde s v1.0.0.</string>
+    <string name="music_pick">Vybrat soubor</string>
+    <string name="music_field_title">Název</string>
+    <string name="music_field_artist">Interpret</string>
+    <string name="music_field_album">Album</string>
+    <string name="music_field_albumartist">Album artist</string>
+    <string name="music_field_genre">Žánr</string>
+    <string name="music_field_year">Rok</string>
+    <string name="music_field_track">Stopa</string>
+    <string name="music_field_composer">Skladatel</string>
+    <string name="music_field_duration">Délka</string>
+    <string name="music_field_bitrate">Bitrate</string>
+    <string name="music_field_samplerate">Sample rate</string>
+    <string name="music_field_channels">Kanály</string>
+    <string name="music_field_mime">MIME</string>
+
+    <!-- Voice Changer -->
+    <string name="nav_voice_changer">Modulátor hlasu</string>
+    <string name="vc_title">Modulátor hlasu</string>
+    <string name="vc_body">Nahraj se a přehraj v jiné výšce. Posuvník mění současně výšku i tempo (chipmunk efekt).</string>
+    <string name="vc_grant">Povolit mikrofon</string>
+    <string name="vc_record">Nahrát</string>
+    <string name="vc_stop">Stop nahrávání</string>
+    <string name="vc_pitch">Výška:</string>
+    <string name="vc_play">Přehrát</string>
+    <string name="vc_stop_play">Stop přehrávání</string>
+
+    <!-- Multi Remote -->
+    <string name="nav_multi_remote">Multi Remote</string>
+    <string name="mr_title">Univerzální dálkový ovladač</string>
+    <string name="mr_no_ir_title">Tento telefon nemá IR vysílač</string>
+    <string name="mr_no_ir_body">Většina moderních telefonů (Pixel, OnePlus, Samsung S6+, iPhone) IR blaster nemá. Síťové ovládání TV (WoL, Cast, vendor API) přijde v samostatném nástroji v0.10.</string>
+    <string name="mr_brand_label">Značka TV</string>
+    <string name="mr_buttons_label">Příkazy</string>
+
+    <!-- Call Recorder -->
+    <string name="nav_call_recorder">Nahrávání hovorů</string>
+    <string name="cr_title">Nahrávání hovorů</string>
+    <string name="cr_legal_title">⚠ Právní upozornění</string>
+    <string name="cr_legal_body">V ČR a EU je nahrávání hovoru bez souhlasu druhé strany ilegální (GDPR + telekomunikační zákon). Před každým hovorem druhou stranu informuj a získej její souhlas. Odpovědnost za použití nese uživatel.</string>
+    <string name="cr_technical_note">Technické omezení: od Androidu 10 nelze přímo zachytit zvuk hovoru (uplink/downlink) bez systémových oprávnění. Nahráváme přes mikrofon při zapnutém hlasitém odposlechu — nasaď ho v dialeru.</string>
+    <string name="cr_grant_mic">Povolit mikrofon</string>
+    <string name="cr_consent">Potvrzuji souhlas obou stran</string>
+    <string name="cr_start">Začít nahrávat</string>
+    <string name="cr_stop">Ukončit</string>
+    <string name="cr_saved">Uloženo:</string>
+    <string name="cr_open_sound_settings">Otevřít nastavení zvuku</string>
 </resources>
