@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.zeddihub.mobile.R
 import com.zeddihub.mobile.data.update.ReleaseInfo
 import com.zeddihub.mobile.data.update.UpdateChecker
+import com.zeddihub.mobile.ui.main.UpdatePhase
 import kotlinx.coroutines.launch
 
 @Composable
@@ -41,9 +42,15 @@ fun StartupUpdateDialog(updateChecker: UpdateChecker) {
     val ctx = LocalContext.current
     var release by remember { mutableStateOf<ReleaseInfo?>(null) }
     var dismissed by remember { mutableStateOf(false) }
-    var downloading by remember { mutableStateOf(false) }
+    // Same 2-step UX as the Dashboard banner + Settings:
+    //   Idle → Downloading → Downloaded → Install. Click "Stáhnout"
+    //   only kicks the download; the resulting file is held until the
+    //   user explicitly clicks "Instalovat".
+    var phase by remember { mutableStateOf<UpdatePhase>(UpdatePhase.Idle) }
     var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
+    val downloading = phase is UpdatePhase.Downloading
+    val downloaded = phase as? UpdatePhase.Downloaded
 
     LaunchedEffect(Unit) {
         val info = updateChecker.fetchLatest()
@@ -103,28 +110,35 @@ fun StartupUpdateDialog(updateChecker: UpdateChecker) {
                         dismissed = true
                         return@Button
                     }
-                    downloading = true
-                    error = null
-                    scope.launch {
-                        val apk = updateChecker.downloadApk(ctx, info.apkUrl)
-                        downloading = false
-                        if (apk != null) {
-                            runCatching { updateChecker.installApk(ctx, apk) }
-                                .onFailure { error = it.message }
-                        } else {
-                            error = ctx.getString(R.string.update_download_failed)
+                    when (val ph = phase) {
+                        is UpdatePhase.Idle, is UpdatePhase.Error -> {
+                            phase = UpdatePhase.Downloading
+                            error = null
+                            scope.launch {
+                                val apk = updateChecker.downloadApk(ctx, info.apkUrl)
+                                phase = if (apk != null) UpdatePhase.Downloaded(apk)
+                                        else UpdatePhase.Error
+                                if (apk == null) {
+                                    error = ctx.getString(R.string.update_download_failed)
+                                }
+                            }
                         }
+                        is UpdatePhase.Downloaded -> {
+                            runCatching { updateChecker.installApk(ctx, ph.file) }
+                                .onFailure { error = it.message }
+                        }
+                        is UpdatePhase.Downloading -> { /* button disabled */ }
                     }
                 },
                 enabled = !downloading
             ) {
-                if (downloading) {
-                    CircularProgressIndicator(
+                when {
+                    downloading -> CircularProgressIndicator(
                         modifier = Modifier.height(18.dp),
                         strokeWidth = 2.dp
                     )
-                } else {
-                    Text(stringResource(R.string.update_install))
+                    downloaded != null -> Text(stringResource(R.string.update_install))
+                    else -> Text(stringResource(R.string.update_download))
                 }
             }
         },
