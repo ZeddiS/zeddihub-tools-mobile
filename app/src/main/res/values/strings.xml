@@ -1107,7 +1107,13 @@
     <!-- Music Tools -->
     <string name="nav_music_tools">Hudební nástroje</string>
     <string name="music_title">MP3 / audio metadata</string>
-    <string name="music_subtitle">Čtečka tagů (ID3) — vybereš soubor a zobrazí se všechny metadata + obal alba. Zápis tagů přijde s v1.0.0.</string>
+    <string name="music_subtitle">Čtečka i editor ID3 tagů — vybereš MP3, vidíš všechna metadata + obal, a tlačítko Upravit přepíše TIT2/TPE1/TALB/TYER/TRCK/TCON/TPE2/TCOM přímo v souboru.</string>
+    <string name="music_edit">Upravit tagy</string>
+    <string name="music_edit_title">Úprava ID3 tagů</string>
+    <string name="music_save">Uložit</string>
+    <string name="music_cancel">Zrušit</string>
+    <string name="music_save_ok">✓ Tagy uloženy</string>
+    <string name="music_save_fail">✗ Zápis selhal — soubor možná nepoužívá ID3v2 formát</string>
     <string name="music_pick">Vybrat soubor</string>
     <string name="music_field_title">Název</string>
     <string name="music_field_artist">Interpret</string>
@@ -1159,6 +1165,35 @@
     <string name="reminder_geo_on_enter">Při příchodu</string>
     <string name="reminder_geo_on_exit">Při odchodu</string>
     <string name="reminder_geo_perm_note">Vyžaduje povolení polohy v pozadí (Nastavení → Aplikace → ZeddiHub → Poloha → \"Povolit vždy\").</string>
+    <string name="reminder_geo_use_current">Použít aktuální polohu</string>
+    <string name="reminder_geo_locating">Hledám polohu…</string>
+
+    <!-- AdvancedBarcode (v1.9.0 string extraction) -->
+    <string name="bc_tab_generate">Generovat</string>
+    <string name="bc_tab_scan">Skenovat</string>
+    <string name="bc_tab_history">Historie</string>
+    <string name="bc_format_label">Formát: %1$s</string>
+    <string name="bc_data_label">Data ke kódování</string>
+    <string name="bc_generate">Generovat</string>
+    <string name="bc_save">Uložit</string>
+    <string name="bc_share">Sdílet</string>
+    <string name="bc_copy">Kopírovat</string>
+    <string name="bc_camera">Kamerou</string>
+    <string name="bc_gallery">Z galerie</string>
+    <string name="bc_pick_image">Vybrat obrázek</string>
+    <string name="bc_camera_perm_body">Pro skenování kamerou je potřeba oprávnění.</string>
+    <string name="bc_grant_camera">Povolit kameru</string>
+    <string name="bc_history_count">Naskenováno: %1$d</string>
+    <string name="bc_export_csv">Export CSV</string>
+    <string name="bc_clear_all">Vymazat vše</string>
+    <string name="bc_history_empty">Historie je prázdná. Naskenuj něco na záložce Skenovat.</string>
+    <string name="bc_scanned_code">Naskenovaný kód</string>
+    <string name="bc_open_browser">Otevřít v prohlížeči</string>
+    <string name="bc_wifi_hint">Tohle vypadá jako WiFi QR. Použij WiFi Tools pro připojení.</string>
+    <string name="bc_call">Zavolat</string>
+    <string name="bc_email">Napsat email</string>
+    <string name="bc_search_google">Otevřít Google</string>
+    <string name="bc_close">Zavřít</string>
     <string name="reminder_wifi_on_connect">Při připojení</string>
     <string name="reminder_wifi_on_disconnect">Při odpojení</string>
     <string name="reminder_bt_name">Název zařízení</string>

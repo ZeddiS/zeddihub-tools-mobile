@@ -90,12 +90,14 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.camera.core.Camera
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.zeddihub.mobile.R
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
@@ -150,13 +152,13 @@ fun AdvancedBarcodeScreen(padding: PaddingValues) {
     ) {
         PrimaryTabRow(selectedTabIndex = tab) {
             Tab(selected = tab == 0, onClick = { tab = 0 }) {
-                Text("Generovat", modifier = Modifier.padding(12.dp)) // TODO: extract to strings.xml
+                Text(stringResource(R.string.bc_tab_generate), modifier = Modifier.padding(12.dp))
             }
             Tab(selected = tab == 1, onClick = { tab = 1 }) {
-                Text("Skenovat", modifier = Modifier.padding(12.dp)) // TODO: extract to strings.xml
+                Text(stringResource(R.string.bc_tab_scan), modifier = Modifier.padding(12.dp))
             }
             Tab(selected = tab == 2, onClick = { tab = 2 }) {
-                Text("Historie", modifier = Modifier.padding(12.dp)) // TODO: extract to strings.xml
+                Text(stringResource(R.string.bc_tab_history), modifier = Modifier.padding(12.dp))
             }
         }
         when (tab) {
@@ -235,7 +237,7 @@ private fun GenerateBarcodeTab() {
                 onClick = { formatMenu = true },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Formát: ${format.label}") // TODO: extract to strings.xml
+                Text(stringResource(R.string.bc_format_label, format.label))
                 Spacer(Modifier.width(6.dp))
                 Icon(Icons.Default.ArrowDropDown, null)
             }
@@ -260,7 +262,7 @@ private fun GenerateBarcodeTab() {
         OutlinedTextField(
             value = input,
             onValueChange = { input = it },
-            label = { Text("Data ke kódování") }, // TODO: extract to strings.xml
+            label = { Text(stringResource(R.string.bc_data_label)) },
             isError = liveError != null,
             supportingText = {
                 liveError?.let {
@@ -282,7 +284,7 @@ private fun GenerateBarcodeTab() {
                 generateError = result.exceptionOrNull()?.localizedMessage
             }
         ) {
-            Text("Generovat") // TODO: extract to strings.xml
+            Text(stringResource(R.string.bc_generate))
         }
 
         generateError?.let {
@@ -323,7 +325,7 @@ private fun GenerateBarcodeTab() {
                     ).show()
                 }) {
                     Icon(Icons.Default.Save, null); Spacer(Modifier.width(6.dp))
-                    Text("Uložit") // TODO: extract to strings.xml
+                    Text(stringResource(R.string.bc_save))
                 }
                 ElevatedButton(onClick = {
                     val file = saveBarcodeToCache(ctx, bmp)
@@ -339,14 +341,14 @@ private fun GenerateBarcodeTab() {
                     }
                 }) {
                     Icon(Icons.Default.Share, null); Spacer(Modifier.width(6.dp))
-                    Text("Sdílet") // TODO: extract to strings.xml
+                    Text(stringResource(R.string.bc_share))
                 }
                 ElevatedButton(onClick = {
                     clip.setText(AnnotatedString(payload))
                     Toast.makeText(ctx, "Zkopírováno", Toast.LENGTH_SHORT).show()
                 }) {
                     Icon(Icons.Default.ContentCopy, null); Spacer(Modifier.width(6.dp))
-                    Text("Kopírovat") // TODO: extract to strings.xml
+                    Text(stringResource(R.string.bc_copy))
                 }
             }
 
@@ -507,12 +509,12 @@ private fun ScanBarcodeTab(onScanned: (format: String, payload: String) -> Unit)
             FilterChip(
                 selected = mode == ScanMode.CAMERA,
                 onClick = { mode = ScanMode.CAMERA },
-                label = { Text("Kamerou") } // TODO: extract to strings.xml
+                label = { Text(stringResource(R.string.bc_camera)) }
             )
             FilterChip(
                 selected = mode == ScanMode.GALLERY,
                 onClick = { mode = ScanMode.GALLERY },
-                label = { Text("Z galerie") } // TODO: extract to strings.xml
+                label = { Text(stringResource(R.string.bc_gallery)) }
             )
         }
 
@@ -523,7 +525,7 @@ private fun ScanBarcodeTab(onScanned: (format: String, payload: String) -> Unit)
             ScanMode.GALLERY -> {
                 Button(onClick = { pickLauncher.launch("image/*") }) {
                     Icon(Icons.Default.Image, null); Spacer(Modifier.width(6.dp))
-                    Text("Vybrat obrázek") // TODO: extract to strings.xml
+                    Text(stringResource(R.string.bc_pick_image))
                 }
                 galleryError?.let {
                     Spacer(Modifier.height(8.dp))
@@ -576,11 +578,11 @@ private fun LiveCameraScanner(onScanned: (format: String, payload: String) -> Un
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                "Pro skenování kamerou je potřeba oprávnění.", // TODO: extract to strings.xml
+                stringResource(R.string.bc_camera_perm_body),
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Button(onClick = { permLauncher.launch(Manifest.permission.CAMERA) }) {
-                Text("Povolit kameru") // TODO: extract to strings.xml
+                Text(stringResource(R.string.bc_grant_camera))
             }
         }
         return
@@ -797,7 +799,7 @@ private fun HistoryTab(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                "Naskenováno: ${history.size}", // TODO: extract to strings.xml
+                stringResource(R.string.bc_history_count, history.size),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -813,7 +815,7 @@ private fun HistoryTab(
             ) {
                 Icon(Icons.Default.FileDownload, null)
                 Spacer(Modifier.width(4.dp))
-                Text("Export CSV") // TODO: extract to strings.xml
+                Text(stringResource(R.string.bc_export_csv))
             }
             TextButton(
                 enabled = history.isNotEmpty(),
@@ -821,7 +823,7 @@ private fun HistoryTab(
             ) {
                 Icon(Icons.Default.Delete, null)
                 Spacer(Modifier.width(4.dp))
-                Text("Vymazat vše") // TODO: extract to strings.xml
+                Text(stringResource(R.string.bc_clear_all))
             }
         }
 
@@ -829,7 +831,7 @@ private fun HistoryTab(
 
         if (history.isEmpty()) {
             Text(
-                "Historie je prázdná. Naskenuj něco na záložce Skenovat.", // TODO: extract to strings.xml
+                stringResource(R.string.bc_history_empty),
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         } else {
@@ -924,7 +926,7 @@ private fun QuickActionsSheet(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text("Naskenovaný kód", style = MaterialTheme.typography.titleMedium) // TODO: extract to strings.xml
+            Text(stringResource(R.string.bc_scanned_code), style = MaterialTheme.typography.titleMedium)
             Text(
                 "${item.format} • ${formatTimestamp(item.timestamp)}",
                 style = MaterialTheme.typography.labelSmall,
@@ -955,7 +957,7 @@ private fun QuickActionsSheet(
                         }
                     ) {
                         Icon(Icons.Default.OpenInBrowser, null); Spacer(Modifier.width(6.dp))
-                        Text("Otevřít v prohlížeči") // TODO: extract to strings.xml
+                        Text(stringResource(R.string.bc_open_browser))
                     }
                 }
                 payload.startsWith("WIFI:", ignoreCase = true) -> {
@@ -965,7 +967,7 @@ private fun QuickActionsSheet(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            "Tohle vypadá jako WiFi QR. Použij WiFi Tools pro připojení.", // TODO: extract to strings.xml
+                            stringResource(R.string.bc_wifi_hint),
                             color = MaterialTheme.colorScheme.onTertiaryContainer,
                             modifier = Modifier.padding(12.dp)
                         )
@@ -981,7 +983,7 @@ private fun QuickActionsSheet(
                         }
                     ) {
                         Icon(Icons.Default.Call, null); Spacer(Modifier.width(6.dp))
-                        Text("Zavolat") // TODO: extract to strings.xml
+                        Text(stringResource(R.string.bc_call))
                     }
                 }
                 payload.startsWith("mailto:", ignoreCase = true) -> {
@@ -994,7 +996,7 @@ private fun QuickActionsSheet(
                         }
                     ) {
                         Icon(Icons.Default.Email, null); Spacer(Modifier.width(6.dp))
-                        Text("Napsat email") // TODO: extract to strings.xml
+                        Text(stringResource(R.string.bc_email))
                     }
                 }
                 else -> {
@@ -1008,7 +1010,7 @@ private fun QuickActionsSheet(
                         }
                     ) {
                         Icon(Icons.Default.Search, null); Spacer(Modifier.width(6.dp))
-                        Text("Otevřít Google") // TODO: extract to strings.xml
+                        Text(stringResource(R.string.bc_search_google))
                     }
                 }
             }
@@ -1023,7 +1025,7 @@ private fun QuickActionsSheet(
                     }
                 ) {
                     Icon(Icons.Default.ContentCopy, null); Spacer(Modifier.width(6.dp))
-                    Text("Kopírovat") // TODO: extract to strings.xml
+                    Text(stringResource(R.string.bc_copy))
                 }
                 OutlinedButton(
                     modifier = Modifier.weight(1f),
@@ -1035,13 +1037,13 @@ private fun QuickActionsSheet(
                     }
                 ) {
                     Icon(Icons.Default.Share, null); Spacer(Modifier.width(6.dp))
-                    Text("Sdílet") // TODO: extract to strings.xml
+                    Text(stringResource(R.string.bc_share))
                 }
             }
 
             Spacer(Modifier.height(4.dp))
             TextButton(onClick = { scope.launch { sheetState.hide(); onDismiss() } }) {
-                Text("Zavřít") // TODO: extract to strings.xml
+                Text(stringResource(R.string.bc_close))
             }
         }
     }

@@ -24,7 +24,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Schedule
+import android.annotation.SuppressLint
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -542,8 +544,10 @@ private fun GeofenceEditor(
     onEnter: Boolean, onExit: Boolean,
     onChange: (Double, Double, Float, Boolean, Boolean) -> Unit
 ) {
+    val ctx = LocalContext.current
     var latText by remember(lat) { mutableStateOf("%.5f".format(lat)) }
     var lngText by remember(lng) { mutableStateOf("%.5f".format(lng)) }
+    var fetching by remember { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedTextField(
@@ -565,6 +569,32 @@ private fun GeofenceEditor(
                 modifier = Modifier.weight(1f)
             )
         }
+        AssistChip(
+            onClick = {
+                if (fetching) return@AssistChip
+                if (androidx.core.content.ContextCompat.checkSelfPermission(
+                        ctx, android.Manifest.permission.ACCESS_FINE_LOCATION) !=
+                    android.content.pm.PackageManager.PERMISSION_GRANTED) return@AssistChip
+                fetching = true
+                fetchLastLocation(ctx) { loc ->
+                    fetching = false
+                    if (loc != null) {
+                        latText = "%.5f".format(loc.latitude)
+                        lngText = "%.5f".format(loc.longitude)
+                        onChange(loc.latitude, loc.longitude, radius, onEnter, onExit)
+                    }
+                }
+            },
+            label = {
+                Text(
+                    if (fetching) stringResource(R.string.reminder_geo_locating)
+                    else stringResource(R.string.reminder_geo_use_current)
+                )
+            },
+            leadingIcon = {
+                Icon(Icons.Default.MyLocation, null)
+            }
+        )
         Text("Radius: ${radius.toInt()} m",
             style = MaterialTheme.typography.bodyMedium)
         androidx.compose.material3.Slider(
@@ -590,6 +620,21 @@ private fun GeofenceEditor(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
+}
+
+@SuppressLint("MissingPermission")
+private fun fetchLastLocation(
+    ctx: android.content.Context,
+    onResult: (android.location.Location?) -> Unit,
+) {
+    // Caller has already checked ACCESS_FINE_LOCATION; SuppressLint is
+    // safe here because this function is only ever invoked from inside
+    // that permission gate.
+    com.google.android.gms.location.LocationServices
+        .getFusedLocationProviderClient(ctx)
+        .lastLocation
+        .addOnSuccessListener { onResult(it) }
+        .addOnFailureListener { onResult(null) }
 }
 
 @Composable

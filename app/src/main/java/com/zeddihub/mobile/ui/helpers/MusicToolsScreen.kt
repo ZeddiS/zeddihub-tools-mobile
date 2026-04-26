@@ -20,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,14 +53,29 @@ fun MusicToolsScreen(padding: PaddingValues) {
     val ctx = LocalContext.current
     var meta by remember { mutableStateOf<AudioMeta?>(null) }
     var fileName by remember { mutableStateOf<String?>(null) }
+    var fileUri by remember { mutableStateOf<android.net.Uri?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
+    var editing by remember { mutableStateOf(false) }
+    var saveStatus by remember { mutableStateOf<String?>(null) }
 
     val picker = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument()
     ) { uri ->
         if (uri != null) {
+            // Persist write access — the SAF picker grants r/w for the
+            // session, but we want to keep it after a screen transition
+            // so the Save button still works.
+            runCatching {
+                ctx.contentResolver.takePersistableUriPermission(
+                    uri,
+                    android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                        android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                )
+            }
+            fileUri = uri
             fileName = uri.lastPathSegment
             error = null
+            saveStatus = null
             meta = runCatching { extractMeta(ctx, uri) }
                 .onFailure { error = it.message ?: "Read error" }
                 .getOrNull()
@@ -141,10 +155,106 @@ fun MusicToolsScreen(padding: PaddingValues) {
                     }
                 }
             }
+
+            Button(onClick = { editing = true }) {
+                Text(stringResource(R.string.music_edit))
+            }
+            saveStatus?.let {
+                Text(it, color = MaterialTheme.colorScheme.primary,
+                    style = androidx.compose.material3.MaterialTheme.typography.bodySmall)
+            }
         }
     }
 
-    LaunchedEffect(Unit) { /* keep recompose contract */ }
+    if (editing && meta != null && fileUri != null) {
+        TagEditor(
+            initial = meta!!,
+            onCancel = { editing = false },
+            onSave = { edited ->
+                editing = false
+                val ok = Id3v2Writer.writeTags(
+                    ctx, fileUri!!,
+                    mapOf(
+                        "title" to (edited.title ?: ""),
+                        "artist" to (edited.artist ?: ""),
+                        "album" to (edited.album ?: ""),
+                        "albumArtist" to (edited.albumArtist ?: ""),
+                        "year" to (edited.year ?: ""),
+                        "track" to (edited.track ?: ""),
+                        "genre" to (edited.genre ?: ""),
+                        "composer" to (edited.composer ?: ""),
+                    )
+                )
+                saveStatus = if (ok) ctx.getString(R.string.music_save_ok)
+                else ctx.getString(R.string.music_save_fail)
+                if (ok) {
+                    // Re-read so the displayed metadata reflects the
+                    // newly-written tag instead of the stale view.
+                    meta = runCatching { extractMeta(ctx, fileUri!!) }.getOrNull()
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun TagEditor(
+    initial: AudioMeta,
+    onCancel: () -> Unit,
+    onSave: (AudioMeta) -> Unit,
+) {
+    var title by remember { mutableStateOf(initial.title ?: "") }
+    var artist by remember { mutableStateOf(initial.artist ?: "") }
+    var album by remember { mutableStateOf(initial.album ?: "") }
+    var albumArtist by remember { mutableStateOf(initial.albumArtist ?: "") }
+    var year by remember { mutableStateOf(initial.year ?: "") }
+    var track by remember { mutableStateOf(initial.track ?: "") }
+    var genre by remember { mutableStateOf(initial.genre ?: "") }
+    var composer by remember { mutableStateOf(initial.composer ?: "") }
+
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onCancel,
+        title = { Text(stringResource(R.string.music_edit_title)) },
+        confirmButton = {
+            androidx.compose.material3.TextButton(onClick = {
+                onSave(initial.copy(
+                    title = title, artist = artist, album = album,
+                    albumArtist = albumArtist, year = year, track = track,
+                    genre = genre, composer = composer,
+                ))
+            }) { Text(stringResource(R.string.music_save)) }
+        },
+        dismissButton = {
+            androidx.compose.material3.TextButton(onClick = onCancel) {
+                Text(stringResource(R.string.music_cancel))
+            }
+        },
+        text = {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                tagField(R.string.music_field_title, title) { title = it }
+                tagField(R.string.music_field_artist, artist) { artist = it }
+                tagField(R.string.music_field_album, album) { album = it }
+                tagField(R.string.music_field_albumartist, albumArtist) { albumArtist = it }
+                tagField(R.string.music_field_year, year) { year = it }
+                tagField(R.string.music_field_track, track) { track = it }
+                tagField(R.string.music_field_genre, genre) { genre = it }
+                tagField(R.string.music_field_composer, composer) { composer = it }
+            }
+        }
+    )
+}
+
+@Composable
+private fun tagField(labelRes: Int, value: String, onChange: (String) -> Unit) {
+    androidx.compose.material3.OutlinedTextField(
+        value = value, onValueChange = onChange,
+        label = { Text(stringResource(labelRes)) },
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth(),
+    )
 }
 
 private data class AudioMeta(

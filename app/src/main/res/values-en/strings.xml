@@ -1066,7 +1066,13 @@
     <!-- Music Tools -->
     <string name="nav_music_tools">Music tools</string>
     <string name="music_title">MP3 / audio metadata</string>
-    <string name="music_subtitle">Tag (ID3) reader — pick a file and it shows every metadata field plus embedded cover art. Tag editing ships in v1.0.0.</string>
+    <string name="music_subtitle">ID3 tag reader and editor — pick an MP3, see every metadata field + cover art, and Edit overwrites TIT2/TPE1/TALB/TYER/TRCK/TCON/TPE2/TCOM directly in the file.</string>
+    <string name="music_edit">Edit tags</string>
+    <string name="music_edit_title">Edit ID3 tags</string>
+    <string name="music_save">Save</string>
+    <string name="music_cancel">Cancel</string>
+    <string name="music_save_ok">✓ Tags saved</string>
+    <string name="music_save_fail">✗ Write failed — file may not be ID3v2 format</string>
     <string name="music_pick">Pick file</string>
     <string name="music_field_title">Title</string>
     <string name="music_field_artist">Artist</string>
@@ -1118,6 +1124,35 @@
     <string name="reminder_geo_on_enter">On enter</string>
     <string name="reminder_geo_on_exit">On exit</string>
     <string name="reminder_geo_perm_note">Requires background location permission (Settings → Apps → ZeddiHub → Location → \"Allow all the time\").</string>
+    <string name="reminder_geo_use_current">Use current location</string>
+    <string name="reminder_geo_locating">Locating…</string>
+
+    <!-- AdvancedBarcode (v1.9.0 string extraction) -->
+    <string name="bc_tab_generate">Generate</string>
+    <string name="bc_tab_scan">Scan</string>
+    <string name="bc_tab_history">History</string>
+    <string name="bc_format_label">Format: %1$s</string>
+    <string name="bc_data_label">Data to encode</string>
+    <string name="bc_generate">Generate</string>
+    <string name="bc_save">Save</string>
+    <string name="bc_share">Share</string>
+    <string name="bc_copy">Copy</string>
+    <string name="bc_camera">Camera</string>
+    <string name="bc_gallery">Gallery</string>
+    <string name="bc_pick_image">Pick image</string>
+    <string name="bc_camera_perm_body">Camera permission is required to scan.</string>
+    <string name="bc_grant_camera">Grant camera</string>
+    <string name="bc_history_count">Scanned: %1$d</string>
+    <string name="bc_export_csv">Export CSV</string>
+    <string name="bc_clear_all">Clear all</string>
+    <string name="bc_history_empty">History is empty. Scan something in the Scan tab.</string>
+    <string name="bc_scanned_code">Scanned code</string>
+    <string name="bc_open_browser">Open in browser</string>
+    <string name="bc_wifi_hint">This looks like a WiFi QR. Use WiFi Tools to connect.</string>
+    <string name="bc_call">Call</string>
+    <string name="bc_email">Send email</string>
+    <string name="bc_search_google">Search Google</string>
+    <string name="bc_close">Close</string>
     <string name="reminder_wifi_on_connect">On connect</string>
     <string name="reminder_wifi_on_disconnect">On disconnect</string>
     <string name="reminder_bt_name">Device name</string>
