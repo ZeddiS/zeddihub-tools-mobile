@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BluetoothSearching
 import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Cake
@@ -141,6 +142,11 @@ fun HelpersRootScreen(
         HelperRow(
             HelperEntry(R.string.nav_music_tools, Icons.Default.LibraryMusic, Destinations.MusicTools.route),
             HelperEntry(R.string.nav_call_recorder, Icons.Default.Call, Destinations.CallRecorder.route),
+            onNavigate
+        )
+        HelperRow(
+            HelperEntry(R.string.nav_bt_advertise, Icons.Default.BluetoothSearching, Destinations.BluetoothAdvertise.route),
+            null,
             onNavigate
         )
 

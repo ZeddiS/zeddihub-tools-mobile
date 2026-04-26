@@ -7,16 +7,32 @@ import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import com.zeddihub.mobile.data.local.AppPreferences
 import com.zeddihub.mobile.data.telemetry.TelemetryRecorder
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
 @HiltAndroidApp
-class ZeddiHubApp : Application() {
+class ZeddiHubApp : Application(), Configuration.Provider {
 
     @Inject lateinit var appPreferences: AppPreferences
     @Inject lateinit var telemetry: TelemetryRecorder
+    @Inject lateinit var workerFactory: HiltWorkerFactory
+
+    /**
+     * WorkManager picks this up automatically because we removed its
+     * default initializer in AndroidManifest. Wiring HiltWorkerFactory
+     * here is what lets [ReminderWeatherWorker] receive its injected
+     * dependencies (store + scheduler) instead of crash-looping on
+     * "no zero-arg constructor".
+     */
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .setMinimumLoggingLevel(android.util.Log.INFO)
+            .build()
 
     override fun onCreate() {
         super.onCreate()

@@ -1008,7 +1008,7 @@
     <string name="reminder_kind_wifi">WiFi</string>
     <string name="reminder_kind_bt">Bluetooth</string>
     <string name="reminder_kind_weather">Počasí</string>
-    <string name="reminder_other_kinds_v090">Spouštění podle místa, WiFi, Bluetooth a počasí přijde s v0.9.0 spolu s odpovídajícími hardwarovými nástroji.</string>
+    <string name="reminder_other_kinds_v090" translatable="false">deprecated</string>
     <string name="reminder_empty_title">Zatím žádné připomínky</string>
     <string name="reminder_empty_body">Klikni na tlačítko + a přidej první chytrou připomínku.</string>
 
@@ -1154,4 +1154,32 @@
     <string name="cr_stop">Ukončit</string>
     <string name="cr_saved">Uloženo:</string>
     <string name="cr_open_sound_settings">Otevřít nastavení zvuku</string>
+
+    <!-- v1.8.5 reminder editor labels -->
+    <string name="reminder_geo_on_enter">Při příchodu</string>
+    <string name="reminder_geo_on_exit">Při odchodu</string>
+    <string name="reminder_geo_perm_note">Vyžaduje povolení polohy v pozadí (Nastavení → Aplikace → ZeddiHub → Poloha → \"Povolit vždy\").</string>
+    <string name="reminder_wifi_on_connect">Při připojení</string>
+    <string name="reminder_wifi_on_disconnect">Při odpojení</string>
+    <string name="reminder_bt_name">Název zařízení</string>
+    <string name="reminder_bt_address">MAC adresa</string>
+    <string name="reminder_bt_on_connect">Při spárování</string>
+    <string name="reminder_bt_on_disconnect">Při odpojení</string>
+    <string name="reminder_wx_greater">větší než</string>
+    <string name="reminder_wx_less">menší než</string>
+    <string name="reminder_wx_threshold">Práh</string>
+    <string name="reminder_wx_note">Kontrola každých 15 minut přes Open-Meteo. Stejná podmínka se neopakovaně neoznámí dříve než po hodině.</string>
+
+    <!-- v1.8.5 BT advertising sub-tool -->
+    <string name="nav_bt_advertise">BLE advertising</string>
+    <string name="btad_title">BLE advertising</string>
+    <string name="btad_body">Vysílání BLE manufacturer-data paketu, který si může jakákoliv aplikace v dosahu naskenovat. Užitečné pro testování BLE skenerů, beacon experimenty nebo jako pseudo-AirTag.</string>
+    <string name="btad_no_advertise">Toto zařízení nepodporuje BLE multi-advertise.</string>
+    <string name="btad_grant">Povolit Bluetooth</string>
+    <string name="btad_payload">Payload (hex, max 24 B)</string>
+    <string name="btad_company_id">Manufacturer ID (hex, např. 004C pro Apple)</string>
+    <string name="btad_start">Spustit vysílání</string>
+    <string name="btad_stop">Zastavit</string>
+    <string name="btad_running">Vysílám…</string>
+    <string name="btad_error">Chyba: %1$s</string>
 </resources>

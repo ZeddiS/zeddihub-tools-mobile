@@ -968,7 +968,6 @@
     <string name="reminder_kind_wifi">WiFi</string>
     <string name="reminder_kind_bt">Bluetooth</string>
     <string name="reminder_kind_weather">Weather</string>
-    <string name="reminder_other_kinds_v090">Location, WiFi, Bluetooth and weather triggers ship in v0.9.0 alongside the matching hardware tools.</string>
     <string name="reminder_empty_title">No reminders yet</string>
     <string name="reminder_empty_body">Tap + to add your first smart reminder.</string>
 
@@ -1114,4 +1113,32 @@
     <string name="cr_stop">Stop</string>
     <string name="cr_saved">Saved:</string>
     <string name="cr_open_sound_settings">Open sound settings</string>
+
+    <!-- v1.8.5 reminder editor labels -->
+    <string name="reminder_geo_on_enter">On enter</string>
+    <string name="reminder_geo_on_exit">On exit</string>
+    <string name="reminder_geo_perm_note">Requires background location permission (Settings → Apps → ZeddiHub → Location → \"Allow all the time\").</string>
+    <string name="reminder_wifi_on_connect">On connect</string>
+    <string name="reminder_wifi_on_disconnect">On disconnect</string>
+    <string name="reminder_bt_name">Device name</string>
+    <string name="reminder_bt_address">MAC address</string>
+    <string name="reminder_bt_on_connect">On connect</string>
+    <string name="reminder_bt_on_disconnect">On disconnect</string>
+    <string name="reminder_wx_greater">greater than</string>
+    <string name="reminder_wx_less">less than</string>
+    <string name="reminder_wx_threshold">Threshold</string>
+    <string name="reminder_wx_note">Polled every 15 min via Open-Meteo. The same condition won\'t fire again sooner than once per hour.</string>
+
+    <!-- v1.8.5 BT advertising sub-tool -->
+    <string name="nav_bt_advertise">BLE advertising</string>
+    <string name="btad_title">BLE advertising</string>
+    <string name="btad_body">Broadcasts a BLE manufacturer-data packet that any nearby app can scan. Useful for testing BLE scanners, beacon experiments, or as a pseudo-AirTag.</string>
+    <string name="btad_no_advertise">This device does not support BLE multi-advertise.</string>
+    <string name="btad_grant">Grant Bluetooth</string>
+    <string name="btad_payload">Payload (hex, max 24 B)</string>
+    <string name="btad_company_id">Manufacturer ID (hex, e.g. 004C for Apple)</string>
+    <string name="btad_start">Start advertising</string>
+    <string name="btad_stop">Stop</string>
+    <string name="btad_running">Advertising…</string>
+    <string name="btad_error">Error: %1$s</string>
 </resources>

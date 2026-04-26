@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -57,6 +58,7 @@ import androidx.lifecycle.viewModelScope
 import com.zeddihub.mobile.R
 import com.zeddihub.mobile.data.reminders.ComparisonOp
 import com.zeddihub.mobile.data.reminders.Reminder
+import com.zeddihub.mobile.data.reminders.ReminderActivator
 import com.zeddihub.mobile.data.reminders.ReminderScheduler
 import com.zeddihub.mobile.data.reminders.ReminderStore
 import com.zeddihub.mobile.data.reminders.ReminderTrigger
@@ -77,6 +79,7 @@ import javax.inject.Inject
 class SmartRemindersViewModel @Inject constructor(
     private val store: ReminderStore,
     private val scheduler: ReminderScheduler,
+    private val activator: ReminderActivator,
 ) : ViewModel() {
 
     private val _items = MutableStateFlow<List<Reminder>>(emptyList())
@@ -92,21 +95,32 @@ class SmartRemindersViewModel @Inject constructor(
     fun upsert(r: Reminder) {
         viewModelScope.launch {
             store.upsert(r)
+            // Time triggers go to the alarm scheduler; everything else
+            // (geofence/wifi/bt/weather) goes to the activator. Calling
+            // both is safe: each is a no-op when the trigger isn't its
+            // kind.
             scheduler.reschedule(r)
+            activator.reschedule(r)
         }
     }
 
     fun delete(id: String) {
         viewModelScope.launch {
+            // We need the trigger kind to know what subsystem to clean up,
+            // so look the rule up *before* we remove it from the store.
+            val rule = store.load().firstOrNull { it.id == id }
             scheduler.cancel(id)
+            activator.cancel(id, rule?.trigger)
             store.remove(id)
         }
     }
 
     fun toggle(r: Reminder) {
         viewModelScope.launch {
-            store.setEnabled(r.id, !r.enabled)
-            scheduler.reschedule(r.copy(enabled = !r.enabled))
+            val flipped = r.copy(enabled = !r.enabled)
+            store.setEnabled(r.id, flipped.enabled)
+            scheduler.reschedule(flipped)
+            activator.reschedule(flipped)
         }
     }
 }
@@ -267,6 +281,7 @@ private fun triggerSummary(t: ReminderTrigger): String = when (t) {
 
 // ── Editor dialog ───────────────────────────────────────────────────
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ReminderEditor(
     initial: Reminder?,
@@ -302,6 +317,35 @@ private fun ReminderEditor(
     var daysMask by remember { mutableStateOf(weekly?.daysMask ?: 0b1111100) } // Mo-Fr default
     var minuteOfDay by remember { mutableStateOf(weekly?.minuteOfDay ?: (8 * 60)) }
 
+    // Geofence fields
+    val geo = initial?.trigger as? ReminderTrigger.Geofence
+    var geoLat by remember { mutableStateOf(geo?.lat ?: 50.0755) }
+    var geoLng by remember { mutableStateOf(geo?.lng ?: 14.4378) }
+    var geoRadius by remember { mutableStateOf(geo?.radiusM ?: 200f) }
+    var geoOnEnter by remember { mutableStateOf(geo?.onEnter ?: true) }
+    var geoOnExit by remember { mutableStateOf(geo?.onExit ?: false) }
+
+    // WiFi fields
+    val wifi = initial?.trigger as? ReminderTrigger.WifiSsid
+    var wifiSsid by remember { mutableStateOf(wifi?.ssid ?: "") }
+    var wifiOnConnect by remember { mutableStateOf(wifi?.onConnect ?: true) }
+    var wifiOnDisconnect by remember { mutableStateOf(wifi?.onDisconnect ?: false) }
+
+    // Bluetooth fields
+    val bt = initial?.trigger as? ReminderTrigger.BluetoothDevice
+    var btAddress by remember { mutableStateOf(bt?.address ?: "") }
+    var btName by remember { mutableStateOf(bt?.name ?: "") }
+    var btOnConnect by remember { mutableStateOf(bt?.onConnect ?: true) }
+    var btOnDisconnect by remember { mutableStateOf(bt?.onDisconnect ?: false) }
+
+    // Weather fields
+    val wx = initial?.trigger as? ReminderTrigger.Weather
+    var wxLat by remember { mutableStateOf(wx?.lat ?: 50.0755) }
+    var wxLng by remember { mutableStateOf(wx?.lng ?: 14.4378) }
+    var wxCondition by remember { mutableStateOf(wx?.condition ?: WeatherCondition.TEMP_C) }
+    var wxOp by remember { mutableStateOf(wx?.operator ?: ComparisonOp.GREATER_THAN) }
+    var wxThreshold by remember { mutableStateOf(wx?.threshold ?: 25f) }
+
     AlertDialog(
         onDismissRequest = onCancel,
         title = { Text(stringResource(if (initial == null) R.string.reminder_new else R.string.reminder_edit)) },
@@ -310,10 +354,20 @@ private fun ReminderEditor(
                 val trigger = when (kind) {
                     Kind.ONESHOT -> ReminderTrigger.TimeAt(atEpoch)
                     Kind.WEEKLY -> ReminderTrigger.TimeWeekly(daysMask, minuteOfDay)
-                    // Other kinds — UI editor in v0.9.0; for now we keep
-                    // the existing trigger if editing or fall back to a
-                    // safe one-shot default if creating.
-                    else -> initial?.trigger ?: ReminderTrigger.TimeAt(atEpoch)
+                    Kind.GEOFENCE -> ReminderTrigger.Geofence(
+                        geoLat, geoLng, geoRadius.coerceAtLeast(50f),
+                        geoOnEnter, geoOnExit
+                    )
+                    Kind.WIFI -> ReminderTrigger.WifiSsid(
+                        wifiSsid.trim(), wifiOnConnect, wifiOnDisconnect
+                    )
+                    Kind.BLUETOOTH -> ReminderTrigger.BluetoothDevice(
+                        btAddress.trim().uppercase(), btName.trim(),
+                        btOnConnect, btOnDisconnect
+                    )
+                    Kind.WEATHER -> ReminderTrigger.Weather(
+                        wxLat, wxLng, wxCondition, wxOp, wxThreshold
+                    )
                 }
                 onSave(
                     Reminder(
@@ -350,9 +404,14 @@ private fun ReminderEditor(
 
                 Text(stringResource(R.string.reminder_trigger_label),
                     style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
-                // Kind picker
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Kind.values().take(2).forEach { k -> // Only OneShot + Weekly active in v0.8.0
+                // Kind picker — all six kinds active from v1.8.5 onward.
+                // The dialog scrolls vertically because six trigger UIs
+                // can stack tall (Geofence + Weather both render lat/lng
+                // sliders and a condition row).
+                androidx.compose.foundation.layout.FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    Kind.values().forEach { k ->
                         FilterChip(
                             selected = kind == k,
                             onClick = { kind = k },
@@ -360,18 +419,38 @@ private fun ReminderEditor(
                         )
                     }
                 }
-                Text(
-                    stringResource(R.string.reminder_other_kinds_v090),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
 
                 when (kind) {
                     Kind.ONESHOT -> OneShotEditor(atEpoch) { atEpoch = it }
                     Kind.WEEKLY -> WeeklyEditor(daysMask, minuteOfDay) { mask, m ->
                         daysMask = mask; minuteOfDay = m
                     }
-                    else -> {}
+                    Kind.GEOFENCE -> GeofenceEditor(
+                        lat = geoLat, lng = geoLng, radius = geoRadius,
+                        onEnter = geoOnEnter, onExit = geoOnExit,
+                        onChange = { lat, lng, r, e, x ->
+                            geoLat = lat; geoLng = lng; geoRadius = r
+                            geoOnEnter = e; geoOnExit = x
+                        }
+                    )
+                    Kind.WIFI -> WifiEditor(
+                        ssid = wifiSsid, onConn = wifiOnConnect, onDisc = wifiOnDisconnect,
+                        onChange = { s, c, d -> wifiSsid = s; wifiOnConnect = c; wifiOnDisconnect = d }
+                    )
+                    Kind.BLUETOOTH -> BluetoothEditor(
+                        address = btAddress, name = btName,
+                        onConn = btOnConnect, onDisc = btOnDisconnect,
+                        onChange = { a, n, c, d ->
+                            btAddress = a; btName = n; btOnConnect = c; btOnDisconnect = d
+                        }
+                    )
+                    Kind.WEATHER -> WeatherEditor(
+                        lat = wxLat, lng = wxLng,
+                        condition = wxCondition, op = wxOp, threshold = wxThreshold,
+                        onChange = { lat, lng, c, o, t ->
+                            wxLat = lat; wxLng = lng; wxCondition = c; wxOp = o; wxThreshold = t
+                        }
+                    )
                 }
             }
         }
@@ -453,4 +532,208 @@ private enum class Kind(val labelRes: Int) {
     WIFI(R.string.reminder_kind_wifi),
     BLUETOOTH(R.string.reminder_kind_bt),
     WEATHER(R.string.reminder_kind_weather),
+}
+
+// ── New trigger editors ────────────────────────────────────────────
+
+@Composable
+private fun GeofenceEditor(
+    lat: Double, lng: Double, radius: Float,
+    onEnter: Boolean, onExit: Boolean,
+    onChange: (Double, Double, Float, Boolean, Boolean) -> Unit
+) {
+    var latText by remember(lat) { mutableStateOf("%.5f".format(lat)) }
+    var lngText by remember(lng) { mutableStateOf("%.5f".format(lng)) }
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedTextField(
+                value = latText,
+                onValueChange = {
+                    latText = it
+                    it.toDoubleOrNull()?.let { v -> onChange(v, lng, radius, onEnter, onExit) }
+                },
+                label = { Text("Lat") },
+                modifier = Modifier.weight(1f)
+            )
+            OutlinedTextField(
+                value = lngText,
+                onValueChange = {
+                    lngText = it
+                    it.toDoubleOrNull()?.let { v -> onChange(lat, v, radius, onEnter, onExit) }
+                },
+                label = { Text("Lng") },
+                modifier = Modifier.weight(1f)
+            )
+        }
+        Text("Radius: ${radius.toInt()} m",
+            style = MaterialTheme.typography.bodyMedium)
+        androidx.compose.material3.Slider(
+            value = radius,
+            onValueChange = { onChange(lat, lng, it, onEnter, onExit) },
+            valueRange = 50f..2000f,
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            FilterChip(
+                selected = onEnter,
+                onClick = { onChange(lat, lng, radius, !onEnter, onExit) },
+                label = { Text(stringResource(R.string.reminder_geo_on_enter)) }
+            )
+            FilterChip(
+                selected = onExit,
+                onClick = { onChange(lat, lng, radius, onEnter, !onExit) },
+                label = { Text(stringResource(R.string.reminder_geo_on_exit)) }
+            )
+        }
+        Text(
+            stringResource(R.string.reminder_geo_perm_note),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+private fun WifiEditor(
+    ssid: String, onConn: Boolean, onDisc: Boolean,
+    onChange: (String, Boolean, Boolean) -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        OutlinedTextField(
+            value = ssid,
+            onValueChange = { onChange(it, onConn, onDisc) },
+            label = { Text("SSID") },
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            FilterChip(
+                selected = onConn,
+                onClick = { onChange(ssid, !onConn, onDisc) },
+                label = { Text(stringResource(R.string.reminder_wifi_on_connect)) }
+            )
+            FilterChip(
+                selected = onDisc,
+                onClick = { onChange(ssid, onConn, !onDisc) },
+                label = { Text(stringResource(R.string.reminder_wifi_on_disconnect)) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun BluetoothEditor(
+    address: String, name: String,
+    onConn: Boolean, onDisc: Boolean,
+    onChange: (String, String, Boolean, Boolean) -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        OutlinedTextField(
+            value = name,
+            onValueChange = { onChange(address, it, onConn, onDisc) },
+            label = { Text(stringResource(R.string.reminder_bt_name)) },
+            modifier = Modifier.fillMaxWidth(),
+        )
+        OutlinedTextField(
+            value = address,
+            onValueChange = { onChange(it, name, onConn, onDisc) },
+            label = { Text(stringResource(R.string.reminder_bt_address)) },
+            placeholder = { Text("AA:BB:CC:DD:EE:FF") },
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            FilterChip(
+                selected = onConn,
+                onClick = { onChange(address, name, !onConn, onDisc) },
+                label = { Text(stringResource(R.string.reminder_bt_on_connect)) }
+            )
+            FilterChip(
+                selected = onDisc,
+                onClick = { onChange(address, name, onConn, !onDisc) },
+                label = { Text(stringResource(R.string.reminder_bt_on_disconnect)) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun WeatherEditor(
+    lat: Double, lng: Double,
+    condition: WeatherCondition, op: ComparisonOp, threshold: Float,
+    onChange: (Double, Double, WeatherCondition, ComparisonOp, Float) -> Unit
+) {
+    var latText by remember(lat) { mutableStateOf("%.5f".format(lat)) }
+    var lngText by remember(lng) { mutableStateOf("%.5f".format(lng)) }
+    var thrText by remember(threshold) { mutableStateOf("%.1f".format(threshold)) }
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedTextField(
+                value = latText,
+                onValueChange = {
+                    latText = it
+                    it.toDoubleOrNull()?.let { v -> onChange(v, lng, condition, op, threshold) }
+                },
+                label = { Text("Lat") },
+                modifier = Modifier.weight(1f)
+            )
+            OutlinedTextField(
+                value = lngText,
+                onValueChange = {
+                    lngText = it
+                    it.toDoubleOrNull()?.let { v -> onChange(lat, v, condition, op, threshold) }
+                },
+                label = { Text("Lng") },
+                modifier = Modifier.weight(1f)
+            )
+        }
+        // Condition picker
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            WeatherCondition.values().forEach { c ->
+                FilterChip(
+                    selected = condition == c,
+                    onClick = { onChange(lat, lng, c, op, threshold) },
+                    label = { Text(c.shortLabel()) }
+                )
+            }
+        }
+        // Operator picker
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            FilterChip(
+                selected = op == ComparisonOp.GREATER_THAN,
+                onClick = { onChange(lat, lng, condition, ComparisonOp.GREATER_THAN, threshold) },
+                label = { Text("> ${stringResource(R.string.reminder_wx_greater)}") }
+            )
+            FilterChip(
+                selected = op == ComparisonOp.LESS_THAN,
+                onClick = { onChange(lat, lng, condition, ComparisonOp.LESS_THAN, threshold) },
+                label = { Text("< ${stringResource(R.string.reminder_wx_less)}") }
+            )
+        }
+        OutlinedTextField(
+            value = thrText,
+            onValueChange = {
+                thrText = it
+                it.toFloatOrNull()?.let { v -> onChange(lat, lng, condition, op, v) }
+            },
+            label = { Text(stringResource(R.string.reminder_wx_threshold) + " (${condition.unit()})") },
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Text(
+            stringResource(R.string.reminder_wx_note),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+private fun WeatherCondition.shortLabel() = when (this) {
+    WeatherCondition.TEMP_C -> "🌡 °C"
+    WeatherCondition.RAIN_MM -> "🌧 mm"
+    WeatherCondition.WIND_KMH -> "💨 km/h"
+    WeatherCondition.HUMIDITY_PCT -> "💧 %"
+}
+
+private fun WeatherCondition.unit() = when (this) {
+    WeatherCondition.TEMP_C -> "°C"
+    WeatherCondition.RAIN_MM -> "mm"
+    WeatherCondition.WIND_KMH -> "km/h"
+    WeatherCondition.HUMIDITY_PCT -> "%"
 }

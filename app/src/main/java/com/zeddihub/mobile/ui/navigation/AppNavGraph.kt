@@ -16,6 +16,7 @@ import com.zeddihub.mobile.ui.common.DetailShell
 import com.zeddihub.mobile.ui.community.CommunityScreen
 import com.zeddihub.mobile.ui.helpers.AgeCalculatorScreen
 import com.zeddihub.mobile.ui.helpers.BatteryInfoScreen
+import com.zeddihub.mobile.ui.helpers.BluetoothAdvertiseScreen
 import com.zeddihub.mobile.ui.helpers.BluetoothToolsScreen
 import com.zeddihub.mobile.ui.helpers.BubbleLevelScreen
 import com.zeddihub.mobile.ui.helpers.CallRecorderScreen
@@ -300,6 +301,9 @@ fun AppNavGraph(
         }
         detail(Destinations.CallRecorder.route, R.string.nav_call_recorder, navController) { padding ->
             CallRecorderScreen(padding = padding)
+        }
+        detail(Destinations.BluetoothAdvertise.route, R.string.nav_bt_advertise, navController) { padding ->
+            BluetoothAdvertiseScreen(padding = padding)
         }
 
         // ── Account detail screens ────────────────────────────────────────

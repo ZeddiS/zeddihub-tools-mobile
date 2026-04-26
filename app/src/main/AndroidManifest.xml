@@ -78,6 +78,17 @@
         android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <!--
+      v1.8.5 — extended Smart Reminders triggers.
+      • ACCESS_BACKGROUND_LOCATION needed for geofence reminders to fire
+        while the app isn't in the foreground (API 29+).
+      • BLUETOOTH_ADVERTISE for the new BT advertising sub-tool.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"
+        tools:targetApi="q" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"
+        tools:targetApi="s" />
+
     <!-- Flashlight -->
     <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
@@ -177,6 +188,34 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
+
+        <!-- v1.8.5: Geofence transitions are delivered via this receiver
+             whenever the device crosses any of the registered fences. -->
+        <receiver
+            android:name="com.zeddihub.mobile.data.reminders.ReminderGeofenceReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.zeddihub.mobile.REMINDER_GEOFENCE" />
+            </intent-filter>
+        </receiver>
+
+        <!--
+          We provide our own WorkManager Configuration via
+          ZeddiHubApp.workManagerConfiguration so HiltWorkerFactory can
+          inject dependencies into ReminderWeatherWorker. Disabling the
+          default initialiser is mandatory — otherwise WorkManager spins
+          up first with a no-arg factory and our config never runs.
+        -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -78,6 +78,8 @@ sealed class Destinations(val route: String) {
     data object VoiceChanger : Destinations("help/voice")
     data object MultiRemote : Destinations("help/remote")
     data object CallRecorder : Destinations("help/call_recorder")
+    // ── v1.8.5 helpers ────────────────────────────────────────────────────
+    data object BluetoothAdvertise : Destinations("help/bt_advertise")
 
     // ── Account detail screens (Účet tab) ─────────────────────────────────
     data object Profile : Destinations("profile")
