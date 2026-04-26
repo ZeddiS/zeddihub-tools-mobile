@@ -167,14 +167,9 @@ fun LicensePlateScreen(padding: PaddingValues) {
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.SemiBold
         )
-        DistrictTable(
-            country = LicensePlateData.Country.CZ,
-            rows = LicensePlateData.CZ
-        )
-        DistrictTable(
-            country = LicensePlateData.Country.SK,
-            rows = LicensePlateData.SK
-        )
+        for ((country, rows) in LicensePlateData.ALL_TABLES) {
+            DistrictTable(country = country, rows = rows)
+        }
     }
 }
 

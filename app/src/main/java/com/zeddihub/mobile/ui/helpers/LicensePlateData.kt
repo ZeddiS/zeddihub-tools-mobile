@@ -29,6 +29,11 @@ object LicensePlateData {
     enum class Country(val flag: String, val label: String) {
         CZ("🇨🇿", "Česko"),
         SK("🇸🇰", "Slovensko"),
+        DE("🇩🇪", "Německo"),
+        AT("🇦🇹", "Rakousko"),
+        PL("🇵🇱", "Polsko"),
+        HU("🇭🇺", "Maďarsko"),
+        SI("🇸🇮", "Slovinsko"),
     }
 
     /**
@@ -248,11 +253,180 @@ object LicensePlateData {
         PlateRegion(code, Country.SK, district, region)
 
     /**
+     * Top-50 German "Unterscheidungszeichen" (district / city codes).
+     * The full set is ~700 — we ship the highest-population subset
+     * which covers ~90 % of plates a CZ/SK driver would see in the
+     * wild. Codes can be 1, 2 or 3 characters.
+     */
+    val DE: List<PlateRegion> = listOf(
+        d("B",  "Berlín",                "Berlin"),
+        d("M",  "Mnichov",               "Bayern"),
+        d("HH", "Hamburk",                "Hamburg"),
+        d("K",  "Kolín nad Rýnem",        "Nordrhein-Westfalen"),
+        d("F",  "Frankfurt n. Mohanem",   "Hessen"),
+        d("S",  "Stuttgart",              "Baden-Württemberg"),
+        d("D",  "Düsseldorf",             "Nordrhein-Westfalen"),
+        d("L",  "Lipsko",                 "Sachsen"),
+        d("DD", "Drážďany",               "Sachsen"),
+        d("H",  "Hannover",               "Niedersachsen"),
+        d("HB", "Brémy",                  "Bremen"),
+        d("N",  "Norimberk",              "Bayern"),
+        d("E",  "Essen",                  "Nordrhein-Westfalen"),
+        d("DO", "Dortmund",               "Nordrhein-Westfalen"),
+        d("DU", "Duisburg",               "Nordrhein-Westfalen"),
+        d("BO", "Bochum",                 "Nordrhein-Westfalen"),
+        d("WUP","Wuppertal",              "Nordrhein-Westfalen"),
+        d("BN", "Bonn",                   "Nordrhein-Westfalen"),
+        d("MS", "Münster",                "Nordrhein-Westfalen"),
+        d("KA", "Karlsruhe",              "Baden-Württemberg"),
+        d("MA", "Mannheim",               "Baden-Württemberg"),
+        d("FR", "Freiburg",               "Baden-Württemberg"),
+        d("UL", "Ulm",                    "Baden-Württemberg"),
+        d("HD", "Heidelberg",             "Baden-Württemberg"),
+        d("A",  "Augsburg",               "Bayern"),
+        d("R",  "Regensburg",             "Bayern"),
+        d("WÜ", "Würzburg",               "Bayern"),
+        d("IN", "Ingolstadt",             "Bayern"),
+        d("KL", "Kaiserslautern",         "Rheinland-Pfalz"),
+        d("MZ", "Mainz",                  "Rheinland-Pfalz"),
+        d("KO", "Koblenz",                "Rheinland-Pfalz"),
+        d("TR", "Trier",                  "Rheinland-Pfalz"),
+        d("SB", "Saarbrücken",            "Saarland"),
+        d("KI", "Kiel",                   "Schleswig-Holstein"),
+        d("LÜ", "Lübeck",                 "Schleswig-Holstein"),
+        d("OS", "Osnabrück",              "Niedersachsen"),
+        d("BS", "Braunschweig",           "Niedersachsen"),
+        d("OL", "Oldenburg",              "Niedersachsen"),
+        d("MD", "Magdeburg",              "Sachsen-Anhalt"),
+        d("HAL","Halle",                  "Sachsen-Anhalt"),
+        d("ERF","Erfurt",                 "Thüringen"),
+        d("J",  "Jena",                   "Thüringen"),
+        d("C",  "Chemnitz",               "Sachsen"),
+        d("RO", "Rostock",                "Mecklenburg-Vorpommern"),
+        d("HRO","Rostock (alt)",          "Mecklenburg-Vorpommern"),
+        d("P",  "Potsdam",                "Brandenburg"),
+        d("BB", "Brandenburg n.H.",       "Brandenburg"),
+        d("FF", "Frankfurt n. Odrou",     "Brandenburg"),
+        d("CB", "Cottbus",                "Brandenburg"),
+        d("PA", "Pasov",                  "Bayern"),
+    )
+
+    /** Top Austrian Bezirkscodes — 2-letter prefix on most plates. */
+    val AT: List<PlateRegion> = listOf(
+        a("W",  "Vídeň",        "Wien"),
+        a("L",  "Linz",         "Oberösterreich"),
+        a("G",  "Štýrský Hradec","Steiermark"),
+        a("S",  "Salzburg",     "Salzburg"),
+        a("I",  "Innsbruck",    "Tirol"),
+        a("KL", "Klagenfurt",   "Kärnten"),
+        a("VB", "Vöcklabruck",  "Oberösterreich"),
+        a("WL", "Wels",         "Oberösterreich"),
+        a("SR", "Steyr",        "Oberösterreich"),
+        a("BR", "Braunau",      "Oberösterreich"),
+        a("ST", "Steyr-Land",   "Oberösterreich"),
+        a("GU", "Štýrský Hradec-okolí", "Steiermark"),
+        a("LB", "Leibnitz",     "Steiermark"),
+        a("VK", "Völkermarkt",  "Kärnten"),
+        a("VL", "Villach",      "Kärnten"),
+        a("MA", "Mattersburg",  "Burgenland"),
+        a("EU", "Eisenstadt",   "Burgenland"),
+        a("OP", "Oberpullendorf","Burgenland"),
+        a("KR", "Krems",        "Niederösterreich"),
+        a("WN", "Wiener Neustadt","Niederösterreich"),
+        a("AM", "Amstetten",    "Niederösterreich"),
+        a("SL", "Salzburg-okolí","Salzburg"),
+        a("ZE", "Zell am See",  "Salzburg"),
+        a("BL", "Bludenz",      "Vorarlberg"),
+        a("FK", "Feldkirch",    "Vorarlberg"),
+        a("KU", "Kufstein",     "Tirol"),
+        a("LZ", "Lienz",        "Tirol"),
+    )
+
+    /**
+     * Polish two-letter voivodeship codes — first letter identifies the
+     * voivodeship, second the powiat (county). We map the voivodeship
+     * letter only, since per-powiat is ~380 entries; this is enough to
+     * answer "this plate is from Mazowsze / Małopolska / etc.".
+     */
+    val PL: List<PlateRegion> = listOf(
+        l("W", "Mazovské vojvodství (Varšava)", "Mazowieckie"),
+        l("K", "Malopolské vojvodství (Krakov)", "Małopolskie"),
+        l("D", "Dolnoslezské vojvodství (Vratislav)", "Dolnośląskie"),
+        l("F", "Lubušské vojvodství", "Lubuskie"),
+        l("E", "Lodžské vojvodství", "Łódzkie"),
+        l("B", "Podleské vojvodství", "Podlaskie"),
+        l("C", "Kujavsko-pomořské vojvodství", "Kujawsko-pomorskie"),
+        l("G", "Pomořské vojvodství (Gdaňsk)", "Pomorskie"),
+        l("L", "Lublinské vojvodství", "Lubelskie"),
+        l("N", "Varminsko-mazurské vojvodství", "Warmińsko-mazurskie"),
+        l("O", "Opolské vojvodství", "Opolskie"),
+        l("P", "Velkopolské vojvodství (Poznaň)", "Wielkopolskie"),
+        l("R", "Podkarpatské vojvodství", "Podkarpackie"),
+        l("S", "Slezské vojvodství (Katovice)", "Śląskie"),
+        l("T", "Svatokřížské vojvodství", "Świętokrzyskie"),
+        l("Z", "Západopomořanské vojvodství", "Zachodniopomorskie"),
+    )
+
+    /** Hungarian county codes (post-2022 letter pair format). */
+    val HU: List<PlateRegion> = listOf(
+        u("AA", "Budapešť", "Közép-Magyarország"),
+        u("AB", "Pest",     "Közép-Magyarország"),
+        u("AC", "Bács-Kiskun", "Dél-Alföld"),
+        u("AD", "Békés",    "Dél-Alföld"),
+        u("AE", "Csongrád-Csanád","Dél-Alföld"),
+        u("AF", "Hajdú-Bihar","Észak-Alföld"),
+        u("AG", "Jász-Nagykun-Szolnok","Észak-Alföld"),
+        u("AH", "Szabolcs-Szatmár-Bereg","Észak-Alföld"),
+        u("AI", "Borsod-Abaúj-Zemplén","Észak-Magyarország"),
+        u("AJ", "Heves",    "Észak-Magyarország"),
+        u("AK", "Nógrád",   "Észak-Magyarország"),
+        u("AL", "Komárom-Esztergom","Közép-Dunántúl"),
+        u("AM", "Fejér",    "Közép-Dunántúl"),
+        u("AN", "Veszprém", "Közép-Dunántúl"),
+        u("AO", "Győr-Moson-Sopron","Nyugat-Dunántúl"),
+        u("AP", "Vas",      "Nyugat-Dunántúl"),
+        u("AR", "Zala",     "Nyugat-Dunántúl"),
+        u("AS", "Baranya",  "Dél-Dunántúl"),
+        u("AT", "Somogy",   "Dél-Dunántúl"),
+        u("AU", "Tolna",    "Dél-Dunántúl"),
+    )
+
+    /** Slovenian district codes — 2-letter prefix on plates. */
+    val SI: List<PlateRegion> = listOf(
+        v("LJ", "Lublaň",     "Osrednjeslovenska"),
+        v("MB", "Maribor",    "Podravska"),
+        v("CE", "Celje",      "Savinjska"),
+        v("KP", "Koper",      "Obalno-kraška"),
+        v("KK", "Krško",      "Posavska"),
+        v("KR", "Kranj",      "Gorenjska"),
+        v("MS", "Murska Sobota","Pomurska"),
+        v("NM", "Novo Mesto", "Jugovzhodna Slovenija"),
+        v("PO", "Postojna",   "Primorsko-notranjska"),
+        v("SG", "Slovenj Gradec","Koroška"),
+        v("GO", "Nova Gorica","Goriška"),
+    )
+
+    private fun d(code: String, district: String, region: String) =
+        PlateRegion(code, Country.DE, district, region)
+    private fun a(code: String, district: String, region: String) =
+        PlateRegion(code, Country.AT, district, region)
+    private fun l(code: String, district: String, region: String) =
+        PlateRegion(code, Country.PL, district, region)
+    private fun u(code: String, district: String, region: String) =
+        PlateRegion(code, Country.HU, district, region)
+    private fun v(code: String, district: String, region: String) =
+        PlateRegion(code, Country.SI, district, region)
+
+    /**
      * Try to interpret a raw plate string and return the best-match
      * region. We strip whitespace and dashes, uppercase, then:
      *   1. CZ post-2001: position 1..2 = district code (1AB 1234)
      *   2. CZ pre-2001: position 0..1 (UA 12-34)
      *   3. SK: position 0..1 (BA 123 XY)
+     *   4. DE: 1, 2 or 3 leading letters (B, M / HD, KA / WUP)
+     *   5. AT: 1 or 2 leading letters (W, KL, WN…)
+     *   6. PL: single leading letter for voivodeship
+     *   7. HU / SI: 2 leading letters
      * The result includes the country detected and the matched district.
      * Returns null if nothing matches — caller can show "unknown" UI.
      */
@@ -267,17 +441,47 @@ object LicensePlateData {
             CZ.firstOrNull { it.code == code }?.let { return it }
         }
 
-        // CZ pre-2001 / SK: 2 letters at start
+        // CZ pre-2001 / SK / EU 2-letter: 2 letters at start
         if (cleaned[0].isLetter() && cleaned[1].isLetter()) {
-            val code = cleaned.substring(0, 2)
-            // Slovak first because SK plates are unique 2-letter codes
-            // and CZ pre-2001 codes overlap with current SK codes (e.g.
-            // KE = both Kutná Hora old CZ and Košice). For modern plates
-            // the SK match is overwhelmingly the right call.
-            SK.firstOrNull { it.code == code }?.let { return it }
-            CZ.firstOrNull { it.code == code }?.let { return it }
+            val code2 = cleaned.substring(0, 2)
+            // SK first — modern SK plates are unique 2-letter codes and
+            // any overlap with old CZ codes (KE = Kutná Hora vs Košice)
+            // is overwhelmingly SK in practice.
+            SK.firstOrNull { it.code == code2 }?.let { return it }
+            CZ.firstOrNull { it.code == code2 }?.let { return it }
+            // Try 3-letter DE codes first (longest match wins) before
+            // falling back to 2-letter so "WUP" doesn't match "WU" by
+            // accident.
+            if (cleaned.length >= 3 && cleaned[2].isLetter()) {
+                val code3 = cleaned.substring(0, 3)
+                DE.firstOrNull { it.code == code3 }?.let { return it }
+            }
+            DE.firstOrNull { it.code == code2 }?.let { return it }
+            AT.firstOrNull { it.code == code2 }?.let { return it }
+            HU.firstOrNull { it.code == code2 }?.let { return it }
+            SI.firstOrNull { it.code == code2 }?.let { return it }
+        }
+
+        // Single-letter prefix: DE 1-letter (B, M, K, …) and PL.
+        // Order: DE first since it's the more common single-letter
+        // pattern in the wild around CZ borders.
+        if (cleaned[0].isLetter()) {
+            val code1 = cleaned.substring(0, 1)
+            DE.firstOrNull { it.code == code1 }?.let { return it }
+            PL.firstOrNull { it.code == code1 }?.let { return it }
         }
 
         return null
     }
+
+    /** All region tables in display order — used by the browse UI. */
+    val ALL_TABLES: List<Pair<Country, List<PlateRegion>>> = listOf(
+        Country.CZ to CZ,
+        Country.SK to SK,
+        Country.DE to DE,
+        Country.AT to AT,
+        Country.PL to PL,
+        Country.HU to HU,
+        Country.SI to SI,
+    )
 }

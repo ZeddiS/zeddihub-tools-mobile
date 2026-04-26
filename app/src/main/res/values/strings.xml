@@ -1223,7 +1223,7 @@
     <!-- License Plate (v0.7.8) -->
     <string name="nav_license_plate">SPZ podle zkratky</string>
     <string name="lp_title">SPZ podle zkratky</string>
-    <string name="lp_body">Napiš celou SPZ nebo jen zkratku okresu (CZ post-2001 i pre-2001 + SK). Nebo namiř fotoaparát na poznávací značku — ML Kit text recognition ji vyhledá.</string>
+    <string name="lp_body">Napiš celou SPZ nebo jen zkratku okresu — CZ (post-2001 i pre-2001), SK, DE, AT, PL, HU a SI. Nebo namiř fotoaparát na značku, ML Kit text recognition ji vyhledá automaticky.</string>
     <string name="lp_input_label">SPZ nebo zkratka</string>
     <string name="lp_open_camera">Skenovat fotoaparátem</string>
     <string name="lp_close_camera">Vypnout kameru</string>

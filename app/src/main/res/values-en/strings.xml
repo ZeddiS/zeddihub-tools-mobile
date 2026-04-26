@@ -1182,7 +1182,7 @@
     <!-- License Plate (v0.7.8) -->
     <string name="nav_license_plate">License plate lookup</string>
     <string name="lp_title">License plate lookup</string>
-    <string name="lp_body">Type the full plate or just the district code (CZ post-2001 + pre-2001 + SK). Or aim the camera at a plate — ML Kit text recognition picks it up.</string>
+    <string name="lp_body">Type the full plate or just the district code — CZ (post-2001 + pre-2001), SK, DE, AT, PL, HU and SI supported. Or aim the camera at a plate; ML Kit text recognition picks it up automatically.</string>
     <string name="lp_input_label">Plate or code</string>
     <string name="lp_open_camera">Scan with camera</string>
     <string name="lp_close_camera">Close camera</string>
