@@ -28,8 +28,8 @@ android {
         applicationId = "com.zeddihub.mobile"
         minSdk = 26
         targetSdk = 34
-        versionCode = 26
-        versionName = "0.7.8"
+        versionCode = 27
+        versionName = "0.7.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
