@@ -81,6 +81,10 @@ sealed class Destinations(val route: String) {
     // ── v1.8.5 helpers ────────────────────────────────────────────────────
     data object BluetoothAdvertise : Destinations("help/bt_advertise")
 
+    // ── v0.7.8 helpers ────────────────────────────────────────────────────
+    data object LicensePlate : Destinations("help/license_plate")
+    data object PrankTools : Destinations("help/prank")
+
     // ── Account detail screens (Účet tab) ─────────────────────────────────
     data object Profile : Destinations("profile")
     data object Notifications : Destinations("notifications")

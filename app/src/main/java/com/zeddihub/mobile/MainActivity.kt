@@ -1,5 +1,6 @@
 package com.zeddihub.mobile
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -17,6 +18,7 @@ import com.zeddihub.mobile.data.local.AppPreferences
 import com.zeddihub.mobile.data.local.LanguageCode
 import com.zeddihub.mobile.data.local.ThemeMode
 import com.zeddihub.mobile.data.repository.AuthRepository
+import com.zeddihub.mobile.data.share.ShareInbox
 import com.zeddihub.mobile.data.telemetry.TelemetryRecorder
 import com.zeddihub.mobile.data.update.UpdateChecker
 import com.zeddihub.mobile.ui.common.AppLockState
@@ -57,6 +59,14 @@ class MainActivity : AppCompatActivity() {
 
         sessionStartNs = System.nanoTime()
         telemetry.sessionStart()
+
+        // Catch a Share intent on cold start. Anything coming from
+        // TikTok / YouTube / browser "Share" sheets lands as ACTION_SEND
+        // with a single text/plain URL. We stash it in ShareInbox so
+        // the nav graph can route to the Video Downloader screen with
+        // the URL pre-filled. onNewIntent below covers the warm path
+        // (singleTask launchMode keeps re-using this activity).
+        handleShareIntent(intent)
 
         // Only lock on a genuine cold start. Configuration changes
         // (e.g. rotation) keep the existing unlocked state.
@@ -153,6 +163,33 @@ class MainActivity : AppCompatActivity() {
         val elapsed = (System.nanoTime() - sessionStartNs) / 1_000_000L
         telemetry.sessionEnd(elapsed)
         super.onDestroy()
+    }
+
+    /**
+     * Warm-restart Share intent handler. launchMode="singleTask" routes
+     * a second SEND through this method instead of starting a fresh
+     * activity, so we re-call setIntent + drain into ShareInbox so the
+     * nav graph picks the URL up.
+     */
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleShareIntent(intent)
+    }
+
+    private fun handleShareIntent(intent: Intent?) {
+        if (intent?.action != Intent.ACTION_SEND) return
+        if (intent.type != "text/plain") return
+        val text = intent.getStringExtra(Intent.EXTRA_TEXT)?.trim().orEmpty()
+        if (text.isEmpty()) return
+        // Some apps share a caption + URL on separate lines (TikTok in
+        // particular). Pick the first http(s) token so we don't try to
+        // download the caption.
+        val url = text.lineSequence()
+            .map { it.trim() }
+            .firstOrNull { it.startsWith("http://") || it.startsWith("https://") }
+            ?: return
+        ShareInbox.submit(url)
     }
 
     companion object {

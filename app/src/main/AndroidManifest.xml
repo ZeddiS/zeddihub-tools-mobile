@@ -162,6 +162,17 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!--
+              Share intent — receive a URL from another app's "Share" sheet
+              (TikTok, YouTube, browser, etc.). We accept text/plain and
+              MainActivity routes the contained URL to the Video Downloader
+              screen via ShareInbox.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
         </activity>
 
         <!--

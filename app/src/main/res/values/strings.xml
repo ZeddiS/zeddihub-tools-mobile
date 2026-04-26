@@ -679,6 +679,8 @@
     <!-- Video Downloader -->
     <string name="nav_video_downloader">Stahování videí</string>
     <string name="video_dl_url_hint">URL z YouTube, Instagram, TikTok, X, Reddit…</string>
+    <string name="video_dl_paste">Vložit ze schránky</string>
+    <string name="video_dl_starting">Stahuje se…</string>
     <string name="video_dl_fetch">Získat odkaz</string>
     <string name="video_dl_download">Stáhnout</string>
     <string name="video_dl_save_as">Uložit jako</string>
@@ -1217,4 +1219,40 @@
     <string name="btad_stop">Zastavit</string>
     <string name="btad_running">Vysílám…</string>
     <string name="btad_error">Chyba: %1$s</string>
+
+    <!-- License Plate (v0.7.8) -->
+    <string name="nav_license_plate">SPZ podle zkratky</string>
+    <string name="lp_title">SPZ podle zkratky</string>
+    <string name="lp_body">Napiš celou SPZ nebo jen zkratku okresu (CZ post-2001 i pre-2001 + SK). Nebo namiř fotoaparát na poznávací značku — ML Kit text recognition ji vyhledá.</string>
+    <string name="lp_input_label">SPZ nebo zkratka</string>
+    <string name="lp_open_camera">Skenovat fotoaparátem</string>
+    <string name="lp_close_camera">Vypnout kameru</string>
+    <string name="lp_clear">Smazat</string>
+    <string name="lp_no_match">Tahle zkratka neodpovídá žádnému CZ ani SK okresu.</string>
+    <string name="lp_full_list">Kompletní seznam okresů</string>
+
+    <!-- Prank Tools (v0.7.8) -->
+    <string name="nav_prank">Prank nástroje</string>
+    <string name="prank_title">Prank nástroje</string>
+    <string name="prank_subtitle">Fullscreen efekty pro pobavení. Klepnutí kdekoliv na obrazovce nebo na ✕ ukončí.</string>
+    <string name="prank_display_crack">Rozbitý displej</string>
+    <string name="prank_pixel_broken">Mrtvé pixely</string>
+    <string name="prank_fake_virus">Falešný virus</string>
+    <string name="prank_fake_police">Policie / FBI</string>
+    <string name="prank_fake_update">Aktualizace systému</string>
+    <string name="prank_fake_call">Falešný hovor</string>
+    <string name="prank_fake_battery">Baterie 1 %</string>
+    <string name="prank_glitch">Glitch / RGB</string>
+    <string name="prank_strobe">Stroboskop</string>
+    <string name="prank_air_horn">Vzduchová houkačka</string>
+    <string name="prank_earthquake">Zemětřesení</string>
+    <string name="prank_spider">Pavouk po obrazovce</string>
+    <string name="prank_burning">Hořící displej</string>
+    <string name="prank_xray">Rentgen</string>
+    <string name="prank_mirror_freeze">Zamrzlá obrazovka</string>
+    <string name="prank_fake_wifi">WiFi odpojeno</string>
+    <string name="prank_loading_forever">Načítání navždy</string>
+    <string name="prank_disk_full">Úložiště plné</string>
+    <string name="prank_bank_otp">Bankovní kód</string>
+    <string name="prank_magic_button">Magické tlačítko</string>
 </resources>

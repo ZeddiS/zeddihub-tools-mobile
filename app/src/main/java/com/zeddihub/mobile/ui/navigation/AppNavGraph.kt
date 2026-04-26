@@ -1,6 +1,7 @@
 package com.zeddihub.mobile.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
@@ -11,6 +12,7 @@ import androidx.navigation.compose.composable
 import com.zeddihub.mobile.R
 import com.zeddihub.mobile.data.local.LanguageCode
 import com.zeddihub.mobile.data.local.ThemeMode
+import com.zeddihub.mobile.data.share.ShareInbox
 import com.zeddihub.mobile.ui.admin.AdminScreen
 import com.zeddihub.mobile.ui.common.DetailShell
 import com.zeddihub.mobile.ui.community.CommunityScreen
@@ -29,11 +31,13 @@ import com.zeddihub.mobile.ui.helpers.QuickNoteScreen
 import com.zeddihub.mobile.ui.helpers.ElectricianScreen
 import com.zeddihub.mobile.ui.helpers.HazardSignsScreen
 import com.zeddihub.mobile.ui.helpers.HolidaysScreen
+import com.zeddihub.mobile.ui.helpers.LicensePlateScreen
 import com.zeddihub.mobile.ui.helpers.MorseBrailleScreen
 import com.zeddihub.mobile.ui.helpers.MultiRemoteScreen
 import com.zeddihub.mobile.ui.helpers.MusicToolsScreen
 import com.zeddihub.mobile.ui.helpers.PeriodicTableScreen
 import com.zeddihub.mobile.ui.helpers.PhoneTestScreen
+import com.zeddihub.mobile.ui.helpers.PrankToolsScreen
 import com.zeddihub.mobile.ui.helpers.RubikSolverScreen
 import com.zeddihub.mobile.ui.helpers.UsbFormatScreen
 import com.zeddihub.mobile.ui.helpers.UsbToolsScreen
@@ -89,6 +93,18 @@ fun AppNavGraph(
     val loggedIn by gateVm.isLoggedIn.collectAsState()
 
     val startRoute = if (loggedIn) Destinations.Main.route else Destinations.Login.route
+
+    // Watch the share inbox: when MainActivity drops a URL in (because the
+    // user picked ZeddiHub from another app's Share sheet), navigate to
+    // the Video Downloader. ShareInbox.consume() clears the slot so the
+    // same intent doesn't re-fire on every recomposition.
+    val pendingShare by ShareInbox.pendingUrl.collectAsState()
+    LaunchedEffect(pendingShare, loggedIn) {
+        if (pendingShare != null && loggedIn) {
+            ShareInbox.consume() // single-shot; drained before navigate so it doesn't loop
+            navController.navigate(Destinations.VideoDownloader.route)
+        }
+    }
 
     NavHost(navController = navController, startDestination = startRoute) {
 
@@ -183,7 +199,11 @@ fun AppNavGraph(
             SpeakerCleanerScreen(padding = padding)
         }
         detail(Destinations.VideoDownloader.route, R.string.nav_video_downloader, navController) { padding ->
-            VideoDownloaderScreen(padding = padding)
+            // Drain the share inbox here too — covers the case where the
+            // user is already logged in AND already sitting on a tools
+            // screen when a Share intent arrives (LaunchedEffect above
+            // navigates here, but the URL also needs to land in the field).
+            VideoDownloaderScreen(padding = padding, initialUrl = ShareInbox.consume())
         }
         detail(Destinations.AdvancedNfc.route, R.string.nav_advanced_nfc, navController) { padding ->
             AdvancedNfcScreen(padding = padding)
@@ -304,6 +324,14 @@ fun AppNavGraph(
         }
         detail(Destinations.BluetoothAdvertise.route, R.string.nav_bt_advertise, navController) { padding ->
             BluetoothAdvertiseScreen(padding = padding)
+        }
+
+        // v0.7.8 helpers
+        detail(Destinations.LicensePlate.route, R.string.nav_license_plate, navController) { padding ->
+            LicensePlateScreen(padding = padding)
+        }
+        detail(Destinations.PrankTools.route, R.string.nav_prank, navController) { padding ->
+            PrankToolsScreen(padding = padding)
         }
 
         // ── Account detail screens ────────────────────────────────────────

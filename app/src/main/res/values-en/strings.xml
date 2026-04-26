@@ -653,6 +653,8 @@
 
     <string name="nav_video_downloader">Video Downloader</string>
     <string name="video_dl_url_hint">URL from YouTube, Instagram, TikTok, X, Reddit…</string>
+    <string name="video_dl_paste">Paste from clipboard</string>
+    <string name="video_dl_starting">Downloading…</string>
     <string name="video_dl_fetch">Get link</string>
     <string name="video_dl_download">Download</string>
     <string name="video_dl_save_as">Save as</string>
@@ -1176,4 +1178,40 @@
     <string name="btad_stop">Stop</string>
     <string name="btad_running">Advertising…</string>
     <string name="btad_error">Error: %1$s</string>
+
+    <!-- License Plate (v0.7.8) -->
+    <string name="nav_license_plate">License plate lookup</string>
+    <string name="lp_title">License plate lookup</string>
+    <string name="lp_body">Type the full plate or just the district code (CZ post-2001 + pre-2001 + SK). Or aim the camera at a plate — ML Kit text recognition picks it up.</string>
+    <string name="lp_input_label">Plate or code</string>
+    <string name="lp_open_camera">Scan with camera</string>
+    <string name="lp_close_camera">Close camera</string>
+    <string name="lp_clear">Clear</string>
+    <string name="lp_no_match">This code doesn\'t match any CZ or SK district.</string>
+    <string name="lp_full_list">Complete district list</string>
+
+    <!-- Prank Tools (v0.7.8) -->
+    <string name="nav_prank">Prank tools</string>
+    <string name="prank_title">Prank tools</string>
+    <string name="prank_subtitle">Fullscreen effects for fun. Tap anywhere or the ✕ to exit.</string>
+    <string name="prank_display_crack">Cracked display</string>
+    <string name="prank_pixel_broken">Dead pixels</string>
+    <string name="prank_fake_virus">Fake virus</string>
+    <string name="prank_fake_police">Police / FBI</string>
+    <string name="prank_fake_update">System update</string>
+    <string name="prank_fake_call">Fake call</string>
+    <string name="prank_fake_battery">Battery 1%</string>
+    <string name="prank_glitch">Glitch / RGB</string>
+    <string name="prank_strobe">Strobe</string>
+    <string name="prank_air_horn">Air horn</string>
+    <string name="prank_earthquake">Earthquake</string>
+    <string name="prank_spider">Spider on screen</string>
+    <string name="prank_burning">Burning display</string>
+    <string name="prank_xray">X-ray</string>
+    <string name="prank_mirror_freeze">Frozen mirror</string>
+    <string name="prank_fake_wifi">WiFi disconnected</string>
+    <string name="prank_loading_forever">Loading forever</string>
+    <string name="prank_disk_full">Disk full</string>
+    <string name="prank_bank_otp">Bank OTP</string>
+    <string name="prank_magic_button">Magic button</string>
 </resources>

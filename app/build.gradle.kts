@@ -28,8 +28,8 @@ android {
         applicationId = "com.zeddihub.mobile"
         minSdk = 26
         targetSdk = 34
-        versionCode = 25
-        versionName = "0.7.7"
+        versionCode = 26
+        versionName = "0.7.8"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
@@ -196,6 +196,14 @@ dependencies {
     // scan with torch + fine-grained control (vs. the unbundled code-scanner
     // which opens its own Activity).
     implementation("com.google.mlkit:barcode-scanning:17.2.0")
+
+    // ML Kit Text Recognition (unbundled) — used by License Plate tool
+    // to OCR the plate region from the live camera feed. The bundled
+    // variant adds ~40 MB to the APK; the play-services unbundled one
+    // downloads the model on first use (one-time ~15 MB) and keeps the
+    // shipped APK lean. Requires Google Play Services on the device,
+    // which we already require for fused location and ML Kit barcode.
+    implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.1")
 
     // CameraX — preview + image analysis pipeline for AdvancedBarcode live
     // scanner. Using camera2 under the hood so it works reliably on older

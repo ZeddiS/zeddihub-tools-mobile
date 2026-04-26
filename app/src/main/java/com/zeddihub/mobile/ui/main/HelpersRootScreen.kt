@@ -19,6 +19,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BluetoothSearching
 import androidx.compose.material.icons.filled.Bluetooth
+import androidx.compose.material.icons.filled.DriveEta
+import androidx.compose.material.icons.filled.Mood
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Cake
 import androidx.compose.material.icons.filled.Call
@@ -146,6 +148,11 @@ fun HelpersRootScreen(
         )
         HelperRow(
             HelperEntry(R.string.nav_bt_advertise, Icons.Default.BluetoothSearching, Destinations.BluetoothAdvertise.route),
+            HelperEntry(R.string.nav_license_plate, Icons.Default.DriveEta, Destinations.LicensePlate.route),
+            onNavigate
+        )
+        HelperRow(
+            HelperEntry(R.string.nav_prank, Icons.Default.Mood, Destinations.PrankTools.route),
             null,
             onNavigate
         )
